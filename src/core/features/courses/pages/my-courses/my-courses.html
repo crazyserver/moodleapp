@@ -16,10 +16,10 @@
                     <ion-icon [name]="downloadAllCoursesIcon" slot="icon-only" aria-hidden="true"></ion-icon>
                 </ion-button>
                 <ion-spinner [hidden]="!downloadAllCoursesEnabled || !courses || courses.length < 2 ||
-                    downloadAllCoursesBadge != '' || !downloadAllCoursesLoading"
+                    downloadAllCoursesBadge !== '' || !downloadAllCoursesLoading"
                     [attr.aria-label]="'core.loading' | translate"></ion-spinner>
                 <ion-badge [hidden]="!downloadAllCoursesEnabled || !courses || courses.length < 2 || !downloadAllCoursesLoading ||
-                    downloadAllCoursesBadge == '' || !downloadAllCoursesLoading"
+                    downloadAllCoursesBadge === '' || !downloadAllCoursesLoading"
                     role="progressbar" [attr.aria-valuemax]="downloadAllCoursesTotal"
                     [attr.aria-valuenow]="downloadAllCoursesCount" [attr.aria-valuetext]="downloadAllCoursesBadgeA11yText">
                     {{downloadAllCoursesBadge}}

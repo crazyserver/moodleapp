@@ -49,7 +49,7 @@
             (completionChanged)="onCompletionChange()">
         </core-course-module-info>
 
-        <core-course-module-description *ngIf="forum && forum.type != 'single'"
+        <core-course-module-description *ngIf="forum && forum.type !== 'single'"
             [description]="description" [component]="component" [componentId]="componentId" [note]="descriptionNote"
             contextLevel="module" [contextInstanceId]="module && module.id" [courseId]="courseId">
         </core-course-module-description>

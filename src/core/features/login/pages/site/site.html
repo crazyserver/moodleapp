@@ -20,7 +20,7 @@
     </div>
     <form [formGroup]="siteForm" (ngSubmit)="connect($event, siteForm.value.siteUrl)" *ngIf="!fixedSites" #siteFormEl>
         <!-- Form to input the site URL if there are no fixed sites. -->
-        <ng-container *ngIf="siteSelector == 'url'">
+        <ng-container *ngIf="siteSelector === 'url'">
             <ion-item>
                 <ion-label position="stacked">
                     <h2>{{ 'core.login.siteaddress' | translate }}</h2>
@@ -30,7 +30,7 @@
                 </ion-input>
             </ion-item>
         </ng-container>
-        <ng-container *ngIf="siteSelector != 'url'">
+        <ng-container *ngIf="siteSelector !== 'url'">
             <ion-item>
                 <ion-label position="stacked">
                     <h2>{{ 'core.login.siteaddress' | translate }}</h2>
@@ -72,7 +72,7 @@
             </div>
         </ng-container>
 
-        <ion-item *ngIf="siteSelector == 'url'" lines="none">
+        <ion-item *ngIf="siteSelector === 'url'" lines="none">
             <ion-label>
                 <ion-button expand="block" [disabled]="!siteForm.valid" class="ion-text-wrap" type="submit">
                     {{ 'core.login.connect' | translate }}
@@ -83,7 +83,7 @@
 
     <ng-container *ngIf="fixedSites">
         <!-- Pick the site from a list of fixed sites. -->
-        <ion-list *ngIf="siteSelector == 'list'">
+        <ion-list *ngIf="siteSelector === 'list'">
             <ion-item lines="none">
                 <ion-label>
                     <h2 class="item-heading">{{ 'core.login.selectsite' | translate }}</h2>

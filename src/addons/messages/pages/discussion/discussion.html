@@ -79,17 +79,17 @@
                     {{ message.timecreated | coreFormatDate: "strftimedayshort" }}
                 </h3>
 
-                <ion-chip class="addon-messages-unreadfrom" *ngIf="unreadMessageFrom && message.id == unreadMessageFrom"
+                <ion-chip class="addon-messages-unreadfrom" *ngIf="unreadMessageFrom && message.id === unreadMessageFrom"
                     color="light">
                     <ion-label>{{ 'addon.messages.newmessages' | translate }}</ion-label>
                     <ion-icon name="fas-arrow-down" aria-hidden="true"></ion-icon>
                 </ion-chip>
 
                 <ion-item class="ion-text-wrap addon-message" (longPress)="copyMessage(message)"
-                    [class.addon-message-mine]="message.useridfrom == currentUserId"
-                    [class.addon-message-not-mine]="message.useridfrom != currentUserId"
+                    [class.addon-message-mine]="message.useridfrom === currentUserId"
+                    [class.addon-message-not-mine]="message.useridfrom !== currentUserId"
                     [class.addon-message-no-user]="!message.showUserData"
-                    [@coreSlideInOut]="message.useridfrom == currentUserId ? '' : 'fromLeft'">
+                    [@coreSlideInOut]="message.useridfrom === currentUserId ? '' : 'fromLeft'">
                     <ion-label>
                         <!-- User data. -->
                         <div *ngIf="message.showUserData" class="item-heading addon-message-user">
@@ -99,7 +99,7 @@
                             <div>{{ members[message.useridfrom].fullname }}</div>
                         </div>
                         <div *ngIf="!message.showUserData" class="sr-only">
-                            {{ message.useridfrom == currentUserId
+                            {{ message.useridfrom === currentUserId
                             ? ('addon.messages.you' | translate)
                             : members[message.useridfrom].fullname }}
                         </div>
@@ -140,16 +140,16 @@
 </ion-content>
 <ion-footer color="light" class="footer-adjustable" *ngIf="loaded && (!conversationId || conversation)">
     <ion-toolbar color="light">
-        <p *ngIf="footerType == 'unable'" class="ion-text-center ion-margin-horizontal">
+        <p *ngIf="footerType === 'unable'" class="ion-text-center ion-margin-horizontal">
             {{ 'addon.messages.unabletomessage' | translate }}
         </p>
-        <div *ngIf="footerType == 'blocked'" class="ion-padding-horizontal">
+        <div *ngIf="footerType === 'blocked'" class="ion-padding-horizontal">
             <p class="ion-text-center">{{ 'addon.messages.youhaveblockeduser' | translate }}</p>
             <ion-button expand="block" class="ion-text-wrap ion-margin-bottom" (click)="unblockUser()">
                 {{ 'addon.messages.unblockuser' | translate }}
             </ion-button>
         </div>
-        <div *ngIf="footerType == 'requiresContact' && otherMember" class="ion-padding-horizontal">
+        <div *ngIf="footerType === 'requiresContact' && otherMember" class="ion-padding-horizontal">
             <p class="ion-text-center">
                 <strong>{{ 'addon.messages.isnotinyourcontacts' | translate: {$a: otherMember.fullname} }}</strong>
             </p>
@@ -158,7 +158,7 @@
                 {{ 'addon.messages.sendcontactrequest' | translate }}
             </ion-button>
         </div>
-        <div *ngIf="footerType == 'requestReceived' && otherMember" class="ion-padding-horizontal">
+        <div *ngIf="footerType === 'requestReceived' && otherMember" class="ion-padding-horizontal">
             <p class="ion-text-center">{{ 'addon.messages.userwouldliketocontactyou' | translate: {$a: otherMember.fullname} }}</p>
             <ion-button expand="block" class="ion-text-wrap ion-margin-bottom" (click)="confirmContactRequest()">
                 {{ 'addon.messages.acceptandaddcontact' | translate }}
@@ -167,13 +167,13 @@
                 {{ 'addon.messages.decline' | translate }}
             </ion-button>
         </div>
-        <div *ngIf="footerType == 'requestSent' || (footerType == 'message' && requestContactSent)" class="ion-padding-horizontal">
+        <div *ngIf="footerType === 'requestSent' || (footerType === 'message' && requestContactSent)" class="ion-padding-horizontal">
             <p class="ion-text-center"><strong>{{ 'addon.messages.contactrequestsent' | translate }}</strong></p>
             <p class="ion-text-center" *ngIf="otherMember">
                 {{ 'addon.messages.yourcontactrequestpending' | translate: {$a: otherMember.fullname} }}
             </p>
         </div>
-        <core-send-message-form *ngIf="footerType == 'message'" (onSubmit)="sendMessage($event)" [showKeyboard]="showKeyboard"
+        <core-send-message-form *ngIf="footerType === 'message'" (onSubmit)="sendMessage($event)" [showKeyboard]="showKeyboard"
             [placeholder]="'addon.messages.newmessage' | translate"></core-send-message-form>
     </ion-toolbar>
 </ion-footer>

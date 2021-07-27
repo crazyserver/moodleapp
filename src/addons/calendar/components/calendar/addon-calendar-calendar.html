@@ -73,7 +73,7 @@
                     <div class="ion-hide-md-down addon-calendar-day-events">
                         <ng-container *ngFor="let event of day.filteredEvents | slice:0:4; let index = index">
                             <div
-                                *ngIf="index < 3 || day.filteredEvents.length == 4"
+                                *ngIf="index < 3 || day.filteredEvents.length === 4"
                                 class="addon-calendar-event"
                                 [class.addon-calendar-event-past]="event.ispast"
                                 role="button"

@@ -33,20 +33,20 @@
                         <tr
                             *ngFor="let row of grades.rows"
                             role="button row"
-                            [attr.tabindex]="row.itemtype != 'category' ? 0 : null"
-                            (ariaButtonClick)="row.itemtype != 'category' && grades.select(row)"
+                            [attr.tabindex]="row.itemtype !== 'category' ? 0 : null"
+                            (ariaButtonClick)="row.itemtype !== 'category' && grades.select(row)"
                             [class]="row.rowclass"
-                            [ngClass]='{"core-grades-grade-clickable": row.itemtype != "category"}'
+                            [ngClass]='{"core-grades-grade-clickable": row.itemtype !== "category"}'
                         >
                             <ng-container *ngIf="row.itemtype">
                                 <td
-                                    *ngIf="row.itemtype == 'category'"
+                                    *ngIf="row.itemtype === 'category'"
                                     class="core-grades-table-category"
                                     [attr.rowspan]="row.rowspan"
                                 ></td>
                                 <th
                                     class="core-grades-table-gradeitem ion-text-start"
-                                    [class.column-itemname]="row.itemtype == 'category'"
+                                    [class.column-itemname]="row.itemtype === 'category'"
                                     [attr.aria-current]="grades.getItemAriaCurrent(row)"
                                     [attr.colspan]="row.colspan"
                                 >
@@ -58,7 +58,7 @@
                                 </th>
                                 <ng-container *ngFor="let column of grades.columns">
                                     <td
-                                        *ngIf="column.name != 'gradeitem' && row[column.name] != undefined"
+                                        *ngIf="column.name !== 'gradeitem' && row[column.name] !== undefined"
                                         [class]="'ion-text-start core-grades-table-' + column.name"
                                         [class.ion-hide-md-down]="column.hiddenPhone"
                                         [innerHTML]="row[column.name]"

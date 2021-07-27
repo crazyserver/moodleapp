@@ -22,15 +22,15 @@
             [priority]="550" [content]="'core.settings.synchronizenow' | translate" [iconAction]="syncIcon" [closeOnClick]="false"
             (action)="doRefresh(null, $event, true)">
         </core-context-menu-item>
-        <core-context-menu-item [hidden]="sort == 'flat-oldest'"
+        <core-context-menu-item [hidden]="sort === 'flat-oldest'"
             [priority]="500" [content]="'addon.mod_forum.modeflatoldestfirst' | translate" iconAction="fas-arrow-down"
             (action)="changeSort('flat-oldest')">
         </core-context-menu-item>
-        <core-context-menu-item [hidden]="sort == 'flat-newest'"
+        <core-context-menu-item [hidden]="sort === 'flat-newest'"
             [priority]="450" [content]="'addon.mod_forum.modeflatnewestfirst' | translate" iconAction="fas-arrow-up"
             (action)="changeSort('flat-newest')">
         </core-context-menu-item>
-        <core-context-menu-item [hidden]="sort == 'nested'"
+        <core-context-menu-item [hidden]="sort === 'nested'"
             [priority]="400" [content]="'addon.mod_forum.modenested' | translate" iconAction="fas-exchange-alt"
             (action)="changeSort('nested')">
         </core-context-menu-item>
@@ -99,7 +99,7 @@
             </addon-mod-forum-post>
         </div>
 
-        <ion-card *ngIf="sort != 'nested'">
+        <ion-card *ngIf="sort !== 'nested'">
             <ng-container *ngFor="let post of posts; first as first">
                 <core-spacer *ngIf="!first"></core-spacer>
                 <addon-mod-forum-post
@@ -113,7 +113,7 @@
             </ng-container>
         </ion-card>
 
-        <ng-container *ngIf="sort == 'nested'">
+        <ng-container *ngIf="sort === 'nested'">
             <ng-container *ngFor="let post of posts">
                 <ng-container *ngTemplateOutlet="nestedPosts; context: {post: post}"></ng-container>
             </ng-container>

@@ -24,7 +24,7 @@
             </ng-container>
         </ion-list>
 
-        <core-empty-box *ngIf="blocks.length == 0" icon="fas-th-large" [message]="'core.course.nocontentavailable' | translate">
+        <core-empty-box *ngIf="blocks.length === 0" icon="fas-th-large" [message]="'core.course.nocontentavailable' | translate">
         </core-empty-box>
     </core-loading>
 </ion-content>

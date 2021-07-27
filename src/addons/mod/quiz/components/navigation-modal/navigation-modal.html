@@ -26,7 +26,7 @@
             </ion-item>
 
             <ion-item button class="ion-text-wrap {{question.stateClass}}" *ngFor="let question of navigation"
-                [attr.aria-current]="!summaryShown && currentPage == question.page ? 'page' : 'false'"
+                [attr.aria-current]="!summaryShown && currentPage === question.page ? 'page' : 'false'"
                 (click)="loadPage(question.page, question.slot)" detail="false">
 
                 <ion-label>
@@ -35,17 +35,17 @@
                 </ion-label>
 
                 <ion-icon *ngIf="!question.number" name="fas-info-circle" slot="end" aria-hidden="true"></ion-icon>
-                <ion-icon *ngIf="question.stateClass == 'core-question-requiresgrading'" name="fas-question-circle"
+                <ion-icon *ngIf="question.stateClass === 'core-question-requiresgrading'" name="fas-question-circle"
                     [attr.aria-label]="question.status" slot="end">
                 </ion-icon>
-                <ion-icon *ngIf="question.stateClass == 'core-question-correct'" name="fas-check" color="success"
+                <ion-icon *ngIf="question.stateClass === 'core-question-correct'" name="fas-check" color="success"
                     [attr.aria-label]="question.status" slot="end">
                 </ion-icon>
-                <ion-icon *ngIf="question.stateClass == 'core-question-partiallycorrect'" name="fas-check-square"
+                <ion-icon *ngIf="question.stateClass === 'core-question-partiallycorrect'" name="fas-check-square"
                     color="warning" [attr.aria-label]="question.status" slot="end">
                 </ion-icon>
-                <ion-icon *ngIf="question.stateClass == 'core-question-incorrect' ||
-                    question.stateClass == 'core-question-notanswered'" name="fas-times" color="danger"
+                <ion-icon *ngIf="question.stateClass === 'core-question-incorrect' ||
+                    question.stateClass === 'core-question-notanswered'" name="fas-times" color="danger"
                     [attr.aria-label]="question.status" slot="end">
                 </ion-icon>
             </ion-item>

@@ -4,22 +4,22 @@
         <img *ngIf="course.courseImage" [src]="course.courseImage" core-external-content alt=""/>
     </div>
     <ion-item button lines="none" (click)="openCourse()" [attr.aria-label]="course.displayname || course.fullname"
-        class="core-course-header" [class.item-disabled]="course.visible == 0"
+        class="core-course-header" [class.item-disabled]="course.visible === 0"
         [class.core-course-only-title]="!showAll || course.progress! < 0 && course.completionusertracked === false"
         detail="false">
         <ion-label
             class="ion-text-wrap core-course-title"
             [class.core-course-with-buttons]="courseOptionMenuEnabled || (downloadCourseEnabled && showDownload)"
-            [class.core-course-with-spinner]="(downloadCourseEnabled && prefetchCourseData.icon == 'spinner') || showSpinner">
-            <p *ngIf="course.categoryname || (course.displayname && course.shortname && course.fullname != course.displayname)"
+            [class.core-course-with-spinner]="(downloadCourseEnabled && prefetchCourseData.icon === 'spinner') || showSpinner">
+            <p *ngIf="course.categoryname || (course.displayname && course.shortname && course.fullname !== course.displayname)"
                 class="core-course-additional-info">
                 <span class="sr-only">{{ 'core.courses.aria:coursecategory' | translate }}</span>
                 <span *ngIf="course.categoryname" class="core-course-category">
                     <core-format-text [text]="course.categoryname"></core-format-text>
                 </span>
-                <span *ngIf="course.categoryname && course.displayname && course.shortname && course.fullname != course.displayname"
+                <span *ngIf="course.categoryname && course.displayname && course.shortname && course.fullname !== course.displayname"
                     class="core-course-category"> | </span>
-                <span *ngIf="course.displayname && course.shortname && course.fullname != course.displayname"
+                <span *ngIf="course.displayname && course.shortname && course.fullname !== course.displayname"
                     class="core-course-shortname">
                     <core-format-text [text]="course.shortname" contextLevel="course" [contextInstanceId]="course.id">
                     </core-format-text>
@@ -46,7 +46,7 @@
 
         <div class="core-button-spinner" *ngIf="courseOptionMenuEnabled" slot="end">
             <!-- Download course spinner. -->
-            <ion-spinner *ngIf="(downloadCourseEnabled && prefetchCourseData.icon == 'spinner') || showSpinner"
+            <ion-spinner *ngIf="(downloadCourseEnabled && prefetchCourseData.icon === 'spinner') || showSpinner"
                 [attr.aria-label]="'core.loading' | translate"></ion-spinner>
 
             <!-- Downloaded icon. -->

@@ -14,7 +14,7 @@
             layout="label-hide"
             class="{{tab.class}}"
             [selected]="tab.page === selectedTab"
-            [tabindex]="selectedTab == tab.page ? 0 : -1"
+            [tabindex]="selectedTab === tab.page ? 0 : -1"
             [attr.aria-controls]="tab.id"
         >
             <ion-icon [name]="tab.icon" aria-hidden="true"></ion-icon>
@@ -33,7 +33,7 @@
             [hidden]="!loaded"
             [tab]="morePageName"
             layout="label-hide"
-            [tabindex]="selectedTab == morePageName ? 0 : -1"
+            [tabindex]="selectedTab === morePageName ? 0 : -1"
             [attr.aria-controls]="morePageName"
         >
             <ion-icon name="fas-bars" aria-hidden="true"></ion-icon>

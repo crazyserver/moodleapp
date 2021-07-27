@@ -14,7 +14,7 @@
                             [id]="tab.id! + '-tab'"
                             class="tab-slide"
                             tabindex="-1"
-                            [class.selected]="selected == tab.id">
+                            [class.selected]="selected === tab.id">
                             <ion-tab-button
                                 (ionTabButtonClick)="selectTab(tab.id, $event)"
                                 (keydown)="tabAction.keyDown($event)"
@@ -24,8 +24,8 @@
                                 class="{{tab.class}}"
                                 role="tab"
                                 [attr.aria-controls]="tab.id"
-                                [attr.aria-selected]="selected == tab.id"
-                                [tabindex]="selected == tab.id ? 0 : -1"
+                                [attr.aria-selected]="selected === tab.id"
+                                [tabindex]="selected === tab.id ? 0 : -1"
                             >
                                 <ion-icon *ngIf="tab.icon" [name]="tab.icon" aria-hidden="true"></ion-icon>
                                 <ion-label>

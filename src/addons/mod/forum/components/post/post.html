@@ -58,7 +58,7 @@
             </ion-label>
         </ion-item>
     </ion-card-header>
-    <ion-card-content [class]="post.parentid == 0 ? 'ion-padding-top' : ''">
+    <ion-card-content [class]="post.parentid === 0 ? 'ion-padding-top' : ''">
         <div class="ion-padding-bottom" *ngIf="post.isprivatereply">
             <ion-note color="danger">{{ 'addon.mod_forum.postisprivatereply' | translate }}</ion-note>
         </div>
@@ -146,7 +146,7 @@
         <ion-grid>
             <ion-row>
                 <ion-col>
-                    <ion-button expand="block" (click)="reply()" [disabled]="replyData.subject == '' || replyData.message == null">
+                    <ion-button expand="block" (click)="reply()" [disabled]="replyData.subject === '' || replyData.message === null">
                         {{ 'addon.mod_forum.posttoforum' | translate }}
                     </ion-button>
                 </ion-col>

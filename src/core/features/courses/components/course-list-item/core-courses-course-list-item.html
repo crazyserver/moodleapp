@@ -1,4 +1,4 @@
-<ion-item class="ion-text-wrap" (click)="openCourse()" [class.item-disabled]="course.visible == 0"
+<ion-item class="ion-text-wrap" (click)="openCourse()" [class.item-disabled]="course.visible === 0"
     [attr.aria-label]="course.displayname || course.fullname" detail="true" button>
     <ion-icon *ngIf="!course.courseImage" name="fas-graduation-cap" slot="start" class="course-icon"
         [attr.course-color]="course.color ? null : course.colorNumber" [style.color]="course.color"></ion-icon>
@@ -6,14 +6,14 @@
         <img [src]="course.courseImage" core-external-content alt=""/>
     </ion-avatar>
     <ion-label>
-        <p *ngIf="course.categoryname || (course.displayname && course.shortname && course.fullname != course.displayname)"
+        <p *ngIf="course.categoryname || (course.displayname && course.shortname && course.fullname !== course.displayname)"
             class="core-course-additional-info">
             <span *ngIf="course.categoryname" class="core-course-category">
                 <core-format-text [text]="course.categoryname"></core-format-text>
             </span>
-            <span *ngIf="course.categoryname && course.displayname && course.shortname && course.fullname != course.displayname"
+            <span *ngIf="course.categoryname && course.displayname && course.shortname && course.fullname !== course.displayname"
                 class="core-course-category"> | </span>
-            <span *ngIf="course.displayname && course.shortname && course.fullname != course.displayname"
+            <span *ngIf="course.displayname && course.shortname && course.fullname !== course.displayname"
                 class="core-course-shortname">
                 <core-format-text [text]="course.shortname" contextLevel="course" [contextInstanceId]="course.id">
                 </core-format-text>

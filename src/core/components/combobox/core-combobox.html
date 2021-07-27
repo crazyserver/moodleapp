@@ -1,5 +1,5 @@
 <ion-select
-    *ngIf="interface != 'modal'"
+    *ngIf="interface !== 'modal'"
     class="ion-text-start"
     [(ngModel)]="selection"
     (ngModelChange)="onChange.emit(selection)"
@@ -11,7 +11,7 @@
 </ion-select>
 
 <ion-button
-    *ngIf="interface == 'modal'"
+    *ngIf="interface === 'modal'"
     aria-haspopup="listbox"
     aria-controls="addon-mod-forum-sort-order-selector"
     [attr.aria-owns]="listboxId"

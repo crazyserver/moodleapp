@@ -39,7 +39,7 @@
                 <ion-label>
                     <p class="item-heading" [core-mark-required]="true">{{ 'addon.calendar.eventkind' | translate }}</p>
                 </ion-label>
-                <p *ngIf="eventTypes.length == 1" slot="end">{{eventTypes[0].name | translate }}</p>
+                <p *ngIf="eventTypes.length === 1" slot="end">{{eventTypes[0].name | translate }}</p>
                 <ion-select
                     *ngIf="eventTypes.length > 1"
                     formControlName="eventtype"
@@ -53,7 +53,7 @@
             </ion-item>
 
             <!-- Category. -->
-            <ion-item class="ion-text-wrap" *ngIf="typeControl.value == 'category'">
+            <ion-item class="ion-text-wrap" *ngIf="typeControl.value === 'category'">
                 <ion-label>
                     <p class="item-heading" [core-mark-required]="true">{{ 'core.category' | translate }}</p>
                 </ion-label>
@@ -66,7 +66,7 @@
             </ion-item>
 
             <!-- Course. -->
-            <ion-item class="ion-text-wrap" *ngIf="typeControl.value == 'course'">
+            <ion-item class="ion-text-wrap" *ngIf="typeControl.value === 'course'">
                 <ion-label>
                     <p class="item-heading" [core-mark-required]="true">{{ 'core.course' | translate }}</p>
                 </ion-label>
@@ -77,7 +77,7 @@
             </ion-item>
 
             <!-- Group. -->
-            <ng-container *ngIf="typeControl.value == 'group'">
+            <ng-container *ngIf="typeControl.value === 'group'">
                 <!-- Select the course. -->
                 <ion-item class="ion-text-wrap">
                     <ion-label>
@@ -167,7 +167,7 @@
                             <ion-label position="stacked"></ion-label>
                             <ion-datetime formControlName="timedurationuntil" [max]="maxDate" [min]="minDate"
                                 [placeholder]="'addon.calendar.durationuntil' | translate"
-                                [displayFormat]="dateFormat" [disabled]="form.controls.duration.value != 1"
+                                [displayFormat]="dateFormat" [disabled]="form.controls.duration.value !== 1"
                                 display-timezone="utc">
                             </ion-datetime>
                         </ion-item>
@@ -181,7 +181,7 @@
                             <ion-label class="sr-only">{{ 'addon.calendar.durationminutes' | translate }}</ion-label>
                             <ion-input type="number" name="timedurationminutes" slot="end"
                                 [placeholder]="'addon.calendar.durationminutes' | translate"
-                                formControlName="timedurationminutes" [disabled]="form.controls.duration.value != 2"></ion-input>
+                                formControlName="timedurationminutes" [disabled]="form.controls.duration.value !== 2"></ion-input>
                         </ion-item>
                     </ion-radio-group>
                 </div>

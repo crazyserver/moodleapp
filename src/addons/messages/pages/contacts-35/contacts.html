@@ -22,10 +22,10 @@
             [disabled]="!loaded" searchArea="AddonMessagesContacts"></core-search-box>
 
         <core-loading [hideUntil]="loaded" [message]="loadingMessage">
-            <core-empty-box *ngIf="!hasContacts && searchString == ''" icon="fas-address-book"
+            <core-empty-box *ngIf="!hasContacts && searchString === ''" icon="fas-address-book"
                 [message]="'addon.messages.contactlistempty' | translate"></core-empty-box>
 
-            <core-empty-box *ngIf="!hasContacts && searchString != ''" icon="fas-address-book"
+            <core-empty-box *ngIf="!hasContacts && searchString !== ''" icon="fas-address-book"
                 [message]="'addon.messages.nousersfound' | translate"></core-empty-box>
 
             <ion-list *ngFor="let contactType of contactTypes" class="ion-no-margin">
@@ -39,7 +39,7 @@
                         <ion-item class="ion-text-wrap addon-messages-conversation-item"
                             *ngIf="contact.profileimageurl || contact.profileimageurlsmall"
                             [attr.aria-label]="contact.fullname" (click)="gotoDiscussion(contact.id)" detail="true" button
-                            [attr.aria-current]="contact.id == discussionUserId ? 'page' : 'false'">
+                            [attr.aria-current]="contact.id === discussionUserId ? 'page' : 'false'">
                             <core-user-avatar [user]="contact" slot="start" [checkOnline]="contact.showonlinestatus"></core-user-avatar>
                             <ion-label><p class="item-heading">{{ contact.fullname }}</p></ion-label>
                         </ion-item>

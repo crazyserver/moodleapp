@@ -42,19 +42,19 @@
         <ng-container *ngIf="phases && phases[workshop!.phase] && phases[workshop!.phase].tasks &&
             phases[workshop!.phase].tasks.length">
             <ion-item button class="ion-text-wrap" *ngFor="let task of phases[workshop!.phase].tasks"
-                [class.item-dimmed]="task.code == 'submit' && !showSubmit" (click)="runTask(task)" detail="false">
-                <ion-icon slot="start" name="far-circle" *ngIf="task.completed == null" aria-hidden="true"></ion-icon>
-                <ion-icon slot="start" name="fas-times-circle" color="danger" *ngIf="task.completed == ''" aria-hidden="true">
+                [class.item-dimmed]="task.code === 'submit' && !showSubmit" (click)="runTask(task)" detail="false">
+                <ion-icon slot="start" name="far-circle" *ngIf="task.completed === null" aria-hidden="true"></ion-icon>
+                <ion-icon slot="start" name="fas-times-circle" color="danger" *ngIf="task.completed === ''" aria-hidden="true">
                 </ion-icon>
-                <ion-icon slot="start" name="fas-info-circle" color="info" *ngIf="task.completed == 'info'" aria-hidden="true">
+                <ion-icon slot="start" name="fas-info-circle" color="info" *ngIf="task.completed === 'info'" aria-hidden="true">
                 </ion-icon>
-                <ion-icon slot="start" name="fas-check-circle" color="success" *ngIf="task.completed == '1'" aria-hidden="true">
+                <ion-icon slot="start" name="fas-check-circle" color="success" *ngIf="task.completed === '1'" aria-hidden="true">
                 </ion-icon>
                 <ion-label>
                     <h2>{{task.title}}</h2>
                     <p *ngIf="task.details" [innerHTML]="task.details"></p>
                 </ion-label>
-                <ion-icon slot="end" *ngIf="task.link && task.code != 'submit'" name="fas-external-link-alt" aria-hidden="true">
+                <ion-icon slot="end" *ngIf="task.link && task.code !== 'submit'" name="fas-external-link-alt" aria-hidden="true">
                 </ion-icon>
             </ion-item>
         </ng-container>
@@ -69,7 +69,7 @@
     </ion-card>
 
     <!-- Description (setup phase only) -->
-    <ion-card *ngIf="description && workshop && workshop!.phase == PHASE_SETUP">
+    <ion-card *ngIf="description && workshop && workshop!.phase === PHASE_SETUP">
         <ion-item class="ion-text-wrap">
             <ion-label>
                 <h2>{{ 'core.description' | translate }}</h2>
@@ -115,7 +115,7 @@
         </ng-container>
 
         <!-- SUBMISSION PHASE -->
-        <ion-card *ngIf="workshop!.phase == PHASE_SUBMISSION && workshop!.instructauthors">
+        <ion-card *ngIf="workshop!.phase === PHASE_SUBMISSION && workshop!.instructauthors">
             <ion-item class="ion-text-wrap">
                 <ion-label>
                     <h2>{{ 'addon.mod_workshop.areainstructauthors' | translate }}</h2>
@@ -130,10 +130,10 @@
         <ion-card *ngIf="canSubmit">
             <ion-item-divider class="ion-text-wrap">
                 <ion-label>
-                    <h2 *ngIf="workshop!.phase != PHASE_CLOSED || !submission">
+                    <h2 *ngIf="workshop!.phase !== PHASE_CLOSED || !submission">
                         {{ 'addon.mod_workshop.yoursubmission' | translate }}
                     </h2>
-                    <h2 *ngIf="workshop!.phase == PHASE_CLOSED && submission">
+                    <h2 *ngIf="workshop!.phase === PHASE_CLOSED && submission">
                         {{ 'addon.mod_workshop.yoursubmissionwithassessments' | translate }}
                     </h2>
                 </ion-label>
@@ -178,7 +178,7 @@
 
         <!-- ASSESSMENT PHASE -->
         <ng-container *ngIf="workshop!.phase >= PHASE_ASSESSMENT">
-            <ion-card *ngIf="workshop!.phase == PHASE_ASSESSMENT && workshop!.instructreviewers">
+            <ion-card *ngIf="workshop!.phase === PHASE_ASSESSMENT && workshop!.instructreviewers">
                 <ion-item class="ion-text-wrap">
                     <ion-label>
                         <h2>{{ 'addon.mod_workshop.areainstructreviewers' | translate }}</h2>
@@ -211,7 +211,7 @@
             ((grades && grades.length) || (groupInfo && (groupInfo.separateGroups || groupInfo.visibleGroups)))">
             <ion-item-divider class="ion-text-wrap">
                 <ion-label>
-                    <h2 *ngIf="workshop!.phase == PHASE_SUBMISSION">{{ 'addon.mod_workshop.submissionsreport' | translate }}</h2>
+                    <h2 *ngIf="workshop!.phase === PHASE_SUBMISSION">{{ 'addon.mod_workshop.submissionsreport' | translate }}</h2>
                     <h2 *ngIf="workshop!.phase > PHASE_SUBMISSION">{{ 'addon.mod_workshop.gradesreport' | translate }}</h2>
                 </ion-label>
             </ion-item-divider>

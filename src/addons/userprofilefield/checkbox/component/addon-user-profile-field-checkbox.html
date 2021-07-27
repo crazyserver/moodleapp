@@ -2,10 +2,10 @@
 <ion-item *ngIf="!edit && field && field.name">
     <ion-label>
         <h2>{{ field.name }}</h2>
-        <p *ngIf="value != '0'">
+        <p *ngIf="value !== '0'">
             {{ 'core.yes' | translate }}
         </p>
-        <p *ngIf="value == '0'">
+        <p *ngIf="value === '0'">
             {{ 'core.no' | translate }}
         </p>
     </ion-label>

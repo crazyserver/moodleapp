@@ -47,7 +47,7 @@
         <ion-grid>
             <ion-row>
                 <ion-col>
-                    <ion-button expand="block" (click)="reply($event)" [disabled]="replyData.subject == '' || replyData.message == null">
+                    <ion-button expand="block" (click)="reply($event)" [disabled]="replyData.subject === '' || replyData.message === null">
                         {{ 'core.savechanges' | translate }}
                     </ion-button>
                 </ion-col>

@@ -24,7 +24,7 @@
                 </p>
 
                 <div class="ion-text-center addon-mod_chat-notice" *ngIf="message.special">
-                    <ion-badge class="ion-text-wrap" color="success" *ngIf="message.system && message.message == 'enter'">
+                    <ion-badge class="ion-text-wrap" color="success" *ngIf="message.system && message.message === 'enter'">
                         <span>
                             <ion-icon name="fas-sign-in-alt" aria-hidden="true"></ion-icon>
                             {{ message.timestamp * 1000 | coreFormatDate:"strftimetime" }}
@@ -32,7 +32,7 @@
                         </span>
                     </ion-badge>
 
-                    <ion-badge class="ion-text-wrap" color="danger" *ngIf="message.system && message.message == 'exit'">
+                    <ion-badge class="ion-text-wrap" color="danger" *ngIf="message.system && message.message === 'exit'">
                         <span>
                             <ion-icon name="fas-sign-out-alt" aria-hidden="true"></ion-icon>
                             {{ message.timestamp * 1000 | coreFormatDate:"strftimetime" }}
@@ -40,7 +40,7 @@
                         </span>
                     </ion-badge>
 
-                    <ion-badge class="ion-text-wrap" color="primary" *ngIf="message.beep == 'all'">
+                    <ion-badge class="ion-text-wrap" color="primary" *ngIf="message.beep === 'all'">
                         <span>
                             <ion-icon name="fas-bell" aria-hidden="true"></ion-icon>
                             {{ message.timestamp * 1000 | coreFormatDate:"strftimetime" }}
@@ -49,7 +49,7 @@
                     </ion-badge>
 
                     <ion-badge class="ion-text-wrap" color="primary"
-                        *ngIf="message.userid != currentUserId && message.beep == currentUserId">
+                        *ngIf="message.userid !== currentUserId && message.beep === currentUserId">
                         <span>
                             <ion-icon name="fas-bell" aria-hidden="true"></ion-icon>
                             {{ message.timestamp * 1000 | coreFormatDate:"strftimetime" }}
@@ -58,7 +58,7 @@
                     </ion-badge>
 
                     <ion-badge class="ion-text-wrap" color="light"
-                        *ngIf="message.userid == currentUserId && message.beep && message.beep != 'all'">
+                        *ngIf="message.userid === currentUserId && message.beep && message.beep !== 'all'">
                         <span>
                             <ion-icon name="fas-bell" aria-hidden="true"></ion-icon>
                             {{ message.timestamp * 1000 | coreFormatDate:"strftimetime" }}
@@ -80,10 +80,10 @@
                 </div>
 
                 <ion-item *ngIf="!message.special" class="ion-text-wrap addon-message"
-                    [class.addon-message-mine]="message.userid == currentUserId"
-                    [class.addon-message-not-mine]="message.userid != currentUserId"
+                    [class.addon-message-mine]="message.userid === currentUserId"
+                    [class.addon-message-not-mine]="message.userid !== currentUserId"
                     [class.addon-message-no-user]="!message.showUserData"
-                    [@coreSlideInOut]="message.userid == currentUserId ? '' : 'fromLeft'">
+                    [@coreSlideInOut]="message.userid === currentUserId ? '' : 'fromLeft'">
                     <ion-label>
                         <!-- User data. -->
                         <h2 class="addon-message-user" *ngIf="message.showUserData">

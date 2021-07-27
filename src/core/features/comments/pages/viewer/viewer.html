@@ -46,10 +46,10 @@
                 </p>
 
                 <ion-item class="ion-text-wrap addon-message"
-                    [class.addon-message-mine]="comment.userid == currentUserId"
-                    [class.addon-message-not-mine]="comment.userid != currentUserId"
+                    [class.addon-message-mine]="comment.userid === currentUserId"
+                    [class.addon-message-not-mine]="comment.userid !== currentUserId"
                     [class.addon-message-no-user]="!comment.showUserData"
-                    [@coreSlideInOut]="comment.userid == currentUserId ? '' : 'fromLeft'">
+                    [@coreSlideInOut]="comment.userid === currentUserId ? '' : 'fromLeft'">
                     <ion-label>
                         <!-- User data. -->
                         <h2 class="addon-message-user" *ngIf="comment.showUserData">

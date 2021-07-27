@@ -76,7 +76,7 @@
                     <ion-row>
                         <ion-col>
                             <ion-button
-                                expand="block" [disabled]="newDiscussion.subject == '' || newDiscussion.message == null"
+                                expand="block" [disabled]="newDiscussion.subject === '' || newDiscussion.message === null"
                                 (click)="add()">
                                 {{ 'addon.mod_forum.posttoforum' | translate }}
                             </ion-button>

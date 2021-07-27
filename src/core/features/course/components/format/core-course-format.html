@@ -8,7 +8,7 @@
 </core-navbar-buttons>
 
 <core-block-course-blocks *ngIf="loaded" [courseId]="course!.id" [hideBlocks]="!displayBlocks" [downloadEnabled]="downloadEnabled"
-    [hideBottomBlocks]="selectedSection && selectedSection.id == allSectionsId && canLoadMore">
+    [hideBottomBlocks]="selectedSection && selectedSection.id === allSectionsId && canLoadMore">
 
     <core-dynamic-component [component]="courseFormatComponent" [data]="data">
         <!-- Default course format. -->
@@ -43,19 +43,19 @@
             <!-- Course summary. By default we only display the course progress. -->
             <core-dynamic-component [component]="courseSummaryComponent" [data]="data">
                 <ion-list lines="none" class="core-format-progress-list"
-                    *ngIf="imageThumb || (selectedSection?.id == allSectionsId && progress !== undefined) ||
-                        (selectedSection && selectedSection.id != allSectionsId &&
+                    *ngIf="imageThumb || (selectedSection?.id === allSectionsId && progress !== undefined) ||
+                        (selectedSection && selectedSection.id !== allSectionsId &&
                         (selectedSection.availabilityinfo || selectedSection.visible === 0))">
                     <div *ngIf="imageThumb" class="core-course-thumb">
                         <img [src]="imageThumb" core-external-content alt=""/>
                     </div>
                     <ng-container *ngIf="selectedSection">
                         <ion-item class="core-course-progress"
-                            *ngIf="selectedSection?.id == allSectionsId && progress !== undefined">
+                            *ngIf="selectedSection?.id === allSectionsId && progress !== undefined">
                             <core-progress-bar [progress]="progress" a11yText="core.course.aria:sectionprogress">
                             </core-progress-bar>
                         </ion-item>
-                        <ion-item *ngIf="selectedSection && selectedSection.id != allSectionsId &&
+                        <ion-item *ngIf="selectedSection && selectedSection.id !== allSectionsId &&
                             (selectedSection.availabilityinfo || selectedSection.visible === 0)">
                             <ion-badge color="info" class="ion-text-wrap"
                                 *ngIf="selectedSection.visible === 0 && selectedSection.uservisible !== false">
@@ -76,7 +76,7 @@
             </core-dynamic-component>
 
             <!-- Single section. -->
-            <div *ngIf="selectedSection && selectedSection.id != allSectionsId">
+            <div *ngIf="selectedSection && selectedSection.id !== allSectionsId">
                 <core-dynamic-component [component]="singleSectionComponent" [data]="data">
                     <ng-container *ngTemplateOutlet="sectionTemplate; context: {section: selectedSection}"></ng-container>
                     <core-empty-box *ngIf="!selectedSection.hasContent" icon="fas-th-large"
@@ -86,7 +86,7 @@
             </div>
 
             <!-- Multiple sections. -->
-            <div *ngIf="selectedSection && selectedSection.id == allSectionsId">
+            <div *ngIf="selectedSection && selectedSection.id === allSectionsId">
                 <core-dynamic-component [component]="allSectionsComponent" [data]="data">
                     <ng-container *ngFor="let section of sections; index as i">
                         <ng-container *ngIf="i <= showSectionId">
@@ -121,9 +121,9 @@
 
 <!-- Template to render a section. -->
 <ng-template #sectionTemplate let-section="section">
-    <section *ngIf="!section.hiddenbynumsections && section.id != allSectionsId && section.id != stealthModulesSectionId">
+    <section *ngIf="!section.hiddenbynumsections && section.id !== allSectionsId && section.id !== stealthModulesSectionId">
         <!-- Title is only displayed when viewing all sections. -->
-        <ion-item-divider *ngIf="selectedSection?.id == allSectionsId && section.name" class="ion-text-wrap" color="light"
+        <ion-item-divider *ngIf="selectedSection?.id === allSectionsId && section.name" class="ion-text-wrap" color="light"
             [class.core-section-download]="downloadEnabled"
             [class.item-dimmed]="section.visible === 0 || section.uservisible === false">
             <ion-label>
