@@ -45,7 +45,10 @@
             "production": {
               "optimization": {
                 "scripts": false,
-                "styles": true
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                }
               },
               "outputHashing": "all",
               "sourceMap": false,
