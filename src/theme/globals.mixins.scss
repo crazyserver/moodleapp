@@ -4,6 +4,8 @@
  * Place here our custom mixins.
  */
 
+@use "sass:math";
+
  @mixin core-focus() {
     outline: none;
     position: relative;
@@ -237,7 +239,7 @@
 
 // Color mixins.
 @function get_brightness($color) {
-    @return (red($color) + green($color) + blue($color)) / 3;
+    @return math.div(red($color) + green($color) + blue($color), 3);
 }
 
 @function get_contrast_color($color) {
