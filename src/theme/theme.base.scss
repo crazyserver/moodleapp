@@ -466,7 +466,7 @@ ion-toolbar {
 
         border-bottom: 3px solid var(--color-base);
 
-        ion-item::part(native) {
+        ion-item {
             --inner-border-width: 0;
         }
         ion-label {

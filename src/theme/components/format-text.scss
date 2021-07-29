@@ -199,6 +199,10 @@ core-format-text {
     }
 }
 
+.flex > core-format-text {
+    display: flex;
+}
+
 
 @keyframes loading {
     0% {
