@@ -276,7 +276,7 @@ export class CoreSettingsHelperProvider {
             // Invalidate and synchronize site data.
             site.invalidateWsCache(),
             CoreSites.updateSiteInfo(site.getId()),
-            CoreCronDelegate.forceSyncExecution(site.getId()),
+            CoreUtils.ignoreErrors(CoreCronDelegate.forceSyncExecution(site.getId())),
         // eslint-disable-next-line arrow-body-style
         ]).then(() => {
             return;
