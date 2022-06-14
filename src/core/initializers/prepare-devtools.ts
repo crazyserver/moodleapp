@@ -13,10 +13,14 @@
 // limitations under the License.
 
 import { CorePushNotifications, CorePushNotificationsProvider } from '@features/pushnotifications/services/pushnotifications';
+import { AlertOptions } from '@ionic/core';
 import { CoreApp, CoreAppProvider } from '@services/app';
 import { CoreConfig, CoreConfigProvider } from '@services/config';
 import { CoreDB, CoreDbProvider } from '@services/db';
 import { CoreCustomURLSchemes, CoreCustomURLSchemesProvider } from '@services/urlschemes';
+import { CoreDomUtils } from '@services/utils/dom';
+import { CoreUtils } from '@services/utils/utils';
+import { Translate } from '@singletons';
 import { CoreBrowser } from '@singletons/browser';
 import { CoreConstants } from '../constants';
 
@@ -36,6 +40,46 @@ function initializeDevelopmentWindow(window: DevelopmentWindow) {
     window.dbProvider = CoreDB.instance;
     window.urlSchemes = CoreCustomURLSchemes.instance;
     window.pushNotifications = CorePushNotifications.instance;
+
+    // Custom console.error
+    // eslint-disable-next-line no-console
+    const originalConsoleError = console.error;
+    // eslint-disable-next-line no-console
+    console.error =(...args) => {
+        CoreDomUtils.showToastWithOptions({
+            message: Translate.instant('core.unknownerror'),
+            duration: 10000,
+            buttons: [{
+                text: Translate.instant('core.viewdetails'),
+                handler: (): void => {
+                    const message = args.map((arg) => arg.toString()).join('<br>');
+
+                    const alertOptions: AlertOptions = {
+                        header: Translate.instant('core.error'),
+                        message,
+                        buttons: [
+                            {
+                                text: Translate.instant('core.copytoclipboard'),
+                                handler: (): void => {
+                                    CoreUtils.copyToClipboard(message);
+                                },
+                            },
+                            {
+                                text: Translate.instant('core.close'),
+                                role: 'cancel',
+                            },
+                        ],
+                    };
+
+                    CoreDomUtils.showAlertWithOptions(alertOptions);
+                },
+            }],
+            cssClass: 'dev-console-toast core-danger-toast',
+        });
+
+        originalConsoleError.apply(null, args);
+    };
+
 }
 
 export default function(): void {

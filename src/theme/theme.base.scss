@@ -541,6 +541,20 @@ ion-toast {
     }
 }
 
+ion-toast.dev-console-toast {
+    opacity: 0.85;
+
+    &::part(container) {
+        flex-direction: row;
+    }
+
+    &::part(message) {
+        max-height: 40px;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+}
+
 // Ionic list.
 ion-list {
     padding: 0 !important;
