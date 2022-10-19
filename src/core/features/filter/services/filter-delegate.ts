@@ -106,7 +106,7 @@ export class CoreFilterDelegateService extends CoreDelegate<CoreFilterHandler> {
     ): Promise<string> {
 
         // Wait for filters to be initialized.
-        await this.handlersInitPromise;
+        await this.waitForReady();
 
         const site = await CoreSites.getSite(siteId);
 
@@ -189,7 +189,7 @@ export class CoreFilterDelegateService extends CoreDelegate<CoreFilterHandler> {
     ): Promise<void> {
 
         // Wait for filters to be initialized.
-        await this.handlersInitPromise;
+        await this.waitForReady();
 
         const site = await CoreSites.getSite(siteId);
 
@@ -217,7 +217,7 @@ export class CoreFilterDelegateService extends CoreDelegate<CoreFilterHandler> {
     /**
      * Check if a filter is enabled and should be applied.
      *
-     * @param filters Filters to apply.
+     * @param filter Filter to apply.
      * @param options Options passed to the filters.
      * @param site Site.
      * @param skipFilters Names of filters that shouldn't be applied.
@@ -251,14 +251,14 @@ export class CoreFilterDelegateService extends CoreDelegate<CoreFilterHandler> {
     /**
      * Check if at least 1 filter should be applied in a certain site and with certain options.
      *
-     * @param filter Filter to check.
+     * @param filters Filters to check.
      * @param options Options passed to the filters.
      * @param site Site. If not defined, current site.
      * @return Promise resolved with true: whether the filter should be applied.
      */
     async shouldBeApplied(filters: CoreFilterFilter[], options: CoreFilterFormatTextOptions, site?: CoreSite): Promise<boolean> {
         // Wait for filters to be initialized.
-        await this.handlersInitPromise;
+        await this.waitForReady();
 
         for (let i = 0; i < filters.length; i++) {
             if (this.shouldFilterBeApplied(filters[i], options, site)) {

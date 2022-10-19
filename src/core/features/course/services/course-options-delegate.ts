@@ -28,6 +28,8 @@ import { CoreCourseProvider } from './course';
 import { Params } from '@angular/router';
 import { makeSingleton } from '@singletons';
 import { CoreEnrolledCourseDataWithExtraInfoAndOptions } from '@features/courses/services/courses-helper';
+import { Subject } from 'rxjs/internal/Subject';
+import { BehaviorSubject } from 'rxjs';
 import { CorePromisedValue } from '@classes/promised-value';
 
 /**
@@ -215,7 +217,8 @@ export interface CoreCourseOptionsMenuHandlerToDisplay {
 @Injectable( { providedIn: 'root' })
 export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOptionsHandler> {
 
-    protected loaded: { [courseId: number]: boolean } = {};
+    protected courseHandlersUpdated: { [courseId: number]: Subject<void> } = {};
+    protected courseHandlersLoaded: { [courseId: number]: boolean } = {};
     protected lastUpdateHandlersForCoursesStart: {
         [courseId: number]: number;
     } = {};
@@ -225,7 +228,6 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
             access: CoreCourseAccess;
             navOptions?: CoreCourseUserAdminOrNavOptionIndexed;
             admOptions?: CoreCourseUserAdminOrNavOptionIndexed;
-            deferred: CorePromisedValue<void>;
             enabledHandlers: CoreCourseOptionsHandler[];
             enabledMenuHandlers: CoreCourseOptionsMenuHandler[];
         };
@@ -248,7 +250,7 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
      * @return True if handlers are loaded, false otherwise.
      */
     areHandlersLoaded(courseId: number): boolean {
-        return !!this.loaded[courseId];
+        return !!this.courseHandlersLoaded[courseId];
     }
 
     /**
@@ -258,12 +260,12 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
      */
     protected clearCoursesHandlers(courseId?: number): void {
         if (courseId) {
-            if (!this.loaded[courseId]) {
+            if (!this.courseHandlersLoaded[courseId]) {
                 // Don't clear if not loaded, it's probably an ongoing load and it could cause JS errors.
                 return;
             }
 
-            this.loaded[courseId] = false;
+            this.courseHandlersLoaded[courseId] = false;
             delete this.coursesHandlers[courseId];
         } else {
             for (const courseId in this.coursesHandlers) {
@@ -322,7 +324,7 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
     ): Promise<CoreCourseOptionsHandler[]> {
 
         // If the handlers aren't loaded, do not refresh.
-        if (!this.loaded[courseId]) {
+        if (!this.courseHandlersLoaded[courseId]) {
             refresh = false;
         }
 
@@ -332,21 +334,20 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
                     access: accessData,
                     navOptions,
                     admOptions,
-                    deferred: new CorePromisedValue(),
                     enabledHandlers: [],
                     enabledMenuHandlers: [],
                 };
+                this.courseHandlersUpdated[courseId] = new BehaviorSubject<void>(undefined);
             } else {
                 this.coursesHandlers[courseId].access = accessData;
                 this.coursesHandlers[courseId].navOptions = navOptions;
                 this.coursesHandlers[courseId].admOptions = admOptions;
-                this.coursesHandlers[courseId].deferred = new CorePromisedValue();
             }
 
             this.updateHandlersForCourse(courseId, accessData, navOptions, admOptions);
         }
 
-        await this.coursesHandlers[courseId].deferred;
+        await this.waitCourseHandlersForReady(courseId);
 
         return this.coursesHandlers[courseId].enabledHandlers;
     }
@@ -448,7 +449,11 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
                 ? (handler as CoreCourseOptionsMenuHandler).getMenuDisplayData
                 : (handler as CoreCourseOptionsHandler).getDisplayData;
 
-            promises.push(Promise.resolve(getFunction!.call(handler, courseWithOptions)).then((data) => {
+            if (!getFunction){
+                return;
+            }
+
+            promises.push(Promise.resolve(getFunction.call(handler, courseWithOptions)).then((data) => {
                 handlersToDisplay.push({
                     data: data,
                     priority: handler.priority || 0,
@@ -468,7 +473,7 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
         handlersToDisplay.sort((
             a: CoreCourseOptionsHandlerToDisplay | CoreCourseOptionsMenuHandlerToDisplay,
             b: CoreCourseOptionsHandlerToDisplay | CoreCourseOptionsMenuHandlerToDisplay,
-        ) => b.priority! - a.priority!);
+        ) => (b.priority || 0) - (a.priority || 0));
 
         return handlersToDisplay;
     }
@@ -509,7 +514,7 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
 
         const handlers = await this.getHandlersForAccess(courseId, refresh, accessData, navOptions, admOptions);
 
-        return !!(handlers && handlers.length);
+        return !!handlers.length;
     }
 
     /**
@@ -597,7 +602,7 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
     /**
      * Update handlers for each course.
      */
-    updateData(): void {
+    protected updateData(): void {
         // Update handlers for all courses.
         for (const courseId in this.coursesHandlers) {
             const handler = this.coursesHandlers[courseId];
@@ -620,6 +625,8 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
         navOptions?: CoreCourseUserAdminOrNavOptionIndexed,
         admOptions?: CoreCourseUserAdminOrNavOptionIndexed,
     ): Promise<void> {
+        this.courseHandlersLoaded[courseId] = false;
+
         const promises: Promise<void>[] = [];
         const enabledForCourse: CoreCourseOptionsHandler[] = [];
         const enabledForCourseMenu: CoreCourseOptionsMenuHandler[] = [];
@@ -660,11 +667,35 @@ export class CoreCourseOptionsDelegateService extends CoreDelegate<CoreCourseOpt
             // Update the coursesHandlers array with the new enabled addons.
             this.coursesHandlers[courseId].enabledHandlers = enabledForCourse;
             this.coursesHandlers[courseId].enabledMenuHandlers = enabledForCourseMenu;
-            this.loaded[courseId] = true;
 
-            // Resolve the promise.
-            this.coursesHandlers[courseId].deferred.resolve();
+            // Notify changes.
+            this.courseHandlersLoaded[courseId] = true;
+            this.courseHandlersUpdated[courseId].next();
         }
+    }
+
+    /**
+     * Waits the course handlers to be ready.
+     *
+     * @param courseId The course ID.
+     */
+    async waitCourseHandlersForReady(courseId: number): Promise<void> {
+        if (this.courseHandlersLoaded[courseId]) {
+            return;
+        }
+
+        const promise = new CorePromisedValue<void>();
+
+        const subscription = this.courseHandlersUpdated[courseId].subscribe(() => {
+            if (this.courseHandlersLoaded[courseId]) {
+                // Resolve.
+                promise.resolve();
+
+                subscription?.unsubscribe();
+            }
+        });
+
+        return promise;
     }
 
 }

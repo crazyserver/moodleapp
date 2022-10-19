@@ -16,7 +16,6 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { CoreEvents } from '@singletons/events';
 import { CoreDelegate, CoreDelegateDisplayHandler, CoreDelegateToDisplay } from './delegate';
 import { CoreSites } from '@services/sites';
-import { CorePromisedValue } from '@classes/promised-value';
 
 /**
  * Superclass to help creating sorted delegates.
@@ -26,7 +25,6 @@ export class CoreSortedDelegate<
     HandlerType extends CoreDelegateDisplayHandler<DisplayType>>
     extends CoreDelegate<HandlerType> {
 
-    protected loaded = false;
     protected sortedHandlersRxJs: Subject<DisplayType[]> = new BehaviorSubject<DisplayType[]>([]);
     protected sortedHandlers: DisplayType[] = [];
 
@@ -34,7 +32,6 @@ export class CoreSortedDelegate<
      * Constructor of the Delegate.
      *
      * @param delegateName Delegate name used for logging purposes.
-     * @param listenSiteEvents Whether to update the handler when a site event occurs (login, site updated, ...).
      */
     constructor(delegateName: string) {
         super(delegateName, true);
@@ -56,14 +53,14 @@ export class CoreSortedDelegate<
      * @return True if handlers are loaded, false otherwise.
      */
     areHandlersLoaded(): boolean {
-        return this.loaded;
+        return this.handlersLoaded;
     }
 
     /**
      * Clear current site handlers. Reserved for core use.
      */
     protected clearSortedHandlers(): void {
-        this.loaded = false;
+        this.handlersLoaded = false;
         this.sortedHandlersRxJs.next([]);
         this.sortedHandlers = [];
     }
@@ -75,6 +72,13 @@ export class CoreSortedDelegate<
      */
     getHandlers(): DisplayType[] {
         return this.sortedHandlers;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    hasHandlers(enabled = false): boolean {
+        return enabled ? !!this.sortedHandlers.length : !!this.handlers.length;
     }
 
     /**
@@ -92,27 +96,15 @@ export class CoreSortedDelegate<
      * @return Promise resolved with the handlers.
      */
     async getHandlersWhenLoaded(): Promise<DisplayType[]> {
-        if (this.loaded) {
-            return this.sortedHandlers;
-        }
+        await this.waitForReady();
 
-        const promisedHandlers = new CorePromisedValue<DisplayType[]>();
-        const subscription = this.getHandlersObservable().subscribe((handlers) => {
-            if (this.loaded) {
-                subscription?.unsubscribe();
-
-                // Return main handlers.
-                promisedHandlers.resolve(handlers);
-            }
-        });
-
-        return promisedHandlers;
+        return this.sortedHandlers;
     }
 
     /**
      * Update handlers Data.
      */
-    updateData(): void {
+    protected updateData(): void {
         const displayData: DisplayType[] = [];
 
         for (const name in this.enabledHandlers) {
@@ -128,7 +120,7 @@ export class CoreSortedDelegate<
         // Sort them by priority.
         displayData.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
 
-        this.loaded = true;
+        this.handlersLoaded = true;
         this.sortedHandlersRxJs.next(displayData);
         this.sortedHandlers = displayData;
     }
