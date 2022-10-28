@@ -62,10 +62,11 @@ export class CoreCourseModuleCompletionComponent extends CoreCourseModuleComplet
 
         // Format rules.
         this.details = await Promise.all(this.completion.details.map(async (rule: CompletionRule) => {
-            rule.statuscomplete = rule.rulevalue.status == CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE ||
-                    rule.rulevalue.status == CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE_PASS;
-            rule.statuscompletefail = rule.rulevalue.status == CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE_FAIL;
-            rule.statusincomplete = rule.rulevalue.status == CoreCourseModuleCompletionStatus.COMPLETION_INCOMPLETE;
+            rule.statuscomplete = rule.rulevalue.status === CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE ||
+                    rule.rulevalue.status === CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE_PASS;
+            rule.statuscompletepass = rule.rulevalue.status === CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE_PASS;
+            rule.statuscompletefail = rule.rulevalue.status === CoreCourseModuleCompletionStatus.COMPLETION_COMPLETE_FAIL;
+            rule.statusincomplete = rule.rulevalue.status === CoreCourseModuleCompletionStatus.COMPLETION_INCOMPLETE;
             rule.accessibleDescription = null;
 
             if (this.completion?.overrideby) {
@@ -90,6 +91,7 @@ export class CoreCourseModuleCompletionComponent extends CoreCourseModuleComplet
 
 type CompletionRule = CoreCourseModuleWSRuleDetails & {
     statuscomplete?: boolean;
+    statuscompletepass?: boolean;
     statuscompletefail?: boolean;
     statusincomplete?: boolean;
     accessibleDescription?: string | null;
