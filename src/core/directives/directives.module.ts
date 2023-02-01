@@ -14,70 +14,73 @@
 
 import { NgModule } from '@angular/core';
 
+import { CoreAriaButtonClickDirective } from './aria-button';
 import { CoreAutoFocusDirective } from './auto-focus';
 import { CoreAutoRowsDirective } from './auto-rows';
+import { CoreCollapsibleFooterDirective } from './collapsible-footer';
+import { CoreCollapsibleHeaderDirective } from './collapsible-header';
+import { CoreCollapsibleItemDirective } from './collapsible-item';
+import { CoreContentDirective } from './content';
+import { CoreDownloadFileDirective } from './download-file';
 import { CoreExternalContentDirective } from './external-content';
 import { CoreFabDirective } from './fab';
 import { CoreFaIconDirective } from './fa-icon';
+import { CoreFocusableIosFixDirective } from './focusable-ios-fix';
 import { CoreFormatTextDirective } from './format-text';
 import { CoreLinkDirective } from './link';
 import { CoreLongPressDirective } from './long-press';
-import { CoreSupressEventsDirective } from './supress-events';
-import { CoreUserLinkDirective } from './user-link';
-import { CoreAriaButtonClickDirective } from './aria-button';
 import { CoreOnResizeDirective } from './on-resize';
-import { CoreDownloadFileDirective } from './download-file';
-import { CoreCollapsibleHeaderDirective } from './collapsible-header';
+import { CoreSupressEventsDirective } from './supress-events';
 import { CoreSwipeNavigationDirective } from './swipe-navigation';
-import { CoreCollapsibleItemDirective } from './collapsible-item';
-import { CoreCollapsibleFooterDirective } from './collapsible-footer';
-import { CoreContentDirective } from './content';
 import { CoreUpdateNonReactiveAttributesDirective } from './update-non-reactive-attributes';
+import { CoreUserLinkDirective } from './user-link';
 import { CoreUserTourDirective } from './user-tour';
 
 @NgModule({
     declarations: [
+        CoreAriaButtonClickDirective,
         CoreAutoFocusDirective,
         CoreAutoRowsDirective,
+        CoreCollapsibleFooterDirective,
+        CoreCollapsibleHeaderDirective,
+        CoreCollapsibleItemDirective,
+        CoreContentDirective,
+        CoreDownloadFileDirective,
         CoreExternalContentDirective,
         CoreFabDirective,
         CoreFaIconDirective,
+        CoreFocusableIosFixDirective,
         CoreFormatTextDirective,
         CoreLinkDirective,
         CoreLongPressDirective,
-        CoreSupressEventsDirective,
-        CoreUserLinkDirective,
-        CoreAriaButtonClickDirective,
         CoreOnResizeDirective,
-        CoreDownloadFileDirective,
-        CoreCollapsibleHeaderDirective,
+        CoreSupressEventsDirective,
         CoreSwipeNavigationDirective,
-        CoreCollapsibleItemDirective,
-        CoreCollapsibleFooterDirective,
-        CoreContentDirective,
         CoreUpdateNonReactiveAttributesDirective,
+        CoreUserLinkDirective,
         CoreUserTourDirective,
     ],
     exports: [
+        CoreAriaButtonClickDirective,
         CoreAutoFocusDirective,
         CoreAutoRowsDirective,
+        CoreCollapsibleFooterDirective,
+        CoreCollapsibleHeaderDirective,
+        CoreCollapsibleItemDirective,
+        CoreContentDirective,
+        CoreDownloadFileDirective,
         CoreExternalContentDirective,
         CoreFabDirective,
         CoreFaIconDirective,
+        CoreFocusableIosFixDirective,
         CoreFormatTextDirective,
         CoreLinkDirective,
         CoreLongPressDirective,
-        CoreSupressEventsDirective,
-        CoreUserLinkDirective,
-        CoreAriaButtonClickDirective,
         CoreOnResizeDirective,
-        CoreDownloadFileDirective,
-        CoreCollapsibleHeaderDirective,
+        CoreSupressEventsDirective,
         CoreSwipeNavigationDirective,
-        CoreCollapsibleItemDirective,
-        CoreCollapsibleFooterDirective,
-        CoreContentDirective,
         CoreUpdateNonReactiveAttributesDirective,
+        CoreUserLinkDirective,
         CoreUserTourDirective,
     ],
 })

@@ -528,13 +528,15 @@ export class CoreDom {
      * and adding tabindex and role if needed.
      *
      * @param element Element to listen to events.
-     * @param callback Callback to call when clicked or the key is pressed.
+     * @param callback Callback to call when clicked or the key is pressed. If not set, will use click function.
      */
     static initializeClickableElementA11y(
         element: HTMLElement & {disabled?: boolean},
-        callback: (event: MouseEvent | KeyboardEvent) => void,
+        callback?: (event: MouseEvent | KeyboardEvent) => void,
     ): void {
-        element.addEventListener('click', (event) => callback(event));
+        if (callback) {
+            element.addEventListener('click', (event) => callback(event));
+        }
 
         element.addEventListener('keydown', (event) => {
             if (event.key === ' ' || event.key === 'Enter') {
