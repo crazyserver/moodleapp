@@ -61,7 +61,9 @@ export class AddonBadgesProvider {
      * @param siteId Site ID. If not defined, current site.
      * @returns Promise to be resolved when the badges are retrieved.
      */
-    async getUserBadges(courseId: number, userId: number, siteId?: string): Promise<AddonBadgesUserBadge[]> {
+    async getUserBadges(courseId = 0, userId?: number, siteId?: string): Promise<AddonBadgesUserBadge[]> {
+
+        userId = userId ?? CoreSites.getRequiredCurrentSite().getUserId();
 
         const site = await CoreSites.getSite(siteId);
         const data: AddonBadgesGetUserBadgesWSParams = {

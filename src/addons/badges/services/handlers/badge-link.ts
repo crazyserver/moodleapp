@@ -27,16 +27,32 @@ import { AddonBadges } from '../badges';
 export class AddonBadgesBadgeLinkHandlerService extends CoreContentLinksHandlerBase {
 
     name = 'AddonBadgesBadgeLinkHandler';
-    pattern = /\/badges\/badge\.php.*([?&]hash=)/;
+    pattern = /\/badges\/badge\.php.*([?&]hash=)|\/badges\/badgeclass\.php.*([?&]id=)/;
 
     /**
      * @inheritdoc
      */
-    getActions(siteIds: string[], url: string, params: Record<string, string>): CoreContentLinksAction[] {
+    async getActions(siteIds: string[], url: string, params: Record<string, string>): Promise<CoreContentLinksAction[]> {
+
+        let path = '';
+        if (params.hash) {
+            path = `/badges/${params.hash}`;
+        } else if (params.id) {
+            const badgeId = Number(params.id);
+            const badges = await AddonBadges.getUserBadges();
+            const badge = badges.find((badge) => badgeId == badge.id);
+            if (badge) {
+                path = `/badges/${badge.uniquehash}`;
+            }
+        }
+
+        if (!path) {
+            return [];
+        }
 
         return [{
             action: (siteId: string): void => {
-                CoreNavigator.navigateToSitePath(`/badges/${params.hash}`, { siteId });
+                CoreNavigator.navigateToSitePath(path, { siteId });
             },
         }];
     }

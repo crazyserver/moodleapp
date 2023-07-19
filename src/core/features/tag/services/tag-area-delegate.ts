@@ -61,7 +61,17 @@ export class CoreTagAreaDelegateService extends CoreDelegate<CoreTagAreaHandler>
      * @returns String key.
      */
     getDisplayNameKey(component: string, itemType: string): string {
-        return (component == 'core' ? 'core.tag' : 'addon.' + component) + '.tagarea_' + itemType;
+        let componentName = '';
+        if (component === 'core') {
+            componentName = 'core.tag';
+        } else if (component.startsWith('core_')) {
+            componentName = component.substring(5);
+            componentName = `addon.${componentName}`;
+        } else {
+            componentName = `addon.${component}`;
+        }
+
+        return `${componentName}.tagarea_${itemType}`;
     }
 
     /**
