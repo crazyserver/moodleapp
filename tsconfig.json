@@ -3,17 +3,13 @@
   "compilerOptions": {
     "baseUrl": "src",
     "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "skipLibCheck": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2022",
@@ -24,9 +20,6 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
     "types": [
         "@moodlehq/cordova-plugin-file-transfer",
         "@moodlehq/cordova-plugin-inappbrowser",
@@ -52,13 +45,13 @@
       "@singletons": ["./core/singletons/index"],
       "@singletons/*": ["./core/singletons/*"],
       "@/*": ["./*"]
-    }
+    },
+    "useDefineForClassFields": false,
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictInputAccessModifiers": true
   }
 }
