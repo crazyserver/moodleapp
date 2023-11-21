@@ -1529,6 +1529,7 @@ export class CoreDomUtilsProvider {
         await popover.present();
 
         // Fix popover position if zoom is applied.
+        // @TODO Check if this is still needed in Ionic7
         if (zoomLevel !== CoreZoomLevel.NONE) {
             switch (getMode()) {
                 case 'ios':
