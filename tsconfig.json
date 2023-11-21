@@ -3,25 +3,30 @@
   "compilerOptions": {
     "baseUrl": "src",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "skipLibCheck": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": false,
-    "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2022",
+    "module": "es2020",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "lib": [
       "es2018",
       "dom"
     ],
+    "useDefineForClassFields": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
     "types": [
         "@moodlehq/cordova-plugin-file-transfer",
         "@moodlehq/cordova-plugin-inappbrowser",
@@ -53,6 +58,7 @@
     "fullTemplateTypeCheck": true,
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

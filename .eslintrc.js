@@ -26,6 +26,7 @@ const appConfig = {
     parserOptions: {
         project: 'tsconfig.json',
         sourceType: 'module',
+        createDefaultProgram: true,
     },
     reportUnusedDisableDirectives: true,
     rules: {
