@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 
 import { story } from '@/storybook/utils/helpers';
 import { StorybookModule } from '@/storybook/storybook.module';
@@ -42,7 +42,7 @@ export default <Meta<Args>> {
     },
 };
 
-const Template: Story<Args> = (args) => ({
+const Template: StoryFn<Args> = (args) => ({
     component: CoreErrorInfoComponent,
     props: args,
 });

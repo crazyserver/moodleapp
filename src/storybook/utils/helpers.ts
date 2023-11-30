@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Story } from '@storybook/angular';
+import { StoryFn } from '@storybook/angular';
 
 /**
  * Define story.
@@ -21,7 +21,7 @@ import { Story } from '@storybook/angular';
  * @param defaultArgs Default arguments.
  * @returns Story.
  */
-export function story<T>(template: Story<T>, defaultArgs: Partial<T> = {}): Story<T> {
+export function story<T>(template: StoryFn<T>, defaultArgs: Partial<T> = {}): StoryFn<T> {
     const story = template.bind({});
 
     story.args = defaultArgs;
