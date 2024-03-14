@@ -53,7 +53,7 @@ html {
     --zoom-level: 100%;
 
     --text-color:       #{$text-color};
-    --text-size: var(--body-font-size-md);
+    --text-size: var(--body-md-font-size);
     --background-color: #{$background-color};
     --stroke:            var(--gray-300);
 
@@ -277,7 +277,7 @@ html {
     --ion-item-background:        #{$ion-item-background};
     --ion-item-icon-color: var(--medium);
     --ion-item-detail-icon-color: var(--dark);
-    --ion-item-detail-icon-font-size: 20px;
+    --ion-item-detail-icon-font-size: var(--icon-font-size-md);
     --ion-item-detail-icon-opacity: 1;
     --core-more-icon: var(--ion-item-icon-color);
     ion-item {

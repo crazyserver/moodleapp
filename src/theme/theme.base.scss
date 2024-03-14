@@ -172,7 +172,7 @@ ion-header {
             width: var(--a11y-min-target-size);
             height: var(--a11y-min-target-size);
             ion-icon {
-                font-size: 24px;
+                font-size: var(--icon-font-size-lg);
             }
         }
 
@@ -207,7 +207,7 @@ ion-header {
         }
 
         h1, h2, .subheading {
-            font-size: 20px;
+            font-size: var(--label-lg-line-height);
             font-weight: 500;
             letter-spacing: .0125em;
             text-align: start;
@@ -230,7 +230,7 @@ ion-header {
             text-align: start;
 
             h1, h2, .subheading {
-                font-size: 17px;
+                font-size: var(--label-md-line-height);
                 font-weight: 600;
             }
 
@@ -1179,8 +1179,8 @@ ion-button.button.chip {
     font-weight: normal;
 
     ion-icon {
-        font-size: 16px;
-        min-width: 16px;
+        font-size: var(--icon-font-size-sm);
+        min-width: var(--icon-font-size-sm);
         @include margin(0, 8px, 0, 0);
     }
 
@@ -1328,7 +1328,7 @@ mark, .matchtext {
 
 // Monospaced font.
 .core-monospaced {
-    font-family: Andale Mono,Monaco,Courier New,DejaVu Sans Mono,monospace;
+    font-family: var(--font-monospace);
 }
 
 .core-iframe-offline-disabled {

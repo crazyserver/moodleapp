@@ -21,7 +21,7 @@
 
             ion-icon {
                 margin: var(--icon-margin);
-                font-size: 20px;
+                font-size: var(--icon-font-size-md);
             }
         }
     }
@@ -110,9 +110,7 @@
         flex: 1;
 
         &::part(native) {
-            font-weight: var(--label-font-weight);
-            font-size: var(--label-lg-font-size);
-            line-height: var(--label-lg-line-height);
+            font: var(--label-lg-font);
             border-radius: var(--core-combobox-radius);
         }
 
