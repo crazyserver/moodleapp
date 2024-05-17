@@ -414,12 +414,11 @@ export class CoreLoginHelperProvider {
      * If a fixed URL is configured, go to credentials instead.
      *
      * @param setRoot True to set the new page as root, false to add it to the stack.
-     * @param showKeyboard Whether to show keyboard in the new page. Only if no fixed URL set.
      * @returns Promise resolved when done.
      */
-    async goToAddSite(setRoot = false, showKeyboard = false): Promise<void> {
+    async goToAddSite(setRoot = false): Promise<void> {
         let path = '/login/sites';
-        let params: Params = { openAddSite: true , showKeyboard };
+        let params: Params = { openAddSite: true };
 
         if (CoreSites.isLoggedIn()) {
             const willReload = await CoreSites.logoutForRedirect(CoreConstants.NO_SITE_ID, {
@@ -431,7 +430,7 @@ export class CoreLoginHelperProvider {
                 return;
             }
         } else {
-            [path, params] = await this.getAddSiteRouteInfo(showKeyboard);
+            [path, params] = await this.getAddSiteRouteInfo();
         }
 
         await CoreNavigator.navigate(path, { params, reset: setRoot });
@@ -440,10 +439,9 @@ export class CoreLoginHelperProvider {
     /**
      * Get path and params to visit the route to add site.
      *
-     * @param showKeyboard Whether to show keyboard in the new page. Only if no fixed URL set.
      * @returns Path and params.
      */
-    async getAddSiteRouteInfo(showKeyboard?: boolean): Promise<[string, Params]> {
+    async getAddSiteRouteInfo(): Promise<[string, Params]> {
         if (CoreConstants.CONFIG.demoMode) {
             const demoModeSite = this.getDemoModeSiteInfo();
 
@@ -459,7 +457,7 @@ export class CoreLoginHelperProvider {
             return ['/login/credentials', { siteUrl: sites[0].url }];
         }
 
-        return ['/login/site', { showKeyboard }];
+        return ['/login/site', {}];
     }
 
     /**

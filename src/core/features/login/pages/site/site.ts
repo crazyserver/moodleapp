@@ -66,7 +66,6 @@ export class CoreLoginSitePage implements OnInit {
     fixedSites?: CoreLoginSiteInfoExtended[];
     filteredSites?: CoreLoginSiteInfoExtended[];
     siteSelector: CoreLoginSiteSelectorListMethod = 'sitefinder';
-    showKeyboard = false;
     filter = '';
     sites: CoreLoginSiteInfoExtended[] = [];
     hasSites = false;
@@ -142,8 +141,6 @@ export class CoreLoginSitePage implements OnInit {
 
             this.loadingSites = false;
         }, 1000);
-
-        this.showKeyboard = !!CoreNavigator.getRouteBooleanParam('showKeyboard');
     }
 
     /**

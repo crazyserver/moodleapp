@@ -60,7 +60,7 @@ export class CoreLoginSitesPage implements OnInit {
      * Go to the page to add a site.
      */
     add(): void {
-        CoreLoginHelper.goToAddSite(false, true);
+        CoreLoginHelper.goToAddSite(false);
     }
 
     /**
@@ -90,8 +90,8 @@ export class CoreLoginSitesPage implements OnInit {
             this.showDelete = false;
 
             // If there are no sites left, go to add site.
-            if (this.accountsList.count == 0) {
-                CoreLoginHelper.goToAddSite(true, true);
+            if (this.accountsList.count === 0) {
+                CoreLoginHelper.goToAddSite(true);
             }
         } catch (error) {
             CoreDomUtils.showErrorModalDefault(error, 'core.login.errordeletesite', true);

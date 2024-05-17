@@ -20,20 +20,21 @@
         <div class="ion-text-center ion-padding ion-margin-bottom core-login-site-logo" [class.hidden]="hasSites || enteredSiteUrl">
             <img src="assets/img/login_logo.png" class="avatar-full login-logo" role="presentation" alt="">
         </div>
-        <form [formGroup]="siteForm" (ngSubmit)="connect(siteForm.value.siteUrl, $event)" *ngIf="!fixedSites && siteForm" #siteFormEl>
+        <form [core-auto-focus]="!showScanQR" [formGroup]="siteForm" (ngSubmit)="connect(siteForm.value.siteUrl, $event)"
+            *ngIf="!fixedSites && siteForm" #siteFormEl>
             <!-- Form to input the site URL if there are no fixed sites. -->
             <ng-container *ngIf="siteSelector==='url'">
                 <ion-item lines="inset">
                     <ion-input name="url" type="url" placeholder="{{ 'core.login.siteaddressplaceholder' | translate }}"
-                        formControlName="siteUrl" [core-auto-focus]="showKeyboard && !showScanQR" labelPlacement="stacked"
-                        [label]="'core.login.siteaddress' | translate" [clearInput]="true" />
+                        formControlName="siteUrl" labelPlacement="stacked" [label]="'core.login.siteaddress' | translate"
+                        [clearInput]="true" />
                 </ion-item>
             </ng-container>
             <ng-container *ngIf="siteSelector !== 'url'">
                 <ion-item lines="inset">
                     <ion-input name="url" placeholder="{{ 'core.login.siteaddressplaceholder' | translate }}" formControlName="siteUrl"
-                        [core-auto-focus]="showKeyboard && !showScanQR" (ionInput)="searchSite($event, siteForm.value.siteUrl)"
-                        labelPlacement="stacked" [label]="'core.login.siteaddress' | translate" [clearInput]="true" />
+                        (ionInput)="searchSite($event, siteForm.value.siteUrl)" labelPlacement="stacked"
+                        [label]="'core.login.siteaddress' | translate" [clearInput]="true" />
                 </ion-item>
 
                 <ion-list [class.hidden]="!hasSites && !enteredSiteUrl" class="core-login-site-list">

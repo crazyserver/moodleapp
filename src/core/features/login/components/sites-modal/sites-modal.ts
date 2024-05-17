@@ -62,7 +62,7 @@ export class CoreLoginSitesModalComponent implements OnInit {
     async add(event: Event): Promise<void> {
         await this.close(event, true);
 
-        await CoreLoginHelper.goToAddSite(true, true);
+        await CoreLoginHelper.goToAddSite(true);
     }
 
     /**
