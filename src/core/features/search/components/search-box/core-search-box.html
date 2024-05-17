@@ -1,7 +1,6 @@
-<form (ngSubmit)="submitForm($event)" role="search" #searchForm>
+<form [core-auto-focus]="autoFocus" (ngSubmit)="submitForm($event)" role="search" #searchForm>
     <ion-input [ariaLabel]="placeholder" type="search" name="search" [(ngModel)]="searchText" [placeholder]="placeholder"
-        [autocorrect]="autocorrect" [spellcheck]="spellcheck" [core-auto-focus]="autoFocus" [disabled]="disabled" role="searchbox"
-        (ionFocus)="focus($event)">
+        [autocorrect]="autocorrect" [spellcheck]="spellcheck" [disabled]="disabled" role="searchbox" (ionFocus)="focus($event)">
         <ion-button slot="end" fill="clear" type="submit" [ariaLabel]="searchLabel" [disabled]="disabled || !searchText">
             <ion-icon name="fas-magnifying-glass" slot="icon-only" aria-hidden="true" />
         </ion-button>
