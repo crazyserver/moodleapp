@@ -74,7 +74,7 @@ export class AddonMessagesSendMessageUserHandlerService implements CoreUserProfi
                 event.stopPropagation();
 
                 const pageParams: Params = {
-                    showKeyboard: true,
+                    sendMessageAutoFocus: true,
                     hideInfo: true,
                 };
                 CoreNavigator.navigateToSitePath(`/messages/discussion/user/${user.id}`, { params: pageParams });

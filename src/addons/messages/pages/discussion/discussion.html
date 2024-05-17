@@ -136,7 +136,7 @@
                 {{ 'addon.messages.yourcontactrequestpending' | translate: {$a: otherMember.fullname} }}
             </p>
         </div>
-        <core-send-message-form *ngIf="footerType === 'message'" (onSubmit)="sendMessage($event)" [showKeyboard]="showKeyboard"
+        <core-send-message-form *ngIf="footerType === 'message'" (onSubmit)="sendMessage($event)" [autoFocus]="sendMessageAutoFocus"
             [placeholder]="'addon.messages.newmessage' | translate" />
     </ion-toolbar>
 </ion-footer>

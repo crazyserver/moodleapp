@@ -84,7 +84,7 @@ export class AddonMessagesDiscussionPage implements OnInit, OnDestroy, AfterView
     showInfo = false;
     conversationImage?: string;
     loaded = false;
-    showKeyboard = false;
+    sendMessageAutoFocus = false;
     canLoadMore = false;
     loadMoreError = false;
     messages: AddonMessagesConversationMessageFormatted[] = [];
@@ -148,15 +148,13 @@ export class AddonMessagesDiscussionPage implements OnInit, OnDestroy, AfterView
     }
 
     /**
-     * Runs when the page has loaded. This event only happens once per page being created.
-     * If a page leaves but is cached, then this event will not fire again on a subsequent viewing.
-     * Setup code for the page.
+     * @inheritdoc
      */
     async ngOnInit(): Promise<void> {
         this.conversationId = CoreNavigator.getRouteNumberParam('conversationId');
         this.userId = CoreNavigator.getRouteNumberParam('userId');
         this.showInfo = !CoreNavigator.getRouteBooleanParam('hideInfo');
-        this.showKeyboard = !!CoreNavigator.getRouteBooleanParam('showKeyboard');
+        this.sendMessageAutoFocus = !!CoreNavigator.getRouteBooleanParam('sendMessageAutoFocus');
 
         await this.fetchData();
 

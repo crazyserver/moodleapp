@@ -30,7 +30,7 @@ import { CorePlatform } from '@services/platform';
  *
  * Example usage:
  * <core-send-message-form (onSubmit)="sendMessage($event)" [placeholder]="'core.messages.newmessage' | translate"
- * [show-keyboard]="showKeyboard"></core-send-message-form>
+ * [autoFocus]="true"></core-send-message-form>
  */
 @Component({
     selector: 'core-send-message-form',
@@ -41,7 +41,7 @@ export class CoreSendMessageFormComponent implements OnInit {
 
     @Input() message = ''; // Input text.
     @Input() placeholder = ''; // Placeholder for the input area.
-    @Input() showKeyboard = false; // If keyboard is shown or not.
+    @Input() autoFocus = false; // If true, the input will be focused automatically.
     @Input() sendDisabled = false; // If send is disabled.
     @Output() onSubmit: EventEmitter<string>; // Send data when submitting the message form.
     @Output() onResize: EventEmitter<void>; // Emit when resizing the textarea.
@@ -69,7 +69,7 @@ export class CoreSendMessageFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.showKeyboard = CoreUtils.isTrueOrOne(this.showKeyboard);
+        this.autoFocus = CoreUtils.isTrueOrOne(this.autoFocus);
     }
 
     /**
