@@ -1,0 +1,213 @@
+@use "theme/globals" as global;
+
+// Bootstrap 4 Styles
+// -------------------------
+
+@import "reboot";
+@import "media";
+@import "forms";
+
+
+@import "alert";
+@import "utilities";
+
+
+.label {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: var(--white);
+    background-color: var(--medium);
+}
+
+.label-important {
+    color: var(--danger-contrast);
+    background-color: var(--danger);
+}
+
+@each $color-name, $unused in global.$colors {
+    .label-#{$color-name} {
+        color: var(--#{$color-name}-contrast);
+        background-color: var(--#{$color-name});
+    }
+}
+
+.btn-link {
+    background: none;
+}
+
+button, .btn {
+    margin: 4px 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: var(--core-input-radius);
+    a {
+        color: inherit;
+    }
+}
+
+@each $color-name, $unused in global.$colors {
+    .btn.btn-#{$color-name} {
+        --color-base: var(--#{$color-name});
+        color: var(--#{$color-name}-shade);
+        border-color: var(--color-base);
+        background-color: var(--#{$color-name}-tint);
+    }
+}
+
+
+// Database
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.5rem;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
+}
+
+.ml-auto, .mx-auto {
+    margin-left: auto !important;
+}
+
+.mr-auto, .mx-auto {
+    margin-right: auto !important;
+}
+
+.mb-auto, .my-auto {
+    margin-bottom: auto !important;
+}
+
+.mt-auto, .my-auto {
+    margin-top: auto !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    flex: 1;
+    padding: 0 5px;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+}
+
+$spacer: 1rem !default;
+$spacers: () !default;
+$spacers: map-merge(
+  (
+    0: 0,
+    1: ($spacer * .25),
+    2: ($spacer * .5),
+    3: $spacer,
+    4: ($spacer * 1.5),
+    5: ($spacer * 3)
+  ),
+  $spacers
+);
+
+// This variable affects the `.h-*` and `.w-*` classes.
+$sizes: () !default;
+$sizes: map-merge(
+  (
+    25: 25%,
+    50: 50%,
+    75: 75%,
+    100: 100%,
+    auto: auto
+  ),
+  $sizes
+);
+
+@each $prop, $abbrev in (margin: m, padding: p) {
+    @each $size, $length in $spacers {
+      .#{$abbrev}-#{$size} { #{$prop}: $length !important; }
+      .#{$abbrev}t-#{$size},
+      .#{$abbrev}y-#{$size} {
+        #{$prop}-top: $length !important;
+      }
+      .#{$abbrev}r-#{$size},
+      .#{$abbrev}x-#{$size} {
+        #{$prop}-right: $length !important;
+      }
+      .#{$abbrev}b-#{$size},
+      .#{$abbrev}y-#{$size} {
+        #{$prop}-bottom: $length !important;
+      }
+      .#{$abbrev}l-#{$size},
+      .#{$abbrev}x-#{$size} {
+        #{$prop}-left: $length !important;
+      }
+    }
+  }
+
+  // Negative margins (e.g., where `.mb-n1` is negative version of `.mb-1`)
+  @each $size, $length in $spacers {
+    @if "#{$size}" != "0" {
+      .m-n#{$size} { margin: -$length !important; }
+      .mt-n#{$size},
+      .my-n#{$size} {
+        margin-top: -$length !important;
+      }
+      .mr-n#{$size},
+      .mx-n#{$size} {
+        margin-right: -$length !important;
+      }
+      .mb-n#{$size},
+      .my-n#{$size} {
+        margin-bottom: -$length !important;
+      }
+      .ml-n#{$size},
+      .mx-n#{$size} {
+        margin-left: -$length !important;
+      }
+    }
+  }
+
+  // Some special margin utils
+  .m-auto { margin: auto !important; }
+  .mt-auto,
+  .my-auto {
+    margin-top: auto !important;
+  }
+  .mr-auto,
+  .mx-auto {
+    margin-right: auto !important;
+  }
+  .mb-auto,
+  .my-auto {
+    margin-bottom: auto !important;
+  }
+  .ml-auto,
+  .mx-auto {
+    margin-left: auto !important;
+  }
