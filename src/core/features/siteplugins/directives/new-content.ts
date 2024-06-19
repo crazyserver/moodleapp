@@ -108,6 +108,7 @@ export class CoreSitePluginsNewContentDirective implements OnInit {
                         jsData,
                         preSets: this.preSets,
                         ptrEnabled: this.ptrEnabled,
+                        stylesPath: this.parentContent?.stylesPath,
                     },
                 });
             }

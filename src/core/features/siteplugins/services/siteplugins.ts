@@ -36,14 +36,13 @@ import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
 import { CoreUserProfileHandlerType } from '@features/user/services/user-delegate';
 import { CORE_SITE_PLUGINS_UPDATE_COURSE_CONTENT } from '../constants';
 
-const ROOT_CACHE_KEY = 'CoreSitePlugins:';
-
 /**
  * Service to provide functionalities regarding site plugins.
  */
 @Injectable({ providedIn: 'root' })
 export class CoreSitePluginsProvider {
 
+    static readonly ROOT_CACHE_KEY = 'CoreSitePlugins:';
     static readonly COMPONENT = 'CoreSitePlugins';
     static readonly UPDATE_COURSE_CONTENT = CORE_SITE_PLUGINS_UPDATE_COURSE_CONTENT;
 
@@ -183,7 +182,7 @@ export class CoreSitePluginsProvider {
      * @returns Cache key.
      */
     protected getCallWSCommonCacheKey(method: string): string {
-        return ROOT_CACHE_KEY + 'ws:' + method;
+        return CoreSitePluginsProvider.ROOT_CACHE_KEY + 'ws:' + method;
     }
 
     /**
@@ -250,7 +249,8 @@ export class CoreSitePluginsProvider {
      * @returns Cache key.
      */
     protected getContentCacheKey(component: string, method: string, args: Record<string, unknown>): string {
-        return ROOT_CACHE_KEY + 'content:' + component + ':' + method + ':' + CoreUtils.sortAndStringify(args);
+        return CoreSitePluginsProvider.ROOT_CACHE_KEY + 'content:' + component + ':' + method +
+            ':' + CoreUtils.sortAndStringify(args);
     }
 
     /**
@@ -322,7 +322,7 @@ export class CoreSitePluginsProvider {
      * @returns Cache key.
      */
     protected getPluginsCacheKey(): string {
-        return ROOT_CACHE_KEY + 'plugins';
+        return CoreSitePluginsProvider.ROOT_CACHE_KEY + 'plugins';
     }
 
     /**
@@ -694,6 +694,35 @@ export class CoreSitePluginsProvider {
         this.moduleHandlerInstances[modName] = handler;
     }
 
+    /**
+     * Get the path to the downloaded styles of a handler.
+     *
+     * @param handlerName Handler's name.
+     * @returns Path to the downloaded styles.
+     */
+    async getHandlerDownloadedStyles(handlerName?: string): Promise<string> {
+        if (!handlerName) {
+            return '';
+        }
+        const handler = this.getSitePluginHandler(handlerName);
+        if (!handler?.handlerSchema.styles?.downloadedStyles) {
+            return '';
+        }
+
+        return await handler.handlerSchema.styles.downloadedStyles;
+    }
+
+    /**
+     * Get the name of the handler from a unique name.
+     *
+     * @param uniqueName Unique name of the handler.
+     * @param addon Addon name.
+     * @returns Handler name.
+     */
+    getHandlerNameFromUniqueName(uniqueName: string, addon: string): string {
+        return uniqueName.replace(addon + '_', '');
+    }
+
 }
 
 export const CoreSitePlugins = makeSingleton(CoreSitePluginsProvider);
@@ -833,6 +862,7 @@ export type CoreSitePluginsHandlerCommonData = {
     styles?: {
         url?: string;
         version?: number;
+        downloadedStyles?: CorePromisedValue<string>; // Added in the app. Path resolved when styles are downloaded.
     };
     moodlecomponent?: string;
 };

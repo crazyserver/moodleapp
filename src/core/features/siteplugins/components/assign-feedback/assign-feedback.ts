@@ -39,7 +39,7 @@ export class CoreSitePluginsAssignFeedbackComponent extends CoreSitePluginsCompi
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         // Pass the input and output data to the component.
         this.jsData.assign = this.assign;
         this.jsData.submission = this.submission;
@@ -50,7 +50,7 @@ export class CoreSitePluginsAssignFeedbackComponent extends CoreSitePluginsCompi
         this.jsData.canEdit = this.canEdit;
 
         if (this.plugin) {
-            this.getHandlerData(AddonModAssignFeedbackDelegate.getHandlerName(this.plugin.type));
+            await this.getHandlerData(AddonModAssignFeedbackDelegate.getHandlerName(this.plugin.type));
         }
     }
 

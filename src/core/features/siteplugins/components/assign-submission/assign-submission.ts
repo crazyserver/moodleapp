@@ -38,7 +38,7 @@ export class CoreSitePluginsAssignSubmissionComponent extends CoreSitePluginsCom
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         // Pass the input and output data to the component.
         this.jsData.assign = this.assign;
         this.jsData.submission = this.submission;
@@ -48,7 +48,7 @@ export class CoreSitePluginsAssignSubmissionComponent extends CoreSitePluginsCom
         this.jsData.allowOffline = this.allowOffline;
 
         if (this.plugin) {
-            this.getHandlerData(AddonModAssignSubmissionDelegate.getHandlerName(this.plugin.type));
+            await this.getHandlerData(AddonModAssignSubmissionDelegate.getHandlerName(this.plugin.type));
         }
     }
 

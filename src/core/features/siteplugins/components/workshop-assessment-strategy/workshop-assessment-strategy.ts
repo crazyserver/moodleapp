@@ -40,7 +40,7 @@ export class CoreSitePluginsWorkshopAssessmentStrategyComponent extends CoreSite
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         // Pass the input and output data to the component.
         this.jsData.workshopId = this.workshopId;
         this.jsData.assessment = this.assessment;
@@ -49,7 +49,7 @@ export class CoreSitePluginsWorkshopAssessmentStrategyComponent extends CoreSite
         this.jsData.fieldErrors = this.fieldErrors;
         this.jsData.strategy = this.strategy;
 
-        this.getHandlerData(AddonWorkshopAssessmentStrategyDelegate.getHandlerName(this.strategy));
+        await this.getHandlerData(AddonWorkshopAssessmentStrategyDelegate.getHandlerName(this.strategy));
     }
 
 }

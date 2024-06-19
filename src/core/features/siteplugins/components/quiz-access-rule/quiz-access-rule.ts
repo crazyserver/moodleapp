@@ -39,7 +39,7 @@ export class CoreSitePluginsQuizAccessRuleComponent extends CoreSitePluginsCompi
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         // Pass the input and output data to the component.
         this.jsData.rule = this.rule;
         this.jsData.quiz = this.quiz;
@@ -49,7 +49,7 @@ export class CoreSitePluginsQuizAccessRuleComponent extends CoreSitePluginsCompi
         this.jsData.form = this.form;
 
         if (this.rule) {
-            this.getHandlerData(AddonModQuizAccessRuleDelegate.getHandlerName(this.rule));
+            await this.getHandlerData(AddonModQuizAccessRuleDelegate.getHandlerName(this.rule));
         }
     }
 

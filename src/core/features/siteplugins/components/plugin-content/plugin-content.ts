@@ -54,6 +54,7 @@ export class CoreSitePluginsPluginContentComponent implements OnInit, DoCheck {
     @Input() args?: Record<string, unknown>;
     @Input() initResult?: CoreSitePluginsContent | null; // Result of the init WS call of the handler.
     @Input() data: Record<string, unknown> = {}; // Data to pass to the component.
+    @Input() stylesPath = ''; // Styles.
     @Input() preSets?: CoreSiteWSPreSets; // The preSets for the WS call.
     @Input() pageTitle?: string; // Current page title. It can be used by the "new-content" directives.
     @Output() onContentLoaded = new EventEmitter<CoreSitePluginsPluginContentLoadedData>(); // Emits event when content is loaded.
@@ -134,7 +135,8 @@ export class CoreSitePluginsPluginContentComponent implements OnInit, DoCheck {
                 jsData?: Record<string, unknown> | boolean,
                 preSets?: CoreSiteWSPreSets,
                 ptrEnabled?: boolean,
-            ) => this.openContent(title, args, component, method, jsData, preSets, ptrEnabled);
+                stylesPath?: string,
+            ) => this.openContent(title, args, component, method, jsData, preSets, ptrEnabled, stylesPath);
             this.jsData.refreshContent = (showSpinner?: boolean) => this.refreshContent(showSpinner);
             this.jsData.updateContent = (
                 args?: Record<string, unknown>,
@@ -170,6 +172,7 @@ export class CoreSitePluginsPluginContentComponent implements OnInit, DoCheck {
      *               If true is supplied instead of an object, all initial variables from current page will be copied.
      * @param preSets The preSets for the WS call of the new content.
      * @param ptrEnabled Whether PTR should be enabled in the new page. Defaults to true.
+     * @param stylesPath Styles to apply to the component.
      */
     openContent(
         title: string,
@@ -179,6 +182,7 @@ export class CoreSitePluginsPluginContentComponent implements OnInit, DoCheck {
         jsData?: Record<string, unknown> | boolean,
         preSets?: CoreSiteWSPreSets,
         ptrEnabled?: boolean,
+        stylesPath?: string,
     ): void {
         if (jsData === true) {
             jsData = this.data;
@@ -196,6 +200,7 @@ export class CoreSitePluginsPluginContentComponent implements OnInit, DoCheck {
                 jsData,
                 preSets,
                 ptrEnabled,
+                stylesPath,
             },
         });
     }

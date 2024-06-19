@@ -121,7 +121,8 @@ export class CoreCompileHtmlComponent implements OnChanges, OnDestroy, DoCheck {
     async ngOnChanges(changes: Record<string, SimpleChange>): Promise<void> {
         // Only compile if text/javascript has changed or the forceCompile flag has been set to true.
         if (this.text === undefined ||
-            !(changes.text || changes.javascript || (changes.forceCompile && CoreUtils.isTrueOrOne(this.forceCompile)))) {
+            !(changes.text || changes.javascript || changes.cssCode || changes.stylesPath ||
+                (changes.forceCompile && CoreUtils.isTrueOrOne(this.forceCompile)))) {
             return;
         }
 
@@ -182,17 +183,16 @@ export class CoreCompileHtmlComponent implements OnChanges, OnDestroy, DoCheck {
             return;
         }
 
+        if (this.stylesPath && !this.cssCode) {
+            this.cssCode = await CoreUtils.ignoreErrors(CoreWS.getText(this.stylesPath));
+        }
+
         // Prepend all CSS rules with :host to avoid conflicts.
         if (this.cssCode) {
             if (!this.cssCode.includes(':host')) {
                 this.cssCode =  CoreDom.prefixCSS(this.cssCode, ':host ::ng-deep', ':host');
             }
 
-            return;
-        }
-
-        if (this.stylesPath && !this.cssCode) {
-            this.cssCode = await CoreUtils.ignoreErrors(CoreWS.getText(this.stylesPath));
         }
     }
 

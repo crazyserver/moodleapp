@@ -49,7 +49,7 @@ export class CoreSitePluginsQuestionBehaviourComponent extends CoreSitePluginsCo
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         // Pass the input and output data to the component.
         this.jsData.question = this.question;
         this.jsData.component = this.component;
@@ -62,7 +62,7 @@ export class CoreSitePluginsQuestionBehaviourComponent extends CoreSitePluginsCo
         this.jsData.onAbort = this.onAbort;
 
         if (this.question) {
-            this.getHandlerData(CoreQuestionBehaviourDelegate.getHandlerName(this.preferredBehaviour || ''));
+            await this.getHandlerData(CoreQuestionBehaviourDelegate.getHandlerName(this.preferredBehaviour || ''));
         }
     }
 

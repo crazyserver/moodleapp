@@ -73,11 +73,12 @@ export class CoreSitePluginsModuleIndexComponent implements OnInit, OnDestroy, C
     isDestroyed = false;
 
     jsData?: Record<string, unknown>; // Data to pass to the component.
+    stylesPath?: string; // Styles to apply to the component.
 
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.module) {
             return;
         }
@@ -110,6 +111,8 @@ export class CoreSitePluginsModuleIndexComponent implements OnInit, OnDestroy, C
             this.ptrEnabled = !CoreUtils.isFalseOrZero(handlerSchema.ptrenabled);
 
             this.collapsibleFooterAppearOnBottom = !CoreUtils.isFalseOrZero(handlerSchema.isresource);
+
+            this.stylesPath = await CoreSitePlugins.getHandlerDownloadedStyles(handlerName);
         }
 
         // Get the data for the context menu.
@@ -132,6 +135,8 @@ export class CoreSitePluginsModuleIndexComponent implements OnInit, OnDestroy, C
 
     /**
      * Function called when the data of the site plugin content is loaded.
+     *
+     * @param data Data received.
      */
     contentLoaded(data: CoreSitePluginsPluginContentLoadedData): void {
         this.addDefaultModuleInfo = !data.content.includes('<core-course-module-info');
