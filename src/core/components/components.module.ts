@@ -97,7 +97,7 @@ import { CoreSitesListComponent } from './sites-list/sites-list';
         CoreProgressBarComponent,
         CoreRecaptchaComponent,
         CoreSendMessageFormComponent,
-        CoreShowPasswordComponent,
+        CoreShowPasswordComponent, // eslint-disable-line deprecation/deprecation
         CoreSitePickerComponent,
         CoreSplitViewComponent,
         CoreStyleComponent,
@@ -152,7 +152,7 @@ import { CoreSitesListComponent } from './sites-list/sites-list';
         CoreProgressBarComponent,
         CoreRecaptchaComponent,
         CoreSendMessageFormComponent,
-        CoreShowPasswordComponent,
+        CoreShowPasswordComponent, // eslint-disable-line deprecation/deprecation
         CoreSitePickerComponent,
         CoreSplitViewComponent,
         CoreStyleComponent,
