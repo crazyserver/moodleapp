@@ -30,7 +30,6 @@ import { CoreDatabaseTable } from '@classes/database/database-table';
 import { CorePromisedValue } from '@classes/promised-value';
 import { Subscription } from 'rxjs';
 import { CorePlatform } from '@services/platform';
-import { CoreNetwork, CoreNetworkConnection } from '@services/network';
 import { CoreMainMenuProvider } from '@features/mainmenu/services/mainmenu';
 
 /**
@@ -213,36 +212,6 @@ export class CoreAppProvider {
     }
 
     /**
-     * Get platform major version number.
-     *
-     * @returns The platform major number.
-     * @deprecated since 4.1.1. Use CorePlatform.getPlatformMajorVersion instead.
-     */
-    getPlatformMajorVersion(): number {
-        return CorePlatform.getPlatformMajorVersion();
-    }
-
-    /**
-     * Checks if the app is running in an Android mobile or tablet device.
-     *
-     * @returns Whether the app is running in an Android mobile or tablet device.
-     * @deprecated since 4.1.1. Use CorePlatform.isAndroid instead.
-     */
-    isAndroid(): boolean {
-        return CorePlatform.isAndroid();
-    }
-
-    /**
-     * Checks if the app is running in an iOS mobile or tablet device.
-     *
-     * @returns Whether the app is running in an iOS mobile or tablet device.
-     * @deprecated since 4.1.1. Use CorePlatform.isIOS instead.
-     */
-    isIOS(): boolean {
-        return CorePlatform.isIOS();
-    }
-
-    /**
      * Check if the keyboard is closing.
      *
      * @returns Whether keyboard is closing (animating).
@@ -270,52 +239,12 @@ export class CoreAppProvider {
     }
 
     /**
-     * Checks if the app is running in a mobile or tablet device (Cordova).
-     *
-     * @returns Whether the app is running in a mobile or tablet device.
-     * @deprecated since 4.1. Use CorePlatform instead.
-     */
-    isMobile(): boolean {
-        return CorePlatform.isMobile();
-    }
-
-    /**
      * Checks if the current window is wider than a mobile.
      *
      * @returns Whether the app the current window is wider than a mobile.
      */
     isWide(): boolean {
         return CorePlatform.width() > 768;
-    }
-
-    /**
-     * Returns whether we are online.
-     *
-     * @returns Whether the app is online.
-     * @deprecated since 4.1. Use CoreNetwork instead.
-     */
-    isOnline(): boolean {
-        return CoreNetwork.isOnline();
-    }
-
-    /**
-     * Check if device uses a limited connection.
-     *
-     * @returns Whether the device uses a limited connection.
-     * @deprecated since 4.1. Use CoreNetwork instead.
-     */
-    isNetworkAccessLimited(): boolean {
-        return CoreNetwork.isNetworkAccessLimited();
-    }
-
-    /**
-     * Check if device uses a wifi connection.
-     *
-     * @returns Whether the device uses a wifi connection.
-     * @deprecated since 4.1. Use CoreNetwork instead.
-     */
-    isWifi(): boolean {
-        return CoreNetwork.isWifi();
     }
 
     /**
@@ -571,16 +500,6 @@ export class CoreAppProvider {
         this.logger.debug(`Set status bar color ${color}`);
 
         StatusBar.backgroundColorByHexString(color);
-    }
-
-    /**
-     * Set value of forceOffline flag. If true, the app will think the device is offline.
-     *
-     * @param value Value to set.
-     * @deprecated since 4.1. Use CoreNetwork.setForceConnectionMode instead.
-     */
-    setForceOffline(value: boolean): void {
-        CoreNetwork.setForceConnectionMode(value ? CoreNetworkConnection.NONE : CoreNetworkConnection.WIFI);
     }
 
     /**
