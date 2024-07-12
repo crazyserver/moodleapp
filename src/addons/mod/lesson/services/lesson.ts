@@ -17,7 +17,6 @@ import { CoreError } from '@classes/errors/error';
 import { CoreSite } from '@classes/sites/site';
 import { CoreCourseCommonModWSOptions } from '@features/course/services/course';
 import { CoreCourseLogHelper } from '@features/course/services/log-helper';
-import { CoreGradesProvider } from '@features/grades/services/grades';
 import { CoreSites, CoreSitesCommonWSOptions, CoreSitesReadingStrategy } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
 import { CoreTextUtils } from '@services/utils/text';
@@ -27,10 +26,17 @@ import { makeSingleton, Translate } from '@singletons';
 import { CoreEvents } from '@singletons/events';
 import { AddonModLessonPasswordDBRecord, PASSWORD_TABLE_NAME } from './database/lesson';
 import { AddonModLessonOffline, AddonModLessonPageAttemptRecord } from './lesson-offline';
-import { AddonModLessonAutoSyncData, AddonModLessonSyncProvider } from './lesson-sync';
+import { AddonModLessonAutoSyncData } from './lesson-sync';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-
-const ROOT_CACHE_KEY = 'mmaModLesson:';
+import {
+    ADDON_MOD_LESSON_AUTO_SYNCED,
+    ADDON_MOD_LESSON_COMPONENT,
+    ADDON_MOD_LESSON_DATA_SENT_EVENT,
+    ADDON_MOD_LESSON_OTHER_ANSWERS,
+    AddonModLessonPageId,AddonModLessonPageType,
+    AddonModLessonQuestionPageType,
+} from '../constants';
+import { CoreGradeType } from '@features/grades/constants';
 
 declare module '@singletons/events' {
 
@@ -40,8 +46,8 @@ declare module '@singletons/events' {
      * @see https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation
      */
     export interface CoreEventsData {
-        [AddonModLessonProvider.DATA_SENT_EVENT]: AddonModLessonDataSentData;
-        [AddonModLessonSyncProvider.AUTO_SYNCED]: AddonModLessonAutoSyncData;
+        [ADDON_MOD_LESSON_DATA_SENT_EVENT]: AddonModLessonDataSentData;
+        [ADDON_MOD_LESSON_AUTO_SYNCED]: AddonModLessonAutoSyncData;
     }
 
 }
@@ -61,37 +67,9 @@ declare module '@singletons/events' {
 @Injectable({ providedIn: 'root' })
 export class AddonModLessonProvider {
 
-    static readonly COMPONENT = 'mmaModLesson';
-    static readonly DATA_SENT_EVENT = 'addon_mod_lesson_data_sent';
+    protected static readonly ROOT_CACHE_KEY = 'mmaModLesson:';
 
-    static readonly LESSON_THISPAGE = 0; // This page.
-    static readonly LESSON_UNSEENPAGE = 1; // Next page -> any page not seen before.
-    static readonly LESSON_UNANSWEREDPAGE = 2; // Next page -> any page not answered correctly.
-    static readonly LESSON_NEXTPAGE = -1; // Jump to Next Page.
-    static readonly LESSON_EOL = -9; // End of Lesson.
-    static readonly LESSON_UNSEENBRANCHPAGE = -50; // Jump to an unseen page within a branch and end of branch or end of lesson.
-    static readonly LESSON_RANDOMPAGE = -60; // Jump to a random page within a branch and end of branch or end of lesson.
-    static readonly LESSON_RANDOMBRANCH = -70; // Jump to a random Branch.
-    static readonly LESSON_CLUSTERJUMP = -80; // Cluster Jump.
-
-    // Type of page: question or structure (content).
-    static readonly TYPE_QUESTION = 0;
-    static readonly TYPE_STRUCTURE = 1;
-
-    // Type of question pages.
-    static readonly LESSON_PAGE_SHORTANSWER =  1;
-    static readonly LESSON_PAGE_TRUEFALSE =    2;
-    static readonly LESSON_PAGE_MULTICHOICE =  3;
-    static readonly LESSON_PAGE_MATCHING =     5;
-    static readonly LESSON_PAGE_NUMERICAL =    8;
-    static readonly LESSON_PAGE_ESSAY =        10;
-    static readonly LESSON_PAGE_BRANCHTABLE =  20; // Content page.
-    static readonly LESSON_PAGE_ENDOFBRANCH =  21;
-    static readonly LESSON_PAGE_CLUSTER =      30;
-    static readonly LESSON_PAGE_ENDOFCLUSTER = 31;
-
-    static readonly MULTIANSWER_DELIMITER = '@^#|'; // Constant used as a delimiter when parsing multianswer questions.
-    static readonly LESSON_OTHER_ANSWERS = '@#wronganswer#@';
+    protected static readonly MULTIANSWER_DELIMITER = '@^#|'; // Constant used as a delimiter when parsing multianswer questions.
 
     /**
      * Add an answer and its response to a feedback string (HTML).
@@ -359,33 +337,33 @@ export class AddonModLessonProvider {
         };
 
         switch (pageData.page!.qtype) {
-            case AddonModLessonProvider.LESSON_PAGE_BRANCHTABLE:
+            case AddonModLessonQuestionPageType.BRANCHTABLE:
                 // Load the new page immediately.
                 result.inmediatejump = true;
                 result.newpageid = this.getNewPageId(pageData.page!.id, <number> data.jumpto, jumps);
                 break;
 
-            case AddonModLessonProvider.LESSON_PAGE_ESSAY:
+            case AddonModLessonQuestionPageType.ESSAY:
                 this.checkAnswerEssay(pageData, data, result);
                 break;
 
-            case AddonModLessonProvider.LESSON_PAGE_MATCHING:
+            case AddonModLessonQuestionPageType.MATCHING:
                 this.checkAnswerMatching(pageData, data, result);
                 break;
 
-            case AddonModLessonProvider.LESSON_PAGE_MULTICHOICE:
+            case AddonModLessonQuestionPageType.MULTICHOICE:
                 this.checkAnswerMultichoice(lesson, pageData, data, pageIndex, result);
                 break;
 
-            case AddonModLessonProvider.LESSON_PAGE_NUMERICAL:
+            case AddonModLessonQuestionPageType.NUMERICAL:
                 this.checkAnswerNumerical(lesson, pageData, data, pageIndex, result);
                 break;
 
-            case AddonModLessonProvider.LESSON_PAGE_SHORTANSWER:
+            case AddonModLessonQuestionPageType.SHORTANSWER:
                 this.checkAnswerShort(lesson, pageData, data, pageIndex, result);
                 break;
 
-            case AddonModLessonProvider.LESSON_PAGE_TRUEFALSE:
+            case AddonModLessonQuestionPageType.TRUEFALSE:
                 this.checkAnswerTruefalse(lesson, pageData, data, pageIndex, result);
                 break;
             default:
@@ -912,7 +890,7 @@ export class AddonModLessonProvider {
 
             // Double check that this is the OTHER_ANSWERS answer.
             if (typeof lastAnswer.answer == 'string' &&
-                    lastAnswer.answer.indexOf(AddonModLessonProvider.LESSON_OTHER_ANSWERS) != -1) {
+                    lastAnswer.answer.indexOf(ADDON_MOD_LESSON_OTHER_ANSWERS) !== -1) {
                 result.newpageid = lastAnswer.jumpto || 0;
                 result.response = lastAnswer.response || '';
 
@@ -961,7 +939,7 @@ export class AddonModLessonProvider {
 
         const response = await this.finishRetakeOnline(lesson.id, options);
 
-        CoreEvents.trigger(AddonModLessonProvider.DATA_SENT_EVENT, {
+        CoreEvents.trigger(ADDON_MOD_LESSON_DATA_SENT_EVENT, {
             lessonId: lesson.id,
             type: 'finish',
             courseId: courseId,
@@ -1128,7 +1106,7 @@ export class AddonModLessonProvider {
                         this.addResultValueEolPage(result, 'displayscorewithoutessays', entryData, true);
                     }
 
-                    if (lesson.grade !== undefined && lesson.grade != CoreGradesProvider.TYPE_NONE) {
+                    if (lesson.grade !== undefined && lesson.grade !== CoreGradeType.NONE) {
                         entryData.grade = CoreTextUtils.roundToDecimals(gradeInfo.grade * lesson.grade / 100, 1);
                         entryData.total = lesson.grade;
                         this.addResultValueEolPage(result, 'yourcurrentgradeisoutof', entryData, true);
@@ -1147,7 +1125,7 @@ export class AddonModLessonProvider {
             }
         } else {
             // Display for teacher.
-            if (lesson.grade != CoreGradesProvider.TYPE_NONE) {
+            if (lesson.grade !== CoreGradeType.NONE) {
                 this.addResultValueEolPage(result, 'displayofgrade', true, true);
             }
         }
@@ -1182,7 +1160,7 @@ export class AddonModLessonProvider {
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getAccessInformationCacheKey(lessonId),
             updateFrequency: CoreSite.FREQUENCY_OFTEN,
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -1197,7 +1175,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getAccessInformationCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'accessInfo:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'accessInfo:' + lessonId;
     }
 
     /**
@@ -1213,7 +1191,7 @@ export class AddonModLessonProvider {
         retake: number,
         options: CoreCourseCommonModWSOptions = {},
     ): Promise<{online: AddonModLessonWSContentPageViewed[]; offline: AddonModLessonPageAttemptRecord[]}> {
-        const type = AddonModLessonProvider.TYPE_STRUCTURE;
+        const type = AddonModLessonPageType.STRUCTURE;
 
         const [online, offline] = await Promise.all([
             this.getContentPagesViewedOnline(lessonId, retake, options),
@@ -1246,7 +1224,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getContentPagesViewedCommonCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'contentPagesViewed:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'contentPagesViewed:' + lessonId;
     }
 
     /**
@@ -1298,7 +1276,7 @@ export class AddonModLessonProvider {
         };
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getContentPagesViewedCacheKey(lessonId, retake),
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -1431,7 +1409,7 @@ export class AddonModLessonProvider {
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getLessonDataCacheKey(courseId),
             updateFrequency: CoreSite.FREQUENCY_RARELY,
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
 
@@ -1469,7 +1447,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getLessonDataCacheKey(courseId: number): string {
-        return ROOT_CACHE_KEY + 'lesson:' + courseId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'lesson:' + courseId;
     }
 
     /**
@@ -1492,7 +1470,7 @@ export class AddonModLessonProvider {
         };
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getLessonWithPasswordCacheKey(lessonId),
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -1525,7 +1503,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getLessonWithPasswordCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'lessonWithPswrd:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'lessonWithPswrd:' + lessonId;
     }
 
     /**
@@ -1661,7 +1639,7 @@ export class AddonModLessonProvider {
         };
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getPageDataCacheKey(lesson.id, pageId),
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -1712,7 +1690,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getPageDataCommonCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'pageData:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'pageData:' + lessonId;
     }
 
     /**
@@ -1732,7 +1710,7 @@ export class AddonModLessonProvider {
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getPagesCacheKey(lessonId),
             updateFrequency: CoreSite.FREQUENCY_SOMETIMES,
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -1753,7 +1731,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getPagesCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'pages:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'pages:' + lessonId;
     }
 
     /**
@@ -1775,7 +1753,7 @@ export class AddonModLessonProvider {
         };
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getPagesPossibleJumpsCacheKey(lessonId),
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -1806,7 +1784,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getPagesPossibleJumpsCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'pagesJumps:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'pagesJumps:' + lessonId;
     }
 
     /**
@@ -1905,7 +1883,7 @@ export class AddonModLessonProvider {
         const messages: AddonModLessonMessageWSData[] = [];
 
         if (!accessInfo.canmanage) {
-            if (page.qtype == AddonModLessonProvider.LESSON_PAGE_BRANCHTABLE && lesson.minquestions) {
+            if (page.qtype == AddonModLessonQuestionPageType.BRANCHTABLE && lesson.minquestions) {
                 // Tell student how many questions they have seen, how many are required and their grade.
                 const retake = accessInfo.attemptscount;
 
@@ -1923,7 +1901,7 @@ export class AddonModLessonProvider {
                     if (!options.review && !lesson.retake) {
                         this.addMessage(messages, 'addon.mod_lesson.numberofcorrectanswers', { $a: gradeInfo.earned });
 
-                        if (lesson.grade !== undefined && lesson.grade != CoreGradesProvider.TYPE_NONE) {
+                        if (lesson.grade !== undefined && lesson.grade !== CoreGradeType.NONE) {
                             this.addMessage(messages, 'addon.mod_lesson.yourcurrentgradeisoutof', { $a: {
                                 grade: CoreTextUtils.roundToDecimals(gradeInfo.grade * lesson.grade / 100, 1),
                                 total: lesson.grade,
@@ -2001,7 +1979,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getQuestionsAttemptsCommonCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'questionsAttempts:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'questionsAttempts:' + lessonId;
     }
 
     /**
@@ -2030,7 +2008,7 @@ export class AddonModLessonProvider {
         };
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getQuestionsAttemptsCacheKey(lessonId, retake, userId),
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -2081,7 +2059,7 @@ export class AddonModLessonProvider {
         const preSets = {
             cacheKey: this.getRetakesOverviewCacheKey(lessonId, groupId),
             updateFrequency: CoreSite.FREQUENCY_OFTEN,
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -2113,7 +2091,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getRetakesOverviewCommonCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'retakesOverview:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'retakesOverview:' + lessonId;
     }
 
     /**
@@ -2173,7 +2151,7 @@ export class AddonModLessonProvider {
         };
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getTimersCacheKey(lessonId, userId),
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -2201,7 +2179,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getTimersCommonCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'timers:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'timers:' + lessonId;
     }
 
     /**
@@ -2295,7 +2273,7 @@ export class AddonModLessonProvider {
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getUserRetakeCacheKey(lessonId, userId, retake),
             updateFrequency: CoreSite.FREQUENCY_SOMETIMES,
-            component: AddonModLessonProvider.COMPONENT,
+            component: ADDON_MOD_LESSON_COMPONENT,
             componentId: options.cmId,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
@@ -2333,7 +2311,7 @@ export class AddonModLessonProvider {
      * @returns Cache key.
      */
     protected getUserRetakeLessonCacheKey(lessonId: number): string {
-        return ROOT_CACHE_KEY + 'userRetake:' + lessonId;
+        return AddonModLessonProvider.ROOT_CACHE_KEY + 'userRetake:' + lessonId;
     }
 
     /**
@@ -2390,15 +2368,15 @@ export class AddonModLessonProvider {
         if (!jumpTo) {
             // Same page
             return false;
-        } else if (jumpTo == AddonModLessonProvider.LESSON_NEXTPAGE) {
+        } else if (jumpTo == AddonModLessonPageId.NEXTPAGE) {
             return true;
-        } else if (jumpTo == AddonModLessonProvider.LESSON_UNSEENBRANCHPAGE) {
+        } else if (jumpTo == AddonModLessonPageId.UNSEENBRANCHPAGE) {
             return true;
-        } else if (jumpTo == AddonModLessonProvider.LESSON_RANDOMPAGE) {
+        } else if (jumpTo == AddonModLessonPageId.RANDOMPAGE) {
             return true;
-        } else if (jumpTo == AddonModLessonProvider.LESSON_CLUSTERJUMP) {
+        } else if (jumpTo == AddonModLessonPageId.CLUSTERJUMP) {
             return true;
-        } else if (jumpTo == AddonModLessonProvider.LESSON_EOL) {
+        } else if (jumpTo == AddonModLessonPageId.EOL) {
             return true;
         }
 
@@ -2719,7 +2697,7 @@ export class AddonModLessonProvider {
      * @returns True if question page, false if content page.
      */
     isQuestionPage(type: number): boolean {
-        return type == AddonModLessonProvider.TYPE_QUESTION;
+        return type == AddonModLessonPageType.QUESTION;
     }
 
     /**
@@ -2754,7 +2732,7 @@ export class AddonModLessonProvider {
 
         const response = await site.write<AddonModLessonLaunchAttemptWSResponse>('mod_lesson_launch_attempt', params);
 
-        CoreEvents.trigger(AddonModLessonProvider.DATA_SENT_EVENT, {
+        CoreEvents.trigger(ADDON_MOD_LESSON_DATA_SENT_EVENT, {
             lessonId: id,
             type: 'launch',
         }, CoreSites.getCurrentSiteId());
@@ -2769,7 +2747,7 @@ export class AddonModLessonProvider {
      * @returns True if left during timed, false otherwise.
      */
     leftDuringTimed(info?: AddonModLessonGetAccessInformationWSResponse): boolean {
-        return !!(info?.lastpageseen && info.lastpageseen != AddonModLessonProvider.LESSON_EOL && info.leftduringtimedsession);
+        return !!(info?.lastpageseen && info.lastpageseen != AddonModLessonPageId.EOL && info.leftduringtimedsession);
     }
 
     /**
@@ -2789,8 +2767,8 @@ export class AddonModLessonProvider {
             for (const jumpto in jumps[pageId]) {
                 const jumptoNum = Number(jumpto);
 
-                if (jumptoNum == AddonModLessonProvider.LESSON_CLUSTERJUMP ||
-                        jumptoNum == AddonModLessonProvider.LESSON_UNSEENBRANCHPAGE) {
+                if (jumptoNum == AddonModLessonPageId.CLUSTERJUMP ||
+                        jumptoNum == AddonModLessonPageId.UNSEENBRANCHPAGE) {
                     return true;
                 }
             }
@@ -2885,7 +2863,7 @@ export class AddonModLessonProvider {
 
             if (lesson.custom) {
                 // If essay question, handle it, otherwise add to score.
-                if (options.pageIndex[lastAttempt.pageid].qtype == AddonModLessonProvider.LESSON_PAGE_ESSAY) {
+                if (options.pageIndex[lastAttempt.pageid].qtype == AddonModLessonQuestionPageType.ESSAY) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const score: number | undefined = (<any> lastAttempt.useranswer)?.score;
                     if (score !== undefined) {
@@ -2902,7 +2880,7 @@ export class AddonModLessonProvider {
                 });
 
                 // If essay question, increase numbers.
-                if (options.pageIndex[lastAttempt.pageid].qtype == AddonModLessonProvider.LESSON_PAGE_ESSAY) {
+                if (options.pageIndex[lastAttempt.pageid].qtype == AddonModLessonQuestionPageType.ESSAY) {
                     result.nmanual++;
                     result.manualpoints++;
                 }
@@ -2967,7 +2945,7 @@ export class AddonModLessonProvider {
         await CoreCourseLogHelper.log(
             'mod_lesson_view_lesson',
             params,
-            AddonModLessonProvider.COMPONENT,
+            ADDON_MOD_LESSON_COMPONENT,
             id,
             siteId,
         );
@@ -3002,7 +2980,7 @@ export class AddonModLessonProvider {
         if (!options.offline) {
             const response = <AddonModLessonProcessPageResponse> await this.processPageOnline(lesson.id, pageId, data, options);
 
-            CoreEvents.trigger(AddonModLessonProvider.DATA_SENT_EVENT, {
+            CoreEvents.trigger(ADDON_MOD_LESSON_DATA_SENT_EVENT, {
                 lessonId: lesson.id,
                 type: 'process',
                 courseId: courseId,
@@ -3158,7 +3136,7 @@ export class AddonModLessonProvider {
 
         // Processes inmediate jumps.
         if (result.inmediatejump) {
-            if (pageData.page?.qtype == AddonModLessonProvider.LESSON_PAGE_BRANCHTABLE) {
+            if (pageData.page?.qtype == AddonModLessonQuestionPageType.BRANCHTABLE) {
                 // Store the content page data. In Moodle this is stored in a separate table, during checkAnswer.
                 await AddonModLessonOffline.processPage(
                     lesson.id,
@@ -3204,7 +3182,7 @@ export class AddonModLessonProvider {
             if (lesson.maxattempts && lesson.maxattempts > 0 && nAttempts >= lesson.maxattempts) {
                 result.maxattemptsreached = true;
                 result.feedback = Translate.instant('addon.mod_lesson.maximumnumberofattemptsreached');
-                result.newpageid = AddonModLessonProvider.LESSON_NEXTPAGE;
+                result.newpageid = AddonModLessonPageId.NEXTPAGE;
 
                 return result;
             }
@@ -3238,7 +3216,7 @@ export class AddonModLessonProvider {
                     if (lesson.maxattempts > 1) { // Don't bother with message if only one attempt.
                         result.maxattemptsreached = true;
                     }
-                    result.newpageid =  AddonModLessonProvider.LESSON_NEXTPAGE;
+                    result.newpageid =  AddonModLessonPageId.NEXTPAGE;
                 } else if (lesson.maxattempts && lesson.maxattempts > 1) { // Don't show message if only one attempt or unlimited.
                     result.attemptsremaining = lesson.maxattempts - nAttempts;
                 }
@@ -3382,15 +3360,15 @@ export class AddonModLessonProvider {
         viewedPagesIds: number[],
     ): number {
 
-        if (page.qtype != AddonModLessonProvider.LESSON_PAGE_ENDOFCLUSTER &&
-                page.qtype != AddonModLessonProvider.LESSON_PAGE_ENDOFBRANCH) {
+        if (page.qtype != AddonModLessonQuestionPageType.ENDOFCLUSTER &&
+                page.qtype != AddonModLessonQuestionPageType.ENDOFBRANCH) {
             // Add this page as a valid page.
             validPages[page.id] = 1;
         }
 
-        if (page.qtype == AddonModLessonProvider.LESSON_PAGE_CLUSTER) {
+        if (page.qtype == AddonModLessonQuestionPageType.CLUSTER) {
             // Get list of pages in the cluster.
-            const subPages = this.getSubpagesOf(pages, page.id, [AddonModLessonProvider.LESSON_PAGE_ENDOFCLUSTER]);
+            const subPages = this.getSubpagesOf(pages, page.id, [AddonModLessonQuestionPageType.ENDOFCLUSTER]);
 
             subPages.forEach((subPage) => {
                 const position = viewedPagesIds.indexOf(subPage.id);
