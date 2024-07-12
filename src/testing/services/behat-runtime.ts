@@ -159,11 +159,21 @@ export class TestingBehatRuntimeService {
      */
     async waitLoadingToFinish(): Promise<void> {
         await NgZone.run(async () => {
-            const elements = Array.from(document.body.querySelectorAll<HTMLElement>('core-loading'))
-                .filter((element) => CoreDom.isElementVisible(element));
+            const coreLoadings = Array.from(document.body.querySelectorAll<HTMLElement>('core-loading'));
 
-            await Promise.all(elements.map(element =>
-                CoreDirectivesRegistry.waitDirectiveReady(element, CoreLoadingComponent)));
+            const coreLoadingPromises: Promise<unknown>[] = coreLoadings
+                .filter((loading) => CoreDom.isElementVisible(loading))
+                .map(loading => CoreDirectivesRegistry.waitDirectiveReady(loading, CoreLoadingComponent));
+
+            /* const ionLoadings = Array.from(document.body.querySelectorAll<HTMLIonLoadingElement>('ion-loading'));
+
+            const ionLoadingPromises: Promise<unknown>[] = ionLoadings
+                .filter((element) => CoreDom.isElementVisible(element))
+                .map(loading => loading.onDidDismiss());
+
+            const promises = coreLoadingPromises.concat(ionLoadingPromises) */
+
+            await Promise.all(coreLoadingPromises);
         });
     }
 

@@ -16,6 +16,7 @@ import { Injectable } from '@angular/core';
 import { CoreUtils } from '@services/utils/utils';
 import { makeSingleton, NgZone } from '@singletons';
 import { BehatTestsWindow, TestingBehatRuntime } from './behat-runtime';
+import { CoreDom } from '@singletons/dom';
 
 /**
  * Behat block JS manager.
@@ -196,11 +197,11 @@ export class TestingBehatBlockingService {
         await CoreUtils.nextTick();
 
         const blockingElements = Array.from(
-            document.querySelectorAll<HTMLElement>('div.core-loading-container, ion-loading, .click-block-active'),
+            document.querySelectorAll<HTMLElement>('div.core-loading-container, ion-loading'),
         );
 
         const isBlocked = blockingElements.some(element => {
-            if (!element.offsetParent) {
+            if (!CoreDom.isElementVisible(element)) {
                 return false;
             }
 

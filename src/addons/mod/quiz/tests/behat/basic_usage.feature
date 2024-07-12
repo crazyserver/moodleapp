@@ -160,6 +160,7 @@ Feature: Attempt a quiz in app
     And I should find "0 out of 100" within "Grade" "ion-item" in the app
     And I should be able to press "Review" in the app
 
+  @test
   Scenario: Attempt a quiz (all question types)
     Given I entered the quiz activity "Quiz 2" on course "Course 1" as "student1" in the app
     When I press "Attempt quiz now" in the app
@@ -196,10 +197,10 @@ Feature: Attempt a quiz in app
     And I click on ".place6.dropzone" "css"
     And I press "trench" ".drag" in the app
     And I click on ".place3.dropzone" "css"
-    And I press "Next" in the app
+    And I press "Next" in the app and wait
     And I press "Railway station" ".marker" in the app
     And I click on "img.dropbackground" "css"
-    And I press "Submit" in the app
+    And I press "Submit" in the app and wait
     Then I should find "Answer saved" in the app
     And I should find "Incomplete answer" within "10" "ion-item" in the app
     But I should not find "Not yet answered" in the app
@@ -216,6 +217,7 @@ Feature: Attempt a quiz in app
     Then I should find "The correct answer is: Berlin" in the app
     And I should find "Mark 1.00 out of 1.00" in the app
 
+  @test
   Scenario: Submit a quiz & Review a quiz attempt
     Given I entered the quiz activity "Quiz 1" on course "Course 1" as "student1" in the app
     When I press "Attempt quiz now" in the app
@@ -224,9 +226,9 @@ Feature: Attempt a quiz in app
 
     When I press "True" in the app
     And I press "Next" in the app
-    And I press "False" in the app
-    And I press "Submit" in the app
-    And I press "Submit all and finish" in the app
+    And I press "False" in the app and wait
+    And I press "Submit" in the app and wait
+    And I press "Submit all and finish" in the app and wait
     Then I should find "Once you submit" in the app
     But I should not find "Questions without a response" in the app
 

@@ -654,11 +654,11 @@ class behat_app extends behat_app_helper {
      * Note it is difficult to use the standard 'click on' or 'press' steps because those do not
      * distinguish visible elements and the app always has many non-visible elements in the DOM.
      *
-     * @When /^I press (".+") in the app$/
+     * @When /^I press (".+") in the app( and wait)?$/
      * @param string $locator Element locator
      * @throws DriverException If the press doesn't work
      */
-    public function i_press_in_the_app(string $locator) {
+    public function i_press_in_the_app(string $locator, bool $wait = false) {
         $locator = $this->parse_element_locator($locator);
 
         $this->spin(function() use ($locator) {
@@ -670,6 +670,11 @@ class behat_app extends behat_app_helper {
 
             return true;
         });
+
+        // Wait bit to let the action start.
+        if ($wait) {
+            usleep(200000);
+        }
 
         $this->wait_for_pending_js();
     }
