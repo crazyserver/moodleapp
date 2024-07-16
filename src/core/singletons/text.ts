@@ -92,4 +92,14 @@ export class CoreText {
         CoreToasts.show('core.copiedtoclipboard', true);
     }
 
+    /**
+     * Make a string's first character uppercase.
+     *
+     * @param text Text to treat.
+     * @returns Treated text.
+     */
+    static ucFirst(text: string): string {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
 }
