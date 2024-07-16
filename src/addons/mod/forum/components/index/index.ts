@@ -65,6 +65,7 @@ import {
     ADDON_MOD_FORUM_SEARCH_PAGE_NAME,
 } from '@addons/mod/forum/constants';
 import { CoreSearchGlobalSearch } from '@features/search/services/global-search';
+import { CoreToasts } from '@services/toasts';
 /**
  * Component that displays a forum entry page.
  */
@@ -554,7 +555,7 @@ export class AddonModForumIndexComponent extends CoreCourseModuleMainActivityCom
 
         try {
             if (isNewDiscussion) {
-                CoreDomUtils.showToast('addon.mod_forum.postaddedsuccess', true);
+                CoreToasts.show('addon.mod_forum.postaddedsuccess', true);
 
                 const newDiscGroupId = (data as AddonModForumNewDiscussionData).groupId;
 

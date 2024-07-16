@@ -24,7 +24,8 @@ import { CoreFile } from '@services/file';
 import { CoreNavigator } from '@services/navigator';
 import { CorePlatform } from '@services/platform';
 import { CoreSites } from '@services/sites';
-import { CoreDomUtils, ToastDuration } from '@services/utils/dom';
+import { CoreDomUtils } from '@services/utils/dom';
+import { CoreToasts, ToastDuration } from '@services/toasts';
 import { CoreText } from '@singletons/text';
 
 /**
@@ -177,7 +178,7 @@ export class CoreSettingsDevPage implements OnInit {
         await CoreConfig.delete(ONBOARDING_DONE);
         await CoreConfig.delete(FAQ_QRCODE_INFO_DONE);
 
-        CoreDomUtils.showToast('User tours have been reseted');
+        CoreToasts.show('User tours have been reseted');
     }
 
     /**
@@ -194,7 +195,7 @@ export class CoreSettingsDevPage implements OnInit {
             return;
         }
 
-        await CoreDomUtils.showToast('Caches invalidated', true, ToastDuration.LONG);
+        await CoreToasts.show('Caches invalidated', true, ToastDuration.LONG);
     }
 
     /**
@@ -205,7 +206,7 @@ export class CoreSettingsDevPage implements OnInit {
         await CoreFile.clearDeletedSitesFolder(sites);
         await CoreFile.clearTmpFolder();
 
-        CoreDomUtils.showToast('File storage cleared');
+        CoreToasts.show('File storage cleared');
     }
 
     async setEnabledStagingSites(enabled: boolean): Promise<void> {

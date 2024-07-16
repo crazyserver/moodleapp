@@ -18,6 +18,7 @@ import { CoreDomUtils } from '@services/utils/dom';
 import { CoreRemindersSetReminderMenuComponent } from '../set-reminder-menu/set-reminder-menu';
 import { Translate } from '@singletons';
 import { CoreTimeUtils } from '@services/utils/time';
+import { CoreToasts } from '@services/toasts';
 
 /**
  * Component that displays a button to set a reminder.
@@ -127,7 +128,7 @@ export class CoreRemindersSetButtonComponent implements OnInit {
 
         if (timebefore === undefined || timebefore === CoreRemindersService.DISABLED) {
             this.setTimebefore(undefined);
-            CoreDomUtils.showToast('core.reminders.reminderunset', true);
+            CoreToasts.show('core.reminders.reminderunset', true);
 
             return;
         }
@@ -149,7 +150,7 @@ export class CoreRemindersSetButtonComponent implements OnInit {
 
         const time = this.time - timebefore;
         const text = Translate.instant('core.reminders.reminderset', { $a: CoreTimeUtils.userDate(time * 1000) });
-        CoreDomUtils.showToast(text);
+        CoreToasts.show(text);
     }
 
 }
