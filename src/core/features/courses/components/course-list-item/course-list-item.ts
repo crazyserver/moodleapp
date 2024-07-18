@@ -27,6 +27,7 @@ import { CoreCourseListItem, CoreCourses, CoreCoursesProvider } from '../../serv
 import { CoreCoursesHelper, CoreEnrolledCourseDataWithExtraInfoAndOptions } from '../../services/courses-helper';
 import { CoreCoursesCourseOptionsMenuComponent } from '../course-options-menu/course-options-menu';
 import { CoreEnrolHelper } from '@features/enrol/services/enrol-helper';
+import { CorePopovers } from '@services/popovers';
 
 /**
  * This directive is meant to display an item for a list of courses.
@@ -289,7 +290,7 @@ export class CoreCoursesCourseListItemComponent implements OnInit, OnDestroy, On
 
         this.initPrefetchCourse(true);
 
-        const popoverData = await CoreDomUtils.openPopover<string>({
+        const popoverData = await CorePopovers.open<string>({
             component: CoreCoursesCourseOptionsMenuComponent,
             componentProps: {
                 course: this.course,

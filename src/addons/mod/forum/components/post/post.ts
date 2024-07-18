@@ -54,6 +54,7 @@ import { CoreDom } from '@singletons/dom';
 import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
 import { ADDON_MOD_FORUM_CHANGE_DISCUSSION_EVENT, ADDON_MOD_FORUM_COMPONENT } from '../../constants';
 import { CoreToasts } from '@services/toasts';
+import { CorePopovers } from '@services/popovers';
 
 /**
  * Components that shows a discussion post, its attachments and the action buttons allowed (reply, etc.).
@@ -229,7 +230,7 @@ export class AddonModForumPostComponent implements OnInit, OnDestroy, OnChanges 
      * @param event Click Event.
      */
     async showOptionsMenu(event: Event): Promise<void> {
-        const popoverData = await CoreDomUtils.openPopover<{ action?: string }>({
+        const popoverData = await CorePopovers.open<{ action?: string }>({
             component: AddonModForumPostOptionsMenuComponent,
             componentProps: {
                 post: this.post,
