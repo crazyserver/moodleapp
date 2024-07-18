@@ -97,6 +97,24 @@ export class CoreViewerService {
         await CoreNavigator.navigateToSitePath('viewer/iframe', { params: { title, url, autoLogin } });
     }
 
+    /**
+     * Open a modal to scan a QR code.
+     *
+     * @param title Title of the modal. Defaults to "QR reader".
+     * @returns Promise resolved with the captured text or undefined if cancelled or error.
+     */
+    async scanQR(title?: string): Promise<string | undefined> {
+        const { CoreViewerQRScannerComponent } = await import('@features/viewer/components/qr-scanner/qr-scanner');
+
+        return CoreModals.openModal<string>({
+            component: CoreViewerQRScannerComponent,
+            cssClass: 'core-modal-fullscreen',
+            componentProps: {
+                title,
+            },
+        });
+    }
+
 }
 export const CoreViewer = makeSingleton(CoreViewerService);
 
