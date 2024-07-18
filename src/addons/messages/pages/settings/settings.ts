@@ -27,6 +27,7 @@ import { CoreDomUtils } from '@services/utils/dom';
 import { CoreConstants } from '@/core/constants';
 import { AddonNotificationsPreferencesNotificationProcessorState } from '@addons/notifications/services/notifications';
 import { CorePlatform } from '@services/platform';
+import { CoreLoadings } from '@services/loadings';
 
 /**
  * Page that displays the messages settings page.
@@ -146,7 +147,7 @@ export class AddonMessagesSettingsPage implements OnInit, OnDestroy {
             return;
         }
 
-        const modal = await CoreDomUtils.showModalLoading('core.sending', true);
+        const modal = await CoreLoadings.show('core.sending', true);
 
         if (!this.advancedContactable) {
             // Convert from boolean to number.

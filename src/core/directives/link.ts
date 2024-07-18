@@ -28,6 +28,7 @@ import { CoreCustomURLSchemes } from '@services/urlschemes';
 import { DomSanitizer } from '@singletons';
 import { CoreFilepool } from '@services/filepool';
 import { CoreDom } from '@singletons/dom';
+import { CoreLoadings } from '@services/loadings';
 
 /**
  * Directive to open a link in external browser or in the app.
@@ -207,7 +208,7 @@ export class CoreLinkDirective implements OnInit {
 
             if (isDownloading) {
                 // Wait for the download to finish before opening the file to prevent downloading it twice.
-                const modal = await CoreDomUtils.showModalLoading();
+                const modal = await CoreLoadings.show();
 
                 try {
                     const path = await CoreFilepool.downloadUrl(currentSite.getId(), href);

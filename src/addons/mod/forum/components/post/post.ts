@@ -54,6 +54,7 @@ import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
 import { ADDON_MOD_FORUM_CHANGE_DISCUSSION_EVENT, ADDON_MOD_FORUM_COMPONENT } from '../../constants';
 import { CoreToasts } from '@services/toasts';
 import { CorePopovers } from '@services/popovers';
+import { CoreLoadings } from '@services/loadings';
 
 /**
  * Components that shows a discussion post, its attachments and the action buttons allowed (reply, etc.).
@@ -149,7 +150,7 @@ export class AddonModForumPostComponent implements OnInit, OnDestroy, OnChanges 
         try {
             await CoreDomUtils.showDeleteConfirm('addon.mod_forum.deletesure');
 
-            const modal = await CoreDomUtils.showModalLoading('core.deleting', true);
+            const modal = await CoreLoadings.show('core.deleting', true);
 
             try {
                 const response = await AddonModForum.deletePost(this.post.id);
@@ -362,7 +363,7 @@ export class AddonModForumPostComponent implements OnInit, OnDestroy, OnChanges 
         const replyingTo = this.formData.replyingTo!;
         const files = this.formData.files || [];
         const isEditOnline = this.formData.id && this.formData.id > 0;
-        const modal = await CoreDomUtils.showModalLoading('core.sending', true);
+        const modal = await CoreLoadings.show('core.sending', true);
 
         // Add some HTML to the message if needed.
         message = CoreTextUtils.formatHtmlLines(message);

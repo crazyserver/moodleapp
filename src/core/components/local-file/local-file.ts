@@ -27,6 +27,7 @@ import { CoreUtils, CoreUtilsOpenFileOptions, OpenFileAction } from '@services/u
 import { CoreForms } from '@singletons/form';
 import { CorePath } from '@singletons/path';
 import { CorePlatform } from '@services/platform';
+import { CoreLoadings } from '@services/loadings';
 
 /**
  * Component to handle a local file. Only files inside the app folder can be managed.
@@ -181,7 +182,7 @@ export class CoreLocalFileComponent implements OnInit {
             return;
         }
 
-        const modal = await CoreDomUtils.showModalLoading();
+        const modal = await CoreLoadings.show();
         const fileAndDir = CoreFile.getFileAndDirectoryFromPath(this.relativePath);
         const newPath = CorePath.concatenatePaths(fileAndDir.directory, newName);
 
@@ -225,7 +226,7 @@ export class CoreLocalFileComponent implements OnInit {
             // Ask confirmation.
             await CoreDomUtils.showDeleteConfirm('core.confirmdeletefile');
 
-            modal = await CoreDomUtils.showModalLoading('core.deleting', true);
+            modal = await CoreLoadings.show('core.deleting', true);
 
             await CoreFile.removeFile(this.relativePath);
 

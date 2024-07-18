@@ -57,6 +57,7 @@ import {
 import { LazyRoutesModule } from '@/app/app-routing.module';
 import { CoreSiteError, CoreSiteErrorDebug } from '@classes/errors/siteerror';
 import { CoreQRScan } from '@services/qrscan';
+import { CoreLoadings } from '@services/loadings';
 
 /**
  * Helper provider that provides some common features regarding authentication.
@@ -173,7 +174,7 @@ export class CoreLoginHelperProvider {
         }
 
         // Check if password reset can be done through the app.
-        const modal = await CoreDomUtils.showModalLoading();
+        const modal = await CoreLoadings.show();
 
         try {
             const canReset = await this.canRequestPasswordReset(siteUrl);
@@ -647,7 +648,7 @@ export class CoreLoginHelperProvider {
             return false;
         }
 
-        const modal = await CoreDomUtils.showModalLoading();
+        const modal = await CoreLoadings.show();
 
         try {
             const loginUrl = await this.prepareForSSOLogin(siteUrl, undefined, launchUrl, redirectData, {
@@ -684,7 +685,7 @@ export class CoreLoginHelperProvider {
         launchUrl?: string,
         redirectData?: CoreRedirectPayload,
     ): Promise<void> {
-        const modal = await CoreDomUtils.showModalLoading();
+        const modal = await CoreLoadings.show();
 
         try {
             const loginUrl = await this.prepareForSSOLogin(siteUrl, service, launchUrl, redirectData);
@@ -1065,7 +1066,7 @@ export class CoreLoginHelperProvider {
             await CoreDomUtils.showConfirm(message, title, okText, cancelText);
 
             // Call the WS to resend the confirmation email.
-            const modal = await CoreDomUtils.showModalLoading('core.sending', true);
+            const modal = await CoreLoadings.show('core.sending', true);
             const data = { username, password };
             const preSets = { siteUrl };
 
@@ -1101,7 +1102,7 @@ export class CoreLoginHelperProvider {
      * @returns Promise.
      */
     protected async canResendEmail(siteUrl: string): Promise<boolean> {
-        const modal = await CoreDomUtils.showModalLoading();
+        const modal = await CoreLoadings.show();
 
         // We don't have site info before login, the only way to check if the WS is available is by calling it.
         try {

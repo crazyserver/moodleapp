@@ -27,6 +27,7 @@ import { CoreCourseListItem, CoreCourses, CoreCoursesProvider } from '../../serv
 import { CoreCoursesHelper, CoreEnrolledCourseDataWithExtraInfoAndOptions } from '../../services/courses-helper';
 import { CoreEnrolHelper } from '@features/enrol/services/enrol-helper';
 import { CorePopovers } from '@services/popovers';
+import { CoreLoadings } from '@services/loadings';
 
 /**
  * This directive is meant to display an item for a list of courses.
@@ -267,7 +268,7 @@ export class CoreCoursesCourseListItemComponent implements OnInit, OnDestroy, On
             return;
         }
 
-        const modal = await CoreDomUtils.showModalLoading();
+        const modal = await CoreLoadings.show();
 
         try {
             await CoreCourseHelper.deleteCourseFiles(this.course.id);

@@ -58,6 +58,7 @@ import { CoreDom } from '@singletons/dom';
 import { CoreModals, OpenModalOptions as OpenModalOptionsNew } from '@services/modals';
 import { CorePopovers, OpenPopoverOptions as OpenPopoverOptionsNew } from '@services/popovers';
 import { CoreViewer } from '@features/viewer/services/viewer';
+import { CoreLoadings } from '@services/loadings';
 
 /*
  * "Utils" service with helper functions for UI, DOM elements and HTML code.
@@ -76,7 +77,6 @@ export class CoreDomUtilsProvider {
     protected matchesFunctionName?: string; // Name of the "matches" function to use when simulating a closest call.
     protected debugDisplay = false; // Whether to display debug messages. Store it in a variable to make it synchronous.
     protected displayedAlerts: Record<string, HTMLIonAlertElement> = {}; // To prevent duplicated alerts.
-    protected activeLoadingModals: CoreIonLoadingElement[] = [];
     protected logger: CoreLogger;
 
     constructor() {
@@ -862,7 +862,7 @@ export class CoreDomUtilsProvider {
         const alert = await AlertController.create(options);
 
         if (Object.keys(this.displayedAlerts).length === 0) {
-            await Promise.all(this.activeLoadingModals.slice(0).reverse().map(modal => modal.pause()));
+            await CoreLoadings.pauseActiveModals();
         }
 
         // eslint-disable-next-line promise/catch-or-return
@@ -888,7 +888,7 @@ export class CoreDomUtilsProvider {
 
             // eslint-disable-next-line promise/always-return
             if (Object.keys(this.displayedAlerts).length === 0) {
-                await Promise.all(this.activeLoadingModals.map(modal => modal.resume()));
+                await CoreLoadings.resumeActiveModals();
             }
         });
 
@@ -1156,34 +1156,10 @@ export class CoreDomUtilsProvider {
      * @param text The text of the modal window. Default: core.loading.
      * @param needsTranslate Whether the 'text' needs to be translated.
      * @returns Loading element instance.
-     * @description
-     * Usage:
-     *     let modal = await domUtils.showModalLoading(myText);
-     *     ...
-     *     modal.dismiss();
+     * @deprecated since 4.5. Use CoreLoading.show instead.
      */
     async showModalLoading(text?: string, needsTranslate?: boolean): Promise<CoreIonLoadingElement> {
-        if (!text) {
-            text = Translate.instant('core.loading');
-        } else if (needsTranslate) {
-            text = Translate.instant(text);
-        }
-
-        const loading = new CoreIonLoadingElement(text);
-
-        loading.onDismiss(() => {
-            const index = this.activeLoadingModals.indexOf(loading);
-
-            if (index !== -1) {
-                this.activeLoadingModals.splice(index, 1);
-            }
-        });
-
-        this.activeLoadingModals.push(loading);
-
-        await loading.present();
-
-        return loading;
+        return CoreLoadings.show(text, needsTranslate);
     }
 
     /**
@@ -1195,7 +1171,7 @@ export class CoreDomUtilsProvider {
      * @returns Operation result.
      */
     async showOperationModals<T>(text: string, needsTranslate: boolean, operation: () => Promise<T>): Promise<T | null> {
-        const modal = await this.showModalLoading(text, needsTranslate);
+        const modal = await CoreLoadings.show(text, needsTranslate);
 
         try {
             return await operation();
