@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreFile } from '@services/file';
 
 /**
@@ -239,7 +239,7 @@ export class FileTransferMock {
             responseText = response;
         }
 
-        return CoreTextUtils.parseJSON(responseText, '');
+        return CoreText.parseJSON(responseText, '');
     }
 
     /**

@@ -20,7 +20,7 @@ import { Md5 } from 'ts-md5';
 import { CoreConfig } from '@services/config';
 import { CoreFile } from '@services/file';
 import { CoreWSExternalWarning } from '@services/ws';
-import { CoreTextUtils, CoreTextErrorObject } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreUrl, CoreUrlPartNames } from '@singletons/url';
 import { CoreUtils } from '@services/utils/utils';
 import { CoreConstants } from '@/core/constants';
@@ -59,6 +59,7 @@ import { CoreModals, OpenModalOptions as OpenModalOptionsNew } from '@services/m
 import { CorePopovers, OpenPopoverOptions as OpenPopoverOptionsNew } from '@services/popovers';
 import { CoreViewer } from '@features/viewer/services/viewer';
 import { CoreLoadings } from '@services/loadings';
+import { CoreErrorHelper, CoreTextErrorObject } from '@services/error-helper';
 
 /*
  * "Utils" service with helper functions for UI, DOM elements and HTML code.
@@ -114,7 +115,7 @@ export class CoreDomUtilsProvider {
         limitedThreshold?: number,
         alwaysConfirm?: boolean,
     ): Promise<void> {
-        const readableSize = CoreTextUtils.bytesToSize(size.size, 2);
+        const readableSize = CoreText.bytesToSize(size.size, 2);
 
         const getAvailableBytes = async (): Promise<number | null> => {
             const availableBytes = await CoreFile.calculateFreeSpace();
@@ -136,7 +137,7 @@ export class CoreDomUtilsProvider {
             if (availableBytes === null) {
                 return '';
             } else {
-                const availableSize = CoreTextUtils.bytesToSize(availableBytes, 2);
+                const availableSize = CoreText.bytesToSize(availableBytes, 2);
 
                 if (CorePlatform.isAndroid() && size.size > availableBytes - CoreConstants.MINIMUM_FREE_SPACE) {
                     throw new CoreError(
@@ -428,7 +429,7 @@ export class CoreDomUtilsProvider {
      */
     protected isSiteUnavailableError(message: string): boolean {
         let siteUnavailableMessage = Translate.instant('core.siteunavailablehelp', { site: 'SITEURLPLACEHOLDER' });
-        siteUnavailableMessage = CoreTextUtils.escapeForRegex(siteUnavailableMessage);
+        siteUnavailableMessage = CoreText.escapeForRegex(siteUnavailableMessage);
         siteUnavailableMessage = siteUnavailableMessage.replace('SITEURLPLACEHOLDER', '.*');
 
         return new RegExp(siteUnavailableMessage).test(message);
@@ -453,11 +454,11 @@ export class CoreDomUtilsProvider {
             if (this.debugDisplay) {
                 // Get the debug info. Escape the HTML so it is displayed as it is in the view.
                 if ('debuginfo' in error && error.debuginfo) {
-                    extraInfo = '<br><br>' + CoreTextUtils.escapeHTML(error.debuginfo, false);
+                    extraInfo = '<br><br>' + CoreText.escapeHTML(error.debuginfo, false);
                 }
                 if ('backtrace' in error && error.backtrace) {
-                    extraInfo += '<br><br>' + CoreTextUtils.replaceNewLines(
-                        CoreTextUtils.escapeHTML(error.backtrace, false),
+                    extraInfo += '<br><br>' + CoreText.replaceNewLines(
+                        CoreText.escapeHTML(error.backtrace, false),
                         '<br>',
                     );
                 }
@@ -472,7 +473,7 @@ export class CoreDomUtilsProvider {
             }
 
             // We received an object instead of a string. Search for common properties.
-            errorMessage = CoreTextUtils.getErrorMessageFromError(error);
+            errorMessage = CoreErrorHelper.getErrorMessageFromError(error);
             CoreErrorLogs.addErrorLog({ message: JSON.stringify(error), type: errorMessage || '', time: new Date().getTime() });
             if (!errorMessage) {
                 // No common properties found, just stringify it.
@@ -489,7 +490,7 @@ export class CoreDomUtilsProvider {
             errorMessage = error;
         }
 
-        let message = CoreTextUtils.decodeHTML(needsTranslate ? Translate.instant(errorMessage) : errorMessage);
+        let message = CoreText.decodeHTML(needsTranslate ? Translate.instant(errorMessage) : errorMessage);
 
         if (extraInfo) {
             message += extraInfo;
@@ -710,7 +711,7 @@ export class CoreDomUtilsProvider {
             const currentSrc = media.getAttribute('src');
             const newSrc = currentSrc ?
                 paths[CoreUrl.removeUrlParts(
-                    CoreTextUtils.decodeURIComponent(currentSrc),
+                    CoreUrl.decodeURIComponent(currentSrc),
                     [CoreUrlPartNames.Query, CoreUrlPartNames.Fragment],
                 )] :
                 undefined;
@@ -722,7 +723,7 @@ export class CoreDomUtilsProvider {
             // Treat video posters.
             const currentPoster = media.getAttribute('poster');
             if (media.tagName == 'VIDEO' && currentPoster) {
-                const newPoster = paths[CoreTextUtils.decodeURIComponent(currentPoster)];
+                const newPoster = paths[CoreUrl.decodeURIComponent(currentPoster)];
                 if (newPoster !== undefined) {
                     media.setAttribute('poster', newPoster);
                 }
@@ -735,7 +736,7 @@ export class CoreDomUtilsProvider {
             const currentHref = anchor.getAttribute('href');
             const newHref = currentHref ?
                 paths[CoreUrl.removeUrlParts(
-                    CoreTextUtils.decodeURIComponent(currentHref),
+                    CoreUrl.decodeURIComponent(currentHref),
                     [CoreUrlPartNames.Query, CoreUrlPartNames.Fragment],
                 )] :
                 undefined;
@@ -843,7 +844,7 @@ export class CoreDomUtilsProvider {
             ? options.message
             : options.message?.value || '';
 
-        const hasHTMLTags = CoreTextUtils.hasHTMLTags(message);
+        const hasHTMLTags = CoreText.hasHTMLTags(message);
 
         if (hasHTMLTags && !CoreSites.getCurrentSite()?.isVersionGreaterEqualThan('3.7')) {
             // Treat multilang.
@@ -1122,7 +1123,7 @@ export class CoreDomUtilsProvider {
         let errorMessage = error || undefined;
 
         if (error && typeof error != 'string') {
-            errorMessage = CoreTextUtils.getErrorMessageFromError(error);
+            errorMessage = CoreErrorHelper.getErrorMessageFromError(error);
         }
 
         return this.showErrorModal(
@@ -1677,7 +1678,11 @@ export enum VerticalPoint {
  *
  * @deprecated since 4.5. Use CoreToasts.ToastDuration instead.
  */
-export enum ToastDuration { ToastDurationNew }
+export enum ToastDuration {
+    LONG = 'long',
+    SHORT = 'short',
+    STICKY = 'sticky',
+ }
 
 /**
  * Options for showToastWithOptions.

@@ -17,7 +17,7 @@ import { CoreConfig } from '@services/config';
 import { CoreEvents } from '@singletons/events';
 import { CoreSites } from '@services/sites';
 import { CoreUtils } from '@services/utils/utils';
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreConstants } from '@/core/constants';
 import { CoreForms } from '@singletons/form';
 import { CorePlatform } from '@services/platform';
@@ -92,7 +92,7 @@ export class CoreSendMessageFormComponent implements OnInit {
 
         CoreForms.triggerFormSubmittedEvent(this.formElement, false, CoreSites.getCurrentSiteId());
 
-        value = CoreTextUtils.replaceNewLines(value, '<br>');
+        value = CoreText.replaceNewLines(value, '<br>');
         this.onSubmit.emit(value);
     }
 

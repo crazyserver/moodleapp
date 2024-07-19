@@ -30,9 +30,9 @@ import { CoreNetwork } from '@services/network';
 import { CoreConstants } from '@/core/constants';
 import { CoreUser } from '@features/user/services/user';
 import { CoreError } from '@classes/errors/error';
-import { CoreTextErrorObject, CoreTextUtils } from '@services/utils/text';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
 import { CoreWait } from '@singletons/wait';
+import { CoreErrorHelper, CoreTextErrorObject } from '@services/error-helper';
 
 /**
  * Service to sync messages.
@@ -356,7 +356,7 @@ export class AddonMessagesSyncProvider extends CoreSyncBaseProvider<AddonMessage
             errors.forEach((error) => {
                 warnings.push(Translate.instant('addon.messages.warningconversationmessagenotsent', {
                     conversation: conversationIdentifier,
-                    error: CoreTextUtils.getErrorMessageFromError(error),
+                    error: CoreErrorHelper.getErrorMessageFromError(error),
                 }));
             });
         } else if (userId) {
@@ -373,7 +373,7 @@ export class AddonMessagesSyncProvider extends CoreSyncBaseProvider<AddonMessage
             errors.forEach((error) => {
                 warnings.push(Translate.instant('addon.messages.warningmessagenotsent', {
                     user: userIdentifier,
-                    error: CoreTextUtils.getErrorMessageFromError(error),
+                    error: CoreErrorHelper.getErrorMessageFromError(error),
                 }));
             });
         }

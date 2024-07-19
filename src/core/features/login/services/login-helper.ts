@@ -22,7 +22,7 @@ import { CoreEvents, CoreEventSessionExpiredData, CoreEventSiteData } from '@sin
 import { CoreSites, CoreLoginSiteInfo, CoreSiteBasicInfo } from '@services/sites';
 import { CoreWS, CoreWSExternalWarning } from '@services/ws';
 import { CoreDomUtils } from '@services/utils/dom';
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreUtils } from '@services/utils/utils';
 import { CoreConstants } from '@/core/constants';
 import { CoreSite } from '@classes/sites/site';
@@ -58,6 +58,8 @@ import { LazyRoutesModule } from '@/app/app-routing.module';
 import { CoreSiteError, CoreSiteErrorDebug } from '@classes/errors/siteerror';
 import { CoreQRScan } from '@services/qrscan';
 import { CoreLoadings } from '@services/loadings';
+import { CoreErrorHelper } from '@services/error-helper';
+import { CoreSitesHelper } from '@services/sites-helper';
 
 /**
  * Helper provider that provides some common features regarding authentication.
@@ -241,7 +243,7 @@ export class CoreLoginHelperProvider {
             return '';
         }
 
-        return CoreTextUtils.treatDisabledFeatures(disabledFeatures);
+        return CoreSitesHelper.treatDisabledFeatures(disabledFeatures);
     }
 
     /**
@@ -1144,16 +1146,16 @@ export class CoreLoginHelperProvider {
 
         switch (errorCode) {
             case 'forcepasswordchangenotice':
-                this.openChangePassword(siteUrl, CoreTextUtils.getErrorMessageFromError(error) ?? '');
+                this.openChangePassword(siteUrl, CoreErrorHelper.getErrorMessageFromError(error) ?? '');
                 break;
             case 'usernotconfirmed':
                 this.showNotConfirmedModal(siteUrl, undefined, username, password);
                 break;
             case 'connecttomoodleapp':
-                this.showMoodleAppNoticeModal(CoreTextUtils.getErrorMessageFromError(error) ?? '');
+                this.showMoodleAppNoticeModal(CoreErrorHelper.getErrorMessageFromError(error) ?? '');
                 break;
             case 'connecttoworkplaceapp':
-                this.showWorkplaceNoticeModal(CoreTextUtils.getErrorMessageFromError(error) ?? '');
+                this.showWorkplaceNoticeModal(CoreErrorHelper.getErrorMessageFromError(error) ?? '');
                 break;
             case 'invalidlogin':
                 this.showInvalidLoginModal(error);
@@ -1176,7 +1178,7 @@ export class CoreLoginHelperProvider {
 
         const serializedData = await CoreConfig.get<string>(CoreConstants.LOGIN_LAUNCH_DATA);
 
-        const data = <StoredLoginLaunchData | null> CoreTextUtils.parseJSON(serializedData, null);
+        const data = <StoredLoginLaunchData | null> CoreText.parseJSON(serializedData, null);
         if (data === null) {
             throw new CoreError('No launch data stored.');
         }
@@ -1554,7 +1556,7 @@ export class CoreLoginHelperProvider {
     protected async getPasswordResets(): Promise<Record<string, number>> {
         const passwordResetsJson = await CoreConfig.get(CoreLoginHelperProvider.PASSWORD_RESETS_CONFIG_KEY, '{}');
 
-        return CoreTextUtils.parseJSON<Record<string, number>>(passwordResetsJson, {});
+        return CoreText.parseJSON<Record<string, number>>(passwordResetsJson, {});
     }
 
 }

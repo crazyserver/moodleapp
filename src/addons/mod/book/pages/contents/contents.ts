@@ -27,7 +27,7 @@ import { CoreTag, CoreTagItem } from '@features/tag/services/tag';
 import { CoreNetwork } from '@services/network';
 import { CoreNavigator } from '@services/navigator';
 import { CoreDomUtils } from '@services/utils/dom';
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreErrorHelper } from '@services/error-helper';
 import { CoreUtils } from '@services/utils/utils';
 import { Translate } from '@singletons';
 import {
@@ -143,7 +143,7 @@ export class AddonModBookContentsPage implements OnInit, OnDestroy {
             await source.load();
 
             if (downloadResult?.failed) {
-                const error = CoreTextUtils.getErrorMessageFromError(downloadResult.error) || downloadResult.error;
+                const error = CoreErrorHelper.getErrorMessageFromError(downloadResult.error) || downloadResult.error;
                 this.warning = Translate.instant('core.errordownloadingsomefiles') + (error ? ' ' + error : '');
             } else {
                 this.warning = '';
@@ -424,7 +424,7 @@ class AddonModBookSlidesItemsManagerSource extends CoreSwipeSlidesItemsManagerSo
 
             return newChapters;
         } catch (error) {
-            if (!CoreTextUtils.getErrorMessageFromError(error)) {
+            if (!CoreErrorHelper.getErrorMessageFromError(error)) {
                 throw new CoreError(Translate.instant('addon.mod_book.errorchapter'));
             }
 

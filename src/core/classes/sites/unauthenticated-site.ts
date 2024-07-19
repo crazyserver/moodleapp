@@ -16,10 +16,11 @@ import { CoreConstants } from '@/core/constants';
 import { CoreError } from '@classes/errors/error';
 import { CoreLoginHelper } from '@features/login/services/login-helper';
 import { CoreSitesReadingStrategy } from '@services/sites';
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreUrl, CoreUrlPartNames } from '@singletons/url';
 import { CoreWS, CoreWSAjaxPreSets, CoreWSExternalWarning } from '@services/ws';
 import { CorePath } from '@singletons/path';
+import { CoreSitesHelper } from '@services/sites-helper';
 
 /**
  * Class that represents a Moodle site where the user still hasn't authenticated.
@@ -160,10 +161,10 @@ export class CoreUnauthenticatedSite {
             return false;
         }
 
-        const siteUrl = CoreTextUtils.addEndingSlash(
+        const siteUrl = CoreText.addEndingSlash(
             CoreUrl.removeUrlParts(this.siteUrl, [CoreUrlPartNames.Protocol, CoreUrlPartNames.WWWInDomain]),
         );
-        url = CoreTextUtils.addEndingSlash(CoreUrl.removeUrlParts(url, [CoreUrlPartNames.Protocol, CoreUrlPartNames.WWWInDomain]));
+        url = CoreText.addEndingSlash(CoreUrl.removeUrlParts(url, [CoreUrlPartNames.Protocol, CoreUrlPartNames.WWWInDomain]));
 
         return url.indexOf(siteUrl) == 0;
     }
@@ -207,7 +208,7 @@ export class CoreUnauthenticatedSite {
      */
     setPublicConfig(publicConfig: CoreSitePublicConfigResponse): void {
         publicConfig.tool_mobile_disabledfeatures =
-            CoreTextUtils.treatDisabledFeatures(publicConfig.tool_mobile_disabledfeatures ?? '');
+            CoreSitesHelper.treatDisabledFeatures(publicConfig.tool_mobile_disabledfeatures ?? '');
         this.publicConfig = publicConfig;
     }
 
@@ -330,7 +331,7 @@ export class CoreUnauthenticatedSite {
             return false;
         }
 
-        const regEx = new RegExp('(,|^)' + CoreTextUtils.escapeForRegex(name) + '(,|$)', 'g');
+        const regEx = new RegExp('(,|^)' + CoreText.escapeForRegex(name) + '(,|$)', 'g');
 
         return !!disabledFeatures.match(regEx);
     }

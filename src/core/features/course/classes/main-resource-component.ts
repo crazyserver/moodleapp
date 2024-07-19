@@ -19,7 +19,6 @@ import { CoreNetwork } from '@services/network';
 import { CoreSites } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
 
-import { CoreTextErrorObject, CoreTextUtils } from '@services/utils/text';
 import { CoreUtils } from '@services/utils/utils';
 import { Translate } from '@singletons';
 import { CoreEventObserver, CoreEvents } from '@singletons/events';
@@ -35,6 +34,7 @@ import { CoreUrl } from '@singletons/url';
 import { CoreTime } from '@singletons/time';
 import { CoreText } from '@singletons/text';
 import { CoreModals } from '@services/modals';
+import { CoreErrorHelper, CoreTextErrorObject } from '@services/error-helper';
 
 /**
  * Result of a resource download.
@@ -220,7 +220,7 @@ export class CoreCourseModuleMainResourceComponent implements OnInit, OnDestroy,
      * @returns Whether the error is a "module not found" error.
      */
     protected isNotFoundError(error: CoreAnyError): boolean {
-        return CoreTextUtils.getErrorMessageFromError(error) === Translate.instant('core.course.modulenotfound');
+        return CoreErrorHelper.getErrorMessageFromError(error) === Translate.instant('core.course.modulenotfound');
     }
 
     /**
@@ -257,12 +257,12 @@ export class CoreCourseModuleMainResourceComponent implements OnInit, OnDestroy,
      */
     protected getErrorDownloadingSomeFilesMessage(error: string | CoreTextErrorObject, multiLine?: boolean): string {
         if (multiLine) {
-            return CoreTextUtils.buildSeveralParagraphsMessage([
+            return CoreErrorHelper.buildSeveralParagraphsMessage([
                 Translate.instant('core.errordownloadingsomefiles'),
                 error,
             ]);
         } else {
-            error = CoreTextUtils.getErrorMessageFromError(error) || '';
+            error = CoreErrorHelper.getErrorMessageFromError(error) || '';
 
             return Translate.instant('core.errordownloadingsomefiles') + (error ? ' ' + error : '');
         }

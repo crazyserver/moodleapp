@@ -25,7 +25,7 @@ import { CoreNavigator } from '@services/navigator';
 import { CoreScreen } from '@services/screen';
 import { CoreSites } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
-import { CoreTextErrorObject } from '@services/utils/text';
+import { CoreTextErrorObject } from '@services/error-helper';
 import { CoreUtils } from '@services/utils/utils';
 import { Translate } from '@singletons';
 import { CoreTime } from '@singletons/time';

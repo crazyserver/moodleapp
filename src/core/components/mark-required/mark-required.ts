@@ -14,7 +14,7 @@
 
 import { Component, Input, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreUtils } from '@services/utils/utils';
 import { Translate } from '@singletons';
 
@@ -60,7 +60,7 @@ export class CoreMarkRequiredComponent implements OnInit, AfterViewInit {
         if (this.coreMarkRequired) {
             // Add the "required" to the aria-label.
             const ariaLabel = this.hostElement.getAttribute('aria-label') ||
-                CoreTextUtils.cleanTags(this.hostElement.innerHTML, { singleLine: true });
+                CoreText.cleanTags(this.hostElement.innerHTML, { singleLine: true });
             if (ariaLabel) {
                 this.hostElement.setAttribute('aria-label', ariaLabel + '. ' + this.requiredLabel);
             }

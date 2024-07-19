@@ -16,7 +16,7 @@ import { Component, OnInit, Optional } from '@angular/core';
 import { CoreCourseModuleMainResourceComponent } from '@features/course/classes/main-resource-component';
 import { CoreCourseContentsPage } from '@features/course/pages/contents/contents';
 import { CoreCourse } from '@features/course/services/course';
-import { CoreTextUtils } from '@services/utils/text';
+import { CoreText } from '@singletons/text';
 import { CoreUtils } from '@services/utils/utils';
 import { AddonModPagePage, AddonModPage } from '../../services/page';
 import { AddonModPageHelper } from '../../services/page-helper';
@@ -98,7 +98,7 @@ export class AddonModPageIndexComponent extends CoreCourseModuleMainResourceComp
         // Check if description and timemodified should be displayed.
         if (this.page.displayoptions) {
             const options: Record<string, string | boolean> =
-                CoreTextUtils.unserialize(this.page.displayoptions) || {};
+                CoreText.unserialize(this.page.displayoptions) || {};
 
             this.displayDescription = options.printintro === undefined ||
                     CoreUtils.isTrueOrOne(options.printintro);
