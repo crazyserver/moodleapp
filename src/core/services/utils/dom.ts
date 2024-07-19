@@ -61,6 +61,7 @@ import { CoreViewer } from '@features/viewer/services/viewer';
 import { CoreLoadings } from '@services/loadings';
 import { CoreErrorHelper, CoreTextErrorObject } from '@services/error-helper';
 import { convertHTMLToHTMLElement, CoreTemplateElement } from '@/core/utils/create-html-element';
+import { CoreHTMLClasses } from '@singletons/html-classes';
 
 /*
  * "Utils" service with helper functions for UI, DOM elements and HTML code.
@@ -1609,18 +1610,22 @@ export class CoreDomUtilsProvider {
      *
      * @param className Class name.
      * @returns Whether the CSS class is set.
+     *
+     * @deprecated since 4.5. Use CoreHTMLClasses.hasModeClass instead.
      */
     hasModeClass(className: string): boolean {
-        return document.documentElement.classList.contains(className);
+        return CoreHTMLClasses.hasModeClass(className);
     }
 
     /**
      * Get active mode CSS classes.
      *
      * @returns Mode classes.
+     *
+     * @deprecated since 4.5. Use CoreHTMLClasses.getModeClasses instead.
      */
     getModeClasses(): string[] {
-        return Array.from(document.documentElement.classList);
+        return CoreHTMLClasses.getModeClasses();
     }
 
     /**
@@ -1628,12 +1633,14 @@ export class CoreDomUtilsProvider {
      *
      * @param className Class name.
      * @param enable Whether to add or remove the class.
+     *
+     * @deprecated since 4.5. Use CoreHTMLClasses.toggleModeClass instead.
      */
     toggleModeClass(
         className: string,
         enable = false,
     ): void {
-        document.documentElement.classList.toggle(className, enable);
+        CoreHTMLClasses.toggleModeClass(className, enable);
     }
 
 }
