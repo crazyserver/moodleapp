@@ -60,6 +60,7 @@ import { CorePopovers, OpenPopoverOptions as OpenPopoverOptionsNew } from '@serv
 import { CoreViewer } from '@features/viewer/services/viewer';
 import { CoreLoadings } from '@services/loadings';
 import { CoreErrorHelper, CoreTextErrorObject } from '@services/error-helper';
+import { convertHTMLToHTMLElement, CoreTemplateElement } from '@/core/utils/create-html-element';
 
 /*
  * "Utils" service with helper functions for UI, DOM elements and HTML code.
@@ -72,8 +73,6 @@ export class CoreDomUtilsProvider {
     // List of input types that support keyboard.
     protected readonly INPUT_SUPPORT_KEYBOARD: string[] = ['date', 'datetime', 'datetime-local', 'email', 'month', 'number',
         'password', 'search', 'tel', 'text', 'time', 'url', 'week'];
-
-    protected template: HTMLTemplateElement = document.createElement('template'); // A template element to convert HTML to element.
 
     protected matchesFunctionName?: string; // Name of the "matches" function to use when simulating a closest call.
     protected debugDisplay = false; // Whether to display debug messages. Store it in a variable to make it synchronous.
@@ -201,12 +200,11 @@ export class CoreDomUtilsProvider {
      *
      * @param html Text to convert.
      * @returns Element.
+     *
+     * @deprecated since 4.5. Use convertToElement directly instead.
      */
     convertToElement(html: string): HTMLElement {
-        // Add a div to hold the content, that's the element that will be returned.
-        this.template.innerHTML = '<div>' + html + '</div>';
-
-        return <HTMLElement> this.template.content.children[0];
+        return convertHTMLToHTMLElement(html);
     }
 
     /**
@@ -268,7 +266,7 @@ export class CoreDomUtilsProvider {
      * @returns Fixed HTML text.
      */
     fixHtml(html: string): string {
-        this.template.innerHTML = html;
+        CoreTemplateElement.innerHTML = html;
 
         // eslint-disable-next-line no-control-regex
         const attrNameRegExp = /[^\x00-\x20\x7F-\x9F"'>/=]+/;
@@ -283,9 +281,9 @@ export class CoreDomUtilsProvider {
             Array.from(element.children).forEach(fixElement);
         };
 
-        Array.from(this.template.content.children).forEach(fixElement);
+        Array.from(CoreTemplateElement.content.children).forEach(fixElement);
 
-        return this.template.innerHTML;
+        return CoreTemplateElement.innerHTML;
     }
 
     /**
@@ -394,7 +392,7 @@ export class CoreDomUtilsProvider {
      * @returns Attribute value.
      */
     getHTMLElementAttribute(html: string, attribute: string): string | null {
-        return this.convertToElement(html).children[0].getAttribute(attribute);
+        return convertHTMLToHTMLElement(html).children[0].getAttribute(attribute);
     }
 
     /**
@@ -655,7 +653,7 @@ export class CoreDomUtilsProvider {
      * @returns HTML without the element.
      */
     removeElementFromHtml(html: string, selector: string, removeAll?: boolean): string {
-        const element = this.convertToElement(html);
+        const element = convertHTMLToHTMLElement(html);
 
         if (removeAll) {
             const selected = element.querySelectorAll(selector);
@@ -703,7 +701,7 @@ export class CoreDomUtilsProvider {
         paths: {[url: string]: string},
         anchorFn?: (anchor: HTMLElement, href: string) => void,
     ): string {
-        const element = this.convertToElement(html);
+        const element = convertHTMLToHTMLElement(html);
 
         // Treat elements with src (img, audio, video, ...).
         const media = Array.from(element.querySelectorAll<HTMLElement>('img, video, audio, source, track, iframe, embed'));
@@ -1400,7 +1398,7 @@ export class CoreDomUtilsProvider {
      * @returns Same text converted to HTMLCollection.
      */
     toDom(text: string): HTMLCollection {
-        const element = this.convertToElement(text);
+        const element = convertHTMLToHTMLElement(text);
 
         return element.children;
     }
@@ -1682,7 +1680,7 @@ export enum ToastDuration {
     LONG = 'long',
     SHORT = 'short',
     STICKY = 'sticky',
- }
+}
 
 /**
  * Options for showToastWithOptions.
