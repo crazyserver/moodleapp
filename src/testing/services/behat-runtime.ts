@@ -232,11 +232,11 @@ export class TestingBehatRuntimeService {
 
         const backdrops = [
             ...Array
-                .from(document.querySelectorAll('ion-popover, ion-modal'))
+                .from(document.body.querySelectorAll('ion-popover, ion-modal'))
                 .map(popover => popover.shadowRoot?.querySelector('ion-backdrop'))
                 .filter(backdrop => !!backdrop),
             ...Array
-                .from(document.querySelectorAll('ion-backdrop'))
+                .from(document.body.querySelectorAll('ion-backdrop'))
                 .filter(backdrop => !!backdrop.offsetParent),
         ];
 
@@ -362,7 +362,7 @@ export class TestingBehatRuntimeService {
 
         try {
             const infiniteLoading = Array
-                .from(document.querySelectorAll<HTMLElement>('core-infinite-loading'))
+                .from(document.body.querySelectorAll<HTMLElement>('core-infinite-loading'))
                 .find(element => !element.closest('.ion-page-hidden'));
 
             if (!infiniteLoading) {
@@ -517,7 +517,7 @@ export class TestingBehatRuntimeService {
     getHeader(): string {
         this.log('Action - Get header');
 
-        const getBySelector = (selector: string ) =>  Array.from(document.querySelectorAll<HTMLElement>(selector))
+        const getBySelector = (selector: string ) =>  Array.from(document.body.querySelectorAll<HTMLElement>(selector))
             .filter((title) => TestingBehatDomUtils.isElementVisible(title, document.body))
             .map((title) => title.innerText.trim())
             .filter((title) => title.length > 0);
