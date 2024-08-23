@@ -132,6 +132,8 @@ export class TestingBehatDomUtilsService {
         const attributesSelector = `[aria-label*="${escapedText}"], a[title*="${escapedText}"], ` +
             `img[alt*="${escapedText}"], [placeholder*="${escapedText}"]`;
 
+        console.error(container.querySelectorAll<HTMLElement>(attributesSelector));
+
         const elements = Array.from(container.querySelectorAll<HTMLElement>(attributesSelector))
             .filter(
                 element => this.isElementVisible(element, container) &&

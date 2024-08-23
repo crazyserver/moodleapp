@@ -218,6 +218,7 @@ Feature: Grades navigation
     And I press "Grades" in the app
     Then I should find "GC C2.1" in the app
 
+  @test
   Scenario: Tablet navigation (student)
     Given I entered the course "Course 2" as "student1" in the app
     And I change viewport size to "1200x640" in the app
