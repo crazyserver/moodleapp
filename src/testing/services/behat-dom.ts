@@ -376,21 +376,22 @@ export class TestingBehatDomUtilsService {
             'page-core-mainmenu',
             'ion-app',
         ].join(', ')));
+        const ionApp = document.querySelector<HTMLElement>('ion-app') ?? undefined;
 
         containers = containers
             .filter(container => {
-                if (!this.isElementVisible(container)) {
-                    // Ignore containers not visible.
-                    return false;
-                }
-
                 if (container.tagName === 'ION-ALERT') {
                     // For some reason, in Behat sometimes alerts aren't removed from DOM, the close animation doesn't finish.
                     // Filter alerts with pointer-events none since that style is set before the close animation starts.
                     return container.style.pointerEvents !== 'none';
                 }
 
-                return true;
+                // Ignore not visible containers.
+                if (container.tagName === 'ION-APP') {
+                    return this.isElementVisible(container);
+                }
+
+                return this.isElementVisible(container, ionApp);
             })
             // Sort them by z-index.
             .sort((a, b) =>  Number(getComputedStyle(b).zIndex) - Number(getComputedStyle(a).zIndex));
