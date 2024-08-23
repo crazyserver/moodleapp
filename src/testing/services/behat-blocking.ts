@@ -16,6 +16,7 @@ import { Injectable } from '@angular/core';
 import { CoreWait } from '@singletons/wait';
 import { makeSingleton, NgZone } from '@singletons';
 import { BehatTestsWindow, TestingBehatRuntime } from './behat-runtime';
+import { CoreDom } from '@singletons/dom';
 
 /**
  * Behat block JS manager.
@@ -203,7 +204,7 @@ export class TestingBehatBlockingService {
             // @TODO Fix ion-loading present check with CoreDom.isElementVisible.
             // ion-loading never has offsetParent since position is fixed.
             // Using isElementVisible solve the problem but will block behats (like BBB).
-            if (!element.offsetParent) {
+            if (!CoreDom.isElementVisible(element)) {
                 return false;
             }
 
