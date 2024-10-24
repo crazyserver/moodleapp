@@ -55,6 +55,7 @@ import { ADDON_MOD_QUIZ_ATTEMPT_FINISHED_EVENT, AddonModQuizAttemptStates, ADDON
 import { CoreWait } from '@singletons/wait';
 import { CoreModals } from '@services/modals';
 import { CoreLoadings } from '@services/loadings';
+import { CoreNetwork } from '@services/network';
 
 /**
  * Page that allows attempting a quiz.
@@ -76,7 +77,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
     component = ADDON_MOD_QUIZ_COMPONENT; // Component to link the files to.
     loaded = false; // Whether data has been loaded.
     quizAborted = false; // Whether the quiz was aborted due to an error.
-    offline = false; // Whether the quiz is being attempted in offline mode.
+    isOfflineSupported = false; // Whether the quiz is being attempted in offline mode.
     attemptSummary: AddonModQuizNavigationQuestion[] = []; // Attempt summary: list of questions to navigate.
     questions: CoreQuestionQuestionForView[] = []; // Questions of the current page.
     nextPage = -2; // Next page.
@@ -324,7 +325,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         } catch (error) {
             // If the user isn't seeing the summary, start the check again.
             if (!this.showSummary && this.quiz) {
-                this.autoSave.startCheckChangesProcess(this.quiz, this.attempt, this.preflightData, this.offline);
+                this.autoSave.startCheckChangesProcess(this.quiz, this.attempt, this.preflightData, this.isOfflineSupported);
             }
 
             CoreDomUtils.showErrorModalDefault(error, 'addon.mod_quiz.errorgetquestions', true);
@@ -354,27 +355,29 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
 
         if (AddonModQuiz.isQuizOffline(this.quiz)) {
             // Quiz supports offline.
-            this.offline = true;
+            this.isOfflineSupported = true;
         } else {
             // Quiz doesn't support offline right now, but maybe it did and then the setting was changed.
             // If we have an unfinished offline attempt then we'll use offline mode.
-            this.offline = await AddonModQuiz.isLastAttemptOfflineUnfinished(this.quiz);
+            this.isOfflineSupported = await AddonModQuiz.isLastAttemptOfflineUnfinished(this.quiz);
         }
 
         if (this.quiz.timelimit && this.quiz.timelimit > 0) {
             this.readableTimeLimit = CoreTime.formatTime(this.quiz.timelimit);
         }
 
+        const isOnline = CoreNetwork.isOnline();
+
         // Get access information for the quiz.
         this.quizAccessInfo = await AddonModQuiz.getQuizAccessInformation(this.quiz.id, {
             cmId: this.quiz.coursemodule,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            readingStrategy: isOnline ? CoreSitesReadingStrategy.PREFER_NETWORK : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         // Get user attempts to determine last attempt.
         const attempts = await AddonModQuiz.getUserAttempts(this.quiz.id, {
             cmId: this.quiz.coursemodule,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            readingStrategy: isOnline ? CoreSitesReadingStrategy.PREFER_NETWORK : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         if (!attempts.length) {
@@ -446,7 +449,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
             CoreEvents.trigger(ADDON_MOD_QUIZ_ATTEMPT_FINISHED_EVENT, {
                 quizId: this.quiz.id,
                 attemptId: this.attempt.id,
-                synced: !this.offline,
+                synced: !this.isOfflineSupported,
             }, CoreSites.getCurrentSiteId());
 
             CoreEvents.trigger(CoreEvents.ACTIVITY_DATA_SENT, { module: 'quiz' });
@@ -492,7 +495,9 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         // Get current page data again to get the latest sequencechecks.
         const data = await AddonModQuiz.getAttemptData(this.attempt.id, this.attempt.currentpage ?? 0, this.preflightData, {
             cmId: this.quiz?.coursemodule,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            readingStrategy: CoreNetwork.isOnline()
+                ? CoreSitesReadingStrategy.PREFER_NETWORK
+                : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         const newSequenceChecks: Record<number, { name: string; value: string }> = {};
@@ -555,6 +560,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
      * @returns Promise resolved when done.
      */
     protected async loadPage(page: number): Promise<void> {
+        console.error(page, this.isSequential);
         if (!this.quiz || !this.attempt) {
             return;
         }
@@ -565,7 +571,9 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
 
         const data = await AddonModQuiz.getAttemptData(this.attempt.id, page, this.preflightData, {
             cmId: this.quiz.coursemodule,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            readingStrategy: CoreNetwork.isOnline()
+                ? CoreSitesReadingStrategy.PREFER_NETWORK
+                : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         // Update attempt, status could change during the execution.
@@ -589,6 +597,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
                 question.type = 'description';
             }
         });
+        console.error(this.questions);
 
         // Mark the page as viewed.
         if (!this.isSequential) {
@@ -596,7 +605,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         }
 
         // Start looking for changes.
-        this.autoSave.startCheckChangesProcess(this.quiz, this.attempt, this.preflightData, this.offline);
+        this.autoSave.startCheckChangesProcess(this.quiz, this.attempt, this.preflightData, this.isOfflineSupported);
     }
 
     /**
@@ -609,7 +618,9 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
             return;
         }
 
-        await CorePromiseUtils.ignoreErrors(AddonModQuiz.logViewAttempt(this.attempt.id, page, this.preflightData, this.offline));
+        await CorePromiseUtils.ignoreErrors(
+            AddonModQuiz.logViewAttempt(this.attempt.id, page, this.preflightData, this.isOfflineSupported),
+        );
 
         CoreAnalytics.logEvent({
             type: CoreAnalyticsEventType.VIEW_ITEM,
@@ -651,7 +662,9 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
 
         const attempts = await AddonModQuiz.getUserAttempts(this.quiz.id, {
             cmId: this.quiz.coursemodule,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            readingStrategy: CoreNetwork.isOnline()
+                ? CoreSitesReadingStrategy.PREFER_NETWORK
+                : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         this.attempt = attempts.find(attempt => attempt.id === this.attempt?.id);
@@ -693,8 +706,10 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         // We use the attempt summary to build the navigation because it contains all the questions.
         this.attemptSummary = await AddonModQuiz.getAttemptSummary(this.attempt.id, this.preflightData, {
             cmId: this.quiz.coursemodule,
-            loadLocal: this.offline,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            loadLocal: this.isOfflineSupported,
+            readingStrategy: CoreNetwork.isOnline()
+                ? CoreSitesReadingStrategy.PREFER_NETWORK
+                : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         this.attemptSummary.forEach((question) => {
@@ -749,7 +764,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         return CoreQuestionHelper.prepareAnswers(
             this.questions,
             this.getAnswers(),
-            this.offline,
+            this.isOfflineSupported,
             this.component,
             componentId,
         );
@@ -783,7 +798,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
                 this.preflightData,
                 userFinish,
                 timeUp,
-                this.offline,
+                this.isOfflineSupported,
             );
         } catch (error) {
             if (!error || error.errorcode != 'submissionoutofsequencefriendlymessage') {
@@ -813,7 +828,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         this.autoSave.hideAutoSaveError();
 
         if (this.formElement) {
-            CoreForms.triggerFormSubmittedEvent(this.formElement, !this.offline, CoreSites.getCurrentSiteId());
+            CoreForms.triggerFormSubmittedEvent(this.formElement, !this.isOfflineSupported, CoreSites.getCurrentSiteId());
         }
 
         await CoreQuestionHelper.clearTmpData(this.questions, this.component, this.quiz.coursemodule);
@@ -882,7 +897,7 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
             this.preflightData,
             {
                 attempt,
-                offline: this.offline,
+                offline: this.isOfflineSupported,
                 finishedOffline: attempt?.finishedOffline,
                 title: 'addon.mod_quiz.startattempt',
             },
@@ -891,7 +906,9 @@ export class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
         // Re-fetch attempt access information with the right attempt (might have changed because a new attempt was created).
         this.attemptAccessInfo = await AddonModQuiz.getAttemptAccessInformation(this.quiz.id, attempt.id, {
             cmId: this.quiz.coursemodule,
-            readingStrategy: this.offline ? CoreSitesReadingStrategy.PREFER_CACHE : CoreSitesReadingStrategy.ONLY_NETWORK,
+            readingStrategy: CoreNetwork.isOnline()
+                ? CoreSitesReadingStrategy.PREFER_NETWORK
+                : CoreSitesReadingStrategy.PREFER_CACHE,
         });
 
         this.attempt = attempt;
