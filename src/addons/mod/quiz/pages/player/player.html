@@ -37,7 +37,7 @@
             <ng-container *ngFor="let question of questions">
                 <addon-mod-quiz-question-card [question]="question">
                     <core-question class="ion-text-wrap" [question]="question" [component]="component" [componentId]="cmId"
-                        [attemptId]="attempt!.id" [usageId]="attempt!.uniqueid" [offlineEnabled]="offline" contextLevel="module"
+                        [attemptId]="attempt!.id" [usageId]="attempt!.uniqueid" [offlineEnabled]="isOfflineSupported" contextLevel="module"
                         [contextInstanceId]="cmId" [courseId]="courseId" [preferredBehaviour]="quiz!.preferredbehaviour" [review]="false"
                         (onAbort)="abortQuiz()" (buttonClicked)="behaviourButtonClicked($event)" />
                 </addon-mod-quiz-question-card>
