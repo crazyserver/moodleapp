@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { AddonCalendarEventType } from '@addons/calendar/constants';
 import { CoreSiteSchema } from '@services/sites';
-import { AddonCalendarEventType } from '../calendar';
 /**
  * Database variables for AddonDatabaseOffline service.
  */

@@ -17,11 +17,10 @@ import { CoreEventObserver, CoreEvents } from '@singletons/events';
 import { CoreSites } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
 import {
-    AddonCalendarProvider,
     AddonCalendarEventToDisplay,
     AddonCalendar,
 } from '../../services/calendar';
-import { AddonCalendarHelper, AddonCalendarFilter } from '../../services/calendar-helper';
+import { AddonCalendarHelper } from '../../services/calendar-helper';
 import { AddonCalendarOffline } from '../../services/calendar-offline';
 import { CoreCategoryData, CoreCourses } from '@features/courses/services/courses';
 import { CoreConstants } from '@/core/constants';
@@ -29,6 +28,8 @@ import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
 import { CoreUrl } from '@singletons/url';
 import { CoreTime } from '@singletons/time';
 import { Translate } from '@singletons';
+import { AddonCalendarFilter } from '@addons/calendar/types';
+import { ADDON_CALENDAR_UNDELETED_EVENT_EVENT } from '@addons/calendar/constants';
 
 /**
  * Component that displays upcoming events.
@@ -70,7 +71,7 @@ export class AddonCalendarUpcomingEventsComponent implements OnInit, DoCheck, On
 
         // Listen for events "undeleted" (offline).
         this.undeleteEventObserver = CoreEvents.on(
-            AddonCalendarProvider.UNDELETED_EVENT_EVENT,
+            ADDON_CALENDAR_UNDELETED_EVENT_EVENT,
             (data) => {
                 if (!data || !data.eventId) {
                     return;

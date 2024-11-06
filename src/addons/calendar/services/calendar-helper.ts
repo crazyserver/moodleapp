@@ -20,9 +20,7 @@ import {
     AddonCalendarEvent,
     AddonCalendarEventBase,
     AddonCalendarEventToDisplay,
-    AddonCalendarEventType,
     AddonCalendarGetEventsEvent,
-    AddonCalendarProvider,
     AddonCalendarWeek,
     AddonCalendarWeekDay,
 } from './calendar';
@@ -32,24 +30,23 @@ import { CoreCourse } from '@features/course/services/course';
 import { ContextLevel, CoreConstants } from '@/core/constants';
 import moment from 'moment-timezone';
 import { makeSingleton } from '@singletons';
-import { AddonCalendarSyncInvalidateEvent } from './calendar-sync';
 import { AddonCalendarOfflineEventDBRecord } from './database/calendar-offline';
 import { CoreCategoryData } from '@features/courses/services/courses';
 import { CoreTimeUtils } from '@services/utils/time';
 import { CoreReminders, CoreRemindersService } from '@features/reminders/services/reminders';
 import { CoreCourseModuleDelegate } from '@features/course/services/module-delegate';
-import { ADDON_CALENDAR_COMPONENT } from '../constants';
-
-/**
- * Context levels enumeration.
- */
-export enum AddonCalendarEventIcons {
-    SITE = 'fas-globe',
-    CATEGORY = 'fas-cubes',
-    COURSE = 'fas-graduation-cap',
-    GROUP = 'fas-users',
-    USER = 'fas-user',
-}
+import {
+    ADDON_CALENDAR_COMPONENT,
+    ADDON_CALENDAR_STARTING_WEEK_DAY,
+    AddonCalendarEventIcons,
+    AddonCalendarEventType,
+} from '../constants';
+import {
+    AddonCalendarEventReminder,
+    AddonCalendarEventTypeOption,
+    AddonCalendarFilter,
+} from '../types';
+import { AddonCalendarSyncInvalidateEvent } from './calendar-sync';
 
 /**
  * Service that provides some features regarding lists of courses and categories.
@@ -418,7 +415,7 @@ export class AddonCalendarHelperProvider {
         const site = await CoreSites.getSite(siteId);
         // Get starting week day user preference, fallback to site configuration.
         let startWeekDayStr = site.getStoredConfig('calendar_startwday') || '1';
-        startWeekDayStr = await CoreConfig.get(AddonCalendarProvider.STARTING_WEEK_DAY, startWeekDayStr);
+        startWeekDayStr = await CoreConfig.get(ADDON_CALENDAR_STARTING_WEEK_DAY, startWeekDayStr);
         const startWeekDay = parseInt(startWeekDayStr, 10);
 
         const today = moment();
@@ -784,34 +781,4 @@ export class AddonCalendarHelperProvider {
     }
 
 }
-
 export const AddonCalendarHelper = makeSingleton(AddonCalendarHelperProvider);
-
-/**
- * Calculated data for Calendar filtering.
- */
-export type AddonCalendarFilter = {
-    filtered: boolean; // If filter enabled (some filters applied).
-    courseId: number | undefined; // Course Id to filter.
-    categoryId?: number; // Category Id to filter.
-    course: boolean; // Filter to show course events.
-    group: boolean; // Filter to show group events.
-    site: boolean; // Filter to show show site events.
-    user: boolean; // Filter to show user events.
-    category: boolean; // Filter to show category events.
-};
-
-export type AddonCalendarEventTypeOption = {
-    name: string;
-    value: AddonCalendarEventType;
-};
-
-/**
- * Formatted event reminder.
- */
-export type AddonCalendarEventReminder = {
-    id: number;
-    timestamp?: number; // Timestamp (in seconds).
-    label?: string; // Label to represent the reminder.
-    sublabel?: string; // Sub label.
-};
