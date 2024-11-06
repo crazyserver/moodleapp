@@ -46,7 +46,6 @@ import { CoreCourseHelper, CoreCourseModuleData, CoreCourseModuleCompletionData 
 import { CoreCourseFormatDelegate } from './format-delegate';
 import { CoreCronDelegate } from '@services/cron';
 import { CoreCourseLogCronHandler } from './handlers/log-cron';
-import { CoreCourseAutoSyncData } from './sync';
 import { CoreTagItem } from '@features/tag/services/tag';
 import { CoreNavigationOptions, CoreNavigator } from '@services/navigator';
 import { CoreCourseModuleDelegate } from './module-delegate';
@@ -70,7 +69,6 @@ import {
     CoreCourseModuleCompletionTracking,
     COURSE_ALL_COURSES_CLEARED,
     COURSE_ALL_SECTIONS_ID,
-    COURSE_AUTO_SYNCED,
     COURSE_COMPONENT,
     COURSE_CORE_MODULES,
     COURSE_PROGRESS_UPDATED_EVENT,
@@ -87,7 +85,6 @@ declare module '@singletons/events' {
      * @see https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation
      */
     export interface CoreEventsData {
-        [COURSE_AUTO_SYNCED]: CoreCourseAutoSyncData;
         [COURSE_PROGRESS_UPDATED_EVENT]: CoreCourseProgressUpdated;
     }
 
