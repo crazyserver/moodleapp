@@ -70,7 +70,7 @@ export async function getCourseServices(): Promise<Type<unknown>[]> {
 export async function getCourseExportedObjects(): Promise<Record<string, unknown>> {
     const { CoreCourseActivityPrefetchHandlerBase } = await import('@features/course/classes/activity-prefetch-handler');
     const { CoreCourseResourcePrefetchHandlerBase } = await import('@features/course/classes/resource-prefetch-handler');
-    const { CoreCourseAccessDataType } = await import('@features/course/services/course');
+    const { CoreCourseAccessDataType } = await import('@features/course/constants');
     const { CoreCourseUnsupportedModuleComponent } =
         await import ('@features/course/components/unsupported-module/unsupported-module');
     const { CoreCourseFormatSingleActivityComponent } =

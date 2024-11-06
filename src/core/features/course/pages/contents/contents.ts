@@ -21,8 +21,6 @@ import { CoreCourses, CoreCourseAnyCourseData } from '@features/courses/services
 import {
     CoreCourse,
     CoreCourseCompletionActivityStatus,
-    CoreCourseModuleCompletionStatus,
-    CoreCourseProvider,
 } from '@features/course/services/course';
 import {
     CoreCourseHelper,
@@ -32,7 +30,7 @@ import {
 } from '@features/course/services/course-helper';
 import { CoreCourseFormatDelegate } from '@features/course/services/format-delegate';
 import { CoreCourseModulePrefetchDelegate } from '@features/course/services/module-prefetch-delegate';
-import { CoreCourseSync, CoreCourseSyncProvider } from '@features/course/services/sync';
+import { CoreCourseSync } from '@features/course/services/sync';
 import { CoreCourseFormatComponent } from '../../components/course-format/course-format';
 import {
     CoreEvents,
@@ -43,6 +41,7 @@ import { CoreRefreshContext, CORE_REFRESH_CONTEXT } from '@/core/utils/refresh-c
 import { CoreCoursesHelper } from '@features/courses/services/courses-helper';
 import { CoreSites } from '@services/sites';
 import { CoreWait } from '@singletons/wait';
+import { CoreCourseModuleCompletionStatus, COURSE_AUTO_SYNCED, COURSE_PROGRESS_UPDATED_EVENT } from '@features/course/constants';
 
 /**
  * Page that displays the contents of a course.
@@ -154,7 +153,7 @@ export class CoreCourseContentsPage implements OnInit, OnDestroy, CoreRefreshCon
             this.onCompletionChange(data.completion);
         });
 
-        this.syncObserver = CoreEvents.on(CoreCourseSyncProvider.AUTO_SYNCED, (data) => {
+        this.syncObserver = CoreEvents.on(COURSE_AUTO_SYNCED, (data) => {
             if (!data || data.courseId != this.course.id) {
                 return;
             }
@@ -362,7 +361,7 @@ export class CoreCourseContentsPage implements OnInit, OnDestroy, CoreRefreshCon
             return;
         }
 
-        CoreEvents.trigger(CoreCourseProvider.PROGRESS_UPDATED, {
+        CoreEvents.trigger(COURSE_PROGRESS_UPDATED_EVENT, {
             courseId: this.course.id, progress: this.course.progress,
         }, siteId);
     }
