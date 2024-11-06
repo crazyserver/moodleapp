@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { ILocalNotification } from '@awesome-cordova-plugins/local-notifications';
 import { NotificationEventResponse, PushOptions, RegistrationEventResponse } from '@awesome-cordova-plugins/push/ngx';
 
-import { CoreApp } from '@services/app';
+import { CoreAppDB } from '@services/app-db';
 import { CoreSites } from '@services/sites';
 import { CorePushNotificationsDelegate } from './push-delegate';
 import { CoreLocalNotifications } from '@services/local-notifications';
@@ -204,33 +204,35 @@ export class CorePushNotificationsProvider {
      * @returns Promise resolved when done.
      */
     protected async initializeDatabase(): Promise<void> {
-        try {
-            await CoreApp.createTablesFromSchema(APP_SCHEMA);
-        } catch {
-            // Ignore errors.
-        }
 
-        const database = CoreApp.getDB();
-        const badgesTable = new CoreDatabaseTableProxy<CorePushNotificationsBadgeDBRecord, CorePushNotificationsBadgeDBPrimaryKeys>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
-            database,
-            BADGE_TABLE_NAME,
-            [...BADGE_TABLE_PRIMARY_KEYS],
-        );
-        const pendingUnregistersTable = new CoreDatabaseTableProxy<CorePushNotificationsPendingUnregisterDBRecord, 'siteid'>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
-            database,
-            PENDING_UNREGISTER_TABLE_NAME,
-            ['siteid'],
-        );
+        await CoreAppDB.createTablesFromSchema(APP_SCHEMA);
+        const database = CoreAppDB.getDB();
 
-        await Promise.all([
-            badgesTable.initialize(),
-            pendingUnregistersTable.initialize(),
-        ]);
+        this.badgesTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CorePushNotificationsBadgeDBRecord, CorePushNotificationsBadgeDBPrimaryKeys>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
+                database,
+                BADGE_TABLE_NAME,
+                [...BADGE_TABLE_PRIMARY_KEYS],
+            );
 
-        this.badgesTable.setInstance(badgesTable);
-        this.pendingUnregistersTable.setInstance(pendingUnregistersTable);
+            await table.initialize();
+
+            return table;
+        });
+
+        this.pendingUnregistersTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CorePushNotificationsPendingUnregisterDBRecord, 'siteid'>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
+                database,
+                PENDING_UNREGISTER_TABLE_NAME,
+                ['siteid'],
+            );
+
+            await table.initialize();
+
+            return table;
+        });
     }
 
     /**

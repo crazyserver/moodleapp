@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { ILocalNotification } from '@awesome-cordova-plugins/local-notifications';
 
-import { CoreApp } from '@services/app';
+import { CoreAppDB } from '@services/app-db';
 import { CoreConfig } from '@services/config';
 import { CoreEventObserver, CoreEvents } from '@singletons/events';
 import { CoreText } from '@singletons/text';
@@ -185,42 +185,49 @@ export class CoreLocalNotificationsProvider {
      * Initialize database.
      */
     async initializeDatabase(): Promise<void> {
-        try {
-            await CoreApp.createTablesFromSchema(APP_SCHEMA);
-        } catch {
-            // Ignore errors.
-        }
+        await CoreAppDB.createTablesFromSchema(APP_SCHEMA);
 
-        const database = CoreApp.getDB();
-        const sitesTable = new CoreDatabaseTableProxy<CoreLocalNotificationsSitesDBRecord, 'id', never>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.None },
-            database,
-            SITES_TABLE_NAME,
-            ['id'],
-            null,
-        );
-        const componentsTable = new CoreDatabaseTableProxy<CoreLocalNotificationsComponentsDBRecord, 'id', never>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.None },
-            database,
-            COMPONENTS_TABLE_NAME,
-            ['id'],
-            null,
-        );
-        const triggeredTable = new CoreDatabaseTableProxy<CoreLocalNotificationsTriggeredDBRecord>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.None },
-            database,
-            TRIGGERED_TABLE_NAME,
-        );
+        const database = CoreAppDB.getDB();
 
-        await Promise.all([
-            sitesTable.initialize(),
-            componentsTable.initialize(),
-            triggeredTable.initialize(),
-        ]);
+        this.sitesTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CoreLocalNotificationsSitesDBRecord, 'id', never>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.None },
+                database,
+                SITES_TABLE_NAME,
+                ['id'],
+                null,
+            );
 
-        this.sitesTable.setInstance(sitesTable);
-        this.componentsTable.setInstance(componentsTable);
-        this.triggeredTable.setInstance(triggeredTable);
+            await table.initialize();
+
+            return table;
+        });
+
+        this.componentsTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CoreLocalNotificationsComponentsDBRecord, 'id', never>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.None },
+                database,
+                COMPONENTS_TABLE_NAME,
+                ['id'],
+                null,
+            );
+
+            await table.initialize();
+
+            return table;
+        });
+
+        this.triggeredTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CoreLocalNotificationsTriggeredDBRecord>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.None },
+                database,
+                TRIGGERED_TABLE_NAME,
+            );
+
+            await table.initialize();
+
+            return table;
+        });
     }
 
     /**

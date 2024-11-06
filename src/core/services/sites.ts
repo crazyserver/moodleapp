@@ -16,7 +16,7 @@ import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
 import { timeout } from 'rxjs/operators';
 
-import { CoreApp, CoreStoreConfig } from '@services/app';
+import { CoreApp, CoreStoreConfig } from '@singletons/app';
 import { CoreEvents } from '@singletons/events';
 import { CoreWS } from '@services/ws';
 import { CoreDomUtils } from '@services/utils/dom';
@@ -68,6 +68,8 @@ import { CoreHTMLClasses } from '@singletons/html-classes';
 import { CoreSiteErrorDebug } from '@classes/errors/siteerror';
 import { CoreErrorHelper } from './error-helper';
 import { CoreQueueRunner } from '@classes/queue-runner';
+import { CoreAppDB } from './app-db';
+import { CoreRedirects } from '@singletons/redirects';
 
 export const CORE_SITE_SCHEMAS = new InjectionToken<CoreSiteSchema[]>('CORE_SITE_SCHEMAS');
 export const CORE_SITE_CURRENT_SITE_ID_CONFIG = 'current_site_id';
@@ -201,21 +203,19 @@ export class CoreSitesProvider {
      * Initialize database.
      */
     async initializeDatabase(): Promise<void> {
-        try {
-            await CoreApp.createTablesFromSchema(APP_SCHEMA);
-        } catch {
-            // Ignore errors.
-        }
+        await CoreAppDB.createTablesFromSchema(APP_SCHEMA);
 
-        const sitesTable = new CoreDatabaseTableProxy<SiteDBEntry>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
-            CoreApp.getDB(),
-            SITES_TABLE_NAME,
-        );
+        this.sitesTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<SiteDBEntry>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
+                CoreAppDB.getDB(),
+                SITES_TABLE_NAME,
+            );
 
-        await sitesTable.initialize();
+            await table.initialize();
 
-        this.sitesTable.setInstance(sitesTable);
+            return table;
+        });
     }
 
     /**
@@ -1198,7 +1198,7 @@ export class CoreSitesProvider {
      * @returns Site.
      */
     async getSiteFromDB(siteId: string): Promise<CoreSite> {
-        const db = CoreApp.getDB();
+        const db = CoreAppDB.getDB();
 
         try {
             const record = await db.getRecord<SiteDBEntry>(SITES_TABLE_NAME, { id: siteId });
@@ -1500,7 +1500,7 @@ export class CoreSitesProvider {
 
         if (CoreSitePlugins.hasSitePluginsLoaded) {
             // The site has site plugins so the app will be restarted. Store the data and logout.
-            CoreApp.storeRedirect(siteId, redirectData);
+            CoreRedirects.storeRedirect(siteId, redirectData);
         }
 
         await this.logout();
@@ -2052,12 +2052,12 @@ export class CoreSitesProvider {
         }
 
         try {
-            const db = CoreApp.getDB();
+            const db = CoreAppDB.getDB();
 
             const { siteId } = await db.getRecord<{ siteId: string }>('current_site');
 
             await CoreConfig.set(CORE_SITE_CURRENT_SITE_ID_CONFIG, siteId);
-            await CoreApp.deleteTableSchema('current_site');
+            await CoreAppDB.deleteTableSchema('current_site');
             await db.dropTable('current_site');
         } catch {
             // There was no current site, silence the error.

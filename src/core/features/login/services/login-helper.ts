@@ -16,7 +16,7 @@ import { Injectable, SecurityContext } from '@angular/core';
 import { Params } from '@angular/router';
 import { Md5 } from 'ts-md5/dist/md5';
 
-import { CoreApp, CoreStoreConfig } from '@services/app';
+import { CoreApp, CoreStoreConfig } from '@singletons/app';
 import { CoreConfig } from '@services/config';
 import { CoreEvents, CoreEventSessionExpiredData, CoreEventSiteData } from '@singletons/events';
 import { CoreSites, CoreLoginSiteInfo, CoreSiteBasicInfo } from '@services/sites';
@@ -61,6 +61,7 @@ import { CoreSiteError, CoreSiteErrorDebug } from '@classes/errors/siteerror';
 import { CoreQRScan } from '@services/qrscan';
 import { CoreLoadings } from '@services/loadings';
 import { CoreErrorHelper } from '@services/error-helper';
+import { CoreSSO } from '@singletons/sso';
 
 /**
  * Helper provider that provides some common features regarding authentication.
@@ -131,7 +132,7 @@ export class CoreLoginHelperProvider {
         const currentSite = CoreSites.getCurrentSite();
 
         if (
-            !CoreApp.isSSOAuthenticationOngoing() &&
+            !CoreSSO.isSSOAuthenticationOngoing() &&
             currentSite?.isLoggedOut() &&
             CoreNavigator.isCurrent('/login/reconnect')
         ) {

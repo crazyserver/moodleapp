@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { Coordinates } from '@awesome-cordova-plugins/geolocation';
 
-import { CoreApp } from '@services/app';
+import { CoreApp } from '@singletons/app';
 import { CoreAnyError, CoreError } from '@classes/errors/error';
 import { Geolocation, makeSingleton } from '@singletons';
 import { CoreUtils } from './utils/utils';

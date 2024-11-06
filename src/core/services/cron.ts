@@ -14,7 +14,7 @@
 
 import { Injectable } from '@angular/core';
 
-import { CoreApp } from '@services/app';
+import { CoreAppDB } from '@services/app-db';
 import { CoreNetwork } from '@services/network';
 import { CoreConfig } from '@services/config';
 import { CoreUtils } from '@services/utils/utils';
@@ -52,21 +52,19 @@ export class CoreCronDelegateService {
      * Initialize database.
      */
     async initializeDatabase(): Promise<void> {
-        try {
-            await CoreApp.createTablesFromSchema(APP_SCHEMA);
-        } catch {
-            // Ignore errors.
-        }
+        await CoreAppDB.createTablesFromSchema(APP_SCHEMA);
 
-        const table = new CoreDatabaseTableProxy<CronDBEntry>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
-            CoreApp.getDB(),
-            CRON_TABLE_NAME,
-        );
+        this.table.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CronDBEntry>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
+                CoreAppDB.getDB(),
+                CRON_TABLE_NAME,
+            );
 
-        await table.initialize();
+            await table.initialize();
 
-        this.table.setInstance(table);
+            return table;
+        });
     }
 
     /**

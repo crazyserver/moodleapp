@@ -18,7 +18,7 @@ import { BackButtonEvent } from '@ionic/core';
 
 import { CoreLoginHelper } from '@features/login/services/login-helper';
 import { SplashScreen } from '@singletons';
-import { CoreApp } from '@services/app';
+import { CoreApp } from '@singletons/app';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSubscriptions } from '@singletons/subscriptions';
 import { CoreWindow } from '@singletons/window';

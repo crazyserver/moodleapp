@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
 
-import { CoreApp } from '@services/app';
+import { CoreAppDB } from '@services/app-db';
 import { CoreNetwork } from '@services/network';
 import { CoreEventPackageStatusChanged, CoreEvents } from '@singletons/events';
 import { CoreFile } from '@services/file';
@@ -175,22 +175,20 @@ export class CoreFilepoolProvider {
      * Initialize database.
      */
     async initializeDatabase(): Promise<void> {
-        try {
-            await CoreApp.createTablesFromSchema(APP_SCHEMA);
-        } catch (e) {
-            // Ignore errors.
-        }
+        await CoreAppDB.createTablesFromSchema(APP_SCHEMA);
 
-        const queueTable = new CoreDatabaseTableProxy<CoreFilepoolQueueDBRecord, CoreFilepoolQueueDBPrimaryKeys>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.Lazy },
-            CoreApp.getDB(),
-            QUEUE_TABLE_NAME,
-            [...QUEUE_TABLE_PRIMARY_KEYS],
-        );
+        this.queueTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CoreFilepoolQueueDBRecord, CoreFilepoolQueueDBPrimaryKeys>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.Lazy },
+                CoreAppDB.getDB(),
+                QUEUE_TABLE_NAME,
+                [...QUEUE_TABLE_PRIMARY_KEYS],
+            );
 
-        await queueTable.initialize();
+            await table.initialize();
 
-        this.queueTable.setInstance(queueTable);
+            return table;
+        });
     }
 
     /**

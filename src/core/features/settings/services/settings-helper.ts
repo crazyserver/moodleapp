@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Injectable } from '@angular/core';
-import { CoreApp } from '@services/app';
+import { CoreApp } from '@singletons/app';
 import { CoreNetwork } from '@services/network';
 import { CoreCronDelegate } from '@services/cron';
 import { CoreEvents } from '@singletons/events';

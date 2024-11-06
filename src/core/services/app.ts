@@ -14,62 +14,30 @@
 
 import { Injectable } from '@angular/core';
 
-import { CoreDB } from '@services/db';
-import { CoreEventObserver, CoreEvents } from '@singletons/events';
-import { SQLiteDB, SQLiteDBTableSchema } from '@classes/sqlitedb';
-
-import { makeSingleton, StatusBar } from '@singletons';
-import { CoreLogger } from '@singletons/logger';
-import { CoreColors } from '@singletons/colors';
-import { DBNAME, SCHEMA_VERSIONS_TABLE_NAME, SCHEMA_VERSIONS_TABLE_SCHEMA, SchemaVersionsDBEntry } from '@services/database/app';
-import { CoreObject } from '@singletons/object';
+import { makeSingleton } from '@singletons';
 import { CoreRedirectPayload } from './navigator';
-import { CoreDatabaseCachingStrategy, CoreDatabaseTableProxy } from '@classes/database/database-table-proxy';
-import { asyncInstance } from '../utils/async-instance';
-import { CoreDatabaseTable } from '@classes/database/database-table';
-import { CorePromisedValue } from '@classes/promised-value';
-import { Subscription } from 'rxjs';
 import { CorePlatform } from '@services/platform';
 import { CoreKeyboard } from '@singletons/keyboard';
 import { CoreNetwork } from './network';
-import { MAIN_MENU_VISIBILITY_UPDATED_EVENT } from '@features/mainmenu/constants';
+import { CoreAppDB, CoreAppSchema } from './app-db';
+import { SQLiteDB } from '@classes/sqlitedb';
+import { CoreSSO } from '@singletons/sso';
+import { CoreStoreConfig, CoreApp as NewCoreApp } from '@singletons/app';
+import { CoreRedirectData, CoreRedirects } from '@singletons/redirects';
 
 /**
- * Factory to provide some global functionalities, like access to the global app database.
+ * Factory to provide some global functionalities.
  *
- * @description
- * Each service or component should be responsible of creating their own database tables. Example:
- *
- * ```ts
- * constructor(appProvider: CoreAppProvider) {
- *     this.appDB = appProvider.getDB();
- *     this.appDB.createTableFromSchema(this.tableSchema);
- * }
- * ```
+ * @deprecated since 5.0. Check the functions deprecation message.
  */
 @Injectable({ providedIn: 'root' })
 export class CoreAppProvider {
 
-    protected db?: SQLiteDB;
-    protected logger: CoreLogger;
-    protected ssoAuthenticationDeferred?: CorePromisedValue<void>;
-    protected redirect?: CoreRedirectData;
-    protected schemaVersionsTable = asyncInstance<CoreDatabaseTable<SchemaVersionsDBEntry, 'name'>>();
-    protected mainMenuListener?: CoreEventObserver;
-
-    constructor() {
-        this.logger = CoreLogger.getInstance('CoreAppProvider');
-        if (CorePlatform.isAndroid()) {
-            this.mainMenuListener =
-                CoreEvents.on(MAIN_MENU_VISIBILITY_UPDATED_EVENT, () => this.setAndroidNavigationBarColor());
-        }
-    }
-
     /**
      * Returns whether the user agent is controlled by automation. I.e. Behat testing.
      *
-     * @deprecated since 4.4. Use CorePlatform.isAutomated() instead.
      * @returns True if the user agent is controlled by automation, false otherwise.
+     * @deprecated since 4.4. Use CorePlatform.isAutomated() instead.
      */
     static isAutomated(): boolean {
         return CorePlatform.isAutomated();
@@ -79,38 +47,18 @@ export class CoreAppProvider {
      * Returns the forced timezone to use. Timezone is forced for automated tests.
      *
      * @returns Timezone. Undefined to use the user's timezone.
+     * @deprecated since 5.0. Use CoreTime.getForcedTimezone() instead.
      */
     static getForcedTimezone(): string | undefined {
-        if (CorePlatform.isAutomated()) {
-            // Use the same timezone forced for LMS in tests.
-            return 'Australia/Perth';
-        }
-    }
-
-    /**
-     * Initialize database.
-     */
-    async initializeDatabase(): Promise<void> {
-        const database = this.getDB();
-
-        await database.createTableFromSchema(SCHEMA_VERSIONS_TABLE_SCHEMA);
-
-        const schemaVersionsTable = new CoreDatabaseTableProxy<SchemaVersionsDBEntry, 'name'>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.Eager },
-            database,
-            SCHEMA_VERSIONS_TABLE_NAME,
-            ['name'],
-        );
-
-        await schemaVersionsTable.initialize();
-
-        this.schemaVersionsTable.setInstance(schemaVersionsTable);
+        // Use the same timezone forced for LMS in tests.
+        return CorePlatform.isAutomated() ? 'Australia/Perth' : undefined;
     }
 
     /**
      * Check if the browser supports mediaDevices.getUserMedia.
      *
      * @returns Whether the function is supported.
+     * @deprecated since 5.0. Use CoreMedia.canGetUserMedia() instead.
      */
     canGetUserMedia(): boolean {
         return !!(navigator && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
@@ -120,6 +68,7 @@ export class CoreAppProvider {
      * Check if the browser supports MediaRecorder.
      *
      * @returns Whether the function is supported.
+     * @deprecated since 5.0. Use CoreMedia.canRecordMedia() instead.
      */
     canRecordMedia(): boolean {
         return !!window.MediaRecorder;
@@ -135,79 +84,15 @@ export class CoreAppProvider {
     }
 
     /**
-     * Install and upgrade a certain schema.
-     *
-     * @param schema The schema to create.
-     * @returns Promise resolved when done.
-     */
-    async createTablesFromSchema(schema: CoreAppSchema): Promise<void> {
-        this.logger.debug(`Apply schema to app DB: ${schema.name}`);
-
-        const oldVersion = await this.getInstalledSchemaVersion(schema);
-
-        if (oldVersion >= schema.version) {
-            // Version already installed, nothing else to do.
-            return;
-        }
-
-        this.logger.debug(`Migrating schema '${schema.name}' of app DB from version ${oldVersion} to ${schema.version}`);
-
-        if (schema.tables) {
-            await this.getDB().createTablesFromSchema(schema.tables);
-        }
-        if (schema.install && oldVersion === 0) {
-            await schema.install(this.getDB());
-        }
-        if (schema.migrate && oldVersion > 0) {
-            await schema.migrate(this.getDB(), oldVersion);
-        }
-
-        // Set installed version.
-        await this.schemaVersionsTable.insert({ name: schema.name, version: schema.version });
-    }
-
-    /**
-     * Delete table schema.
-     *
-     * @param name Schema name.
-     */
-    async deleteTableSchema(name: string): Promise<void> {
-        await this.schemaVersionsTable.deleteByPrimaryKey({ name });
-    }
-
-    /**
-     * Get the application global database.
-     *
-     * @returns App's DB.
-     */
-    getDB(): SQLiteDB {
-        if (!this.db) {
-            this.db = CoreDB.getDB(DBNAME);
-        }
-
-        return this.db;
-    }
-
-    /**
      * Get app store URL.
      *
      * @param storesConfig Config params to send the user to the right place.
      * @returns Store URL.
+     *
+     * @deprecated since 5.0. Use CoreApp.getAppStoreUrl in singletons folder instead.
      */
     getAppStoreUrl(storesConfig: CoreStoreConfig): string | undefined {
-        if (CorePlatform.isIOS() && storesConfig.ios) {
-            return 'itms-apps://itunes.apple.com/app/' + storesConfig.ios;
-        }
-
-        if (CorePlatform.isAndroid() && storesConfig.android) {
-            return 'market://details?id=' + storesConfig.android;
-        }
-
-        if (CorePlatform.isMobile() && storesConfig.mobile) {
-            return storesConfig.mobile;
-        }
-
-        return storesConfig.default;
+        return NewCoreApp.getAppStoreUrl(storesConfig);
     }
 
     /**
@@ -244,9 +129,11 @@ export class CoreAppProvider {
      * Checks if the current window is wider than a mobile.
      *
      * @returns Whether the app the current window is wider than a mobile.
+     *
+     * @deprecated since 5.0. Use CorePlatform.isWide() instead.
      */
     isWide(): boolean {
-        return CorePlatform.width() > 768;
+        return CorePlatform.isWide();
     }
 
     /**
@@ -310,144 +197,98 @@ export class CoreAppProvider {
      * Start an SSO authentication process.
      * Please notice that this function should be called when the app receives the new token from the browser,
      * NOT when the browser is opened.
+     *
+     * @deprecated since 5.0. Use CoreSSO.startSSOAuthentication instead.
      */
     startSSOAuthentication(): void {
-        this.ssoAuthenticationDeferred = new CorePromisedValue();
-
-        // Resolve it automatically after 10 seconds (it should never take that long).
-        const cancelTimeout = setTimeout(() => this.finishSSOAuthentication(), 10000);
-
-        // If the promise is resolved because finishSSOAuthentication is called, stop the cancel promise.
-        // eslint-disable-next-line promise/catch-or-return
-        this.ssoAuthenticationDeferred.then(() => clearTimeout(cancelTimeout));
+        CoreSSO.startSSOAuthentication();
     }
 
     /**
      * Finish an SSO authentication process.
+     *
+     * @deprecated since 5.0. Use CoreSSO.finishSSOAuthentication instead.
      */
     finishSSOAuthentication(): void {
-        if (this.ssoAuthenticationDeferred) {
-            this.ssoAuthenticationDeferred.resolve();
-            this.ssoAuthenticationDeferred = undefined;
-        }
+        CoreSSO.finishSSOAuthentication();
     }
 
     /**
      * Check if there's an ongoing SSO authentication process.
      *
      * @returns Whether there's a SSO authentication ongoing.
+     * @deprecated since 5.0. Use CoreSSO.isSSOAuthenticationOngoing instead.
      */
     isSSOAuthenticationOngoing(): boolean {
-        return !!this.ssoAuthenticationDeferred;
+        return CoreSSO.isSSOAuthenticationOngoing();
     }
 
     /**
      * Returns a promise that will be resolved once SSO authentication finishes.
      *
      * @returns Promise resolved once SSO authentication finishes.
+     * @deprecated since 5.0. Use CoreSSO.waitForSSOAuthentication instead.
      */
     async waitForSSOAuthentication(): Promise<void> {
-        await this.ssoAuthenticationDeferred;
+        return CoreSSO.waitForSSOAuthentication();
     }
 
     /**
      * Wait until the application is resumed.
      *
      * @param timeout Maximum time to wait, use null to wait forever.
+     *
+     * @deprecated since 5.0. Use CoreApp.waitForResume from singletons folder instead.
      */
     async waitForResume(timeout: number | null = null): Promise<void> {
-        let deferred: CorePromisedValue<void> | null = new CorePromisedValue();
-        let resumeSubscription: Subscription | null = null;
-        let timeoutId: number | null = null;
-
-        const stopWaiting = () => {
-            if (!deferred) {
-                return;
-            }
-
-            deferred.resolve();
-            resumeSubscription?.unsubscribe();
-            timeoutId && clearTimeout(timeoutId);
-
-            deferred = null;
-        };
-
-        resumeSubscription = CorePlatform.resume.subscribe(stopWaiting);
-        timeoutId = timeout ? window.setTimeout(stopWaiting, timeout) : null;
-
-        await deferred;
+        await NewCoreApp.waitForResume(timeout);
     }
 
     /**
      * Read redirect data from local storage and clear it if it existed.
+     *
+     * @deprecated since 5.0. Use CoreRedirects.consumeStorageRedirect instead.
      */
     consumeStorageRedirect(): void {
-        if (!localStorage?.getItem) {
-            return;
-        }
-
-        try {
-            // Read data from storage.
-            const jsonData = localStorage.getItem('CoreRedirect');
-
-            if (!jsonData) {
-                return;
-            }
-
-            // Clear storage.
-            localStorage.removeItem('CoreRedirect');
-
-            // Remember redirect data.
-            const data: CoreRedirectData = JSON.parse(jsonData);
-
-            if (!CoreObject.isEmpty(data)) {
-                this.redirect = data;
-            }
-        } catch (error) {
-            this.logger.error('Error loading redirect data:', error);
-        }
+        CoreRedirects.consumeStorageRedirect();
     }
 
     /**
      * Retrieve and forget redirect data.
      *
      * @returns Redirect data if any.
+     * @deprecated since 5.0. Use CoreRedirects.consumeMemoryRedirect instead.
      */
     consumeMemoryRedirect(): CoreRedirectData | null {
-        const redirect = this.getRedirect();
-
-        this.forgetRedirect();
-
-        if (redirect && (!redirect.timemodified || Date.now() - redirect.timemodified > 300000)) {
-            // Redirect data is only valid for 5 minutes, discard it.
-            return null;
-        }
-
-        return redirect;
+        return CoreRedirects.consumeMemoryRedirect();
     }
 
     /**
      * Close the app.
+     *
+     * @deprecated since 5.0. Use CoreApp.closeApp from singletons folder instead.
      */
     closeApp(): void {
-        const nav = <any> window.navigator; // eslint-disable-line @typescript-eslint/no-explicit-any
-        nav.app?.exitApp();
+        NewCoreApp.closeApp();
     }
 
     /**
      * Forget redirect data.
+     *
+     * @deprecated since 5.0. Use CoreRedirects.forgetRedirect instead.
      */
     forgetRedirect(): void {
-        delete this.redirect;
+        CoreRedirects.forgetRedirect();
     }
 
     /**
      * Retrieve redirect data.
      *
      * @returns Redirect data if any.
+     * @deprecated since 5.0. Use CoreRedirects.getRedirect instead.
      */
     getRedirect(): CoreRedirectData | null {
-        return this.redirect || null;
+        return CoreRedirects.getRedirect();
     }
 
     /**
@@ -455,166 +296,83 @@ export class CoreAppProvider {
      *
      * @param siteId Site ID.
      * @param redirectData Redirect data.
+     *
+     * @deprecated since 5.0. Use CoreRedirects.storeRedirect instead.
      */
     storeRedirect(siteId: string, redirectData: CoreRedirectPayload = {}): void {
-        if (!redirectData.redirectPath && !redirectData.urlToOpen) {
-            return;
-        }
-
-        try {
-            const redirect: CoreRedirectData = {
-                siteId,
-                timemodified: Date.now(),
-                ...redirectData,
-            };
-
-            localStorage.setItem('CoreRedirect', JSON.stringify(redirect));
-        } catch {
-            // Ignore errors.
-        }
+        CoreRedirects.storeRedirect(siteId, redirectData);
     }
 
     /**
      * Set System UI Colors.
+     *
+     * @deprecated since 5.0. Use CoreApp.setSystemUIColors from singletons folder instead.
      */
     setSystemUIColors(): void {
-        this.setStatusBarColor();
-        this.setAndroidNavigationBarColor();
+        NewCoreApp.setSystemUIColors();
     }
 
     /**
      * Set StatusBar color depending on platform.
      *
      * @param color RGB color to use as status bar background. If not set the css variable will be read.
+     *
+     * @deprecated since 5.0. Use CoreApp.setStatusBarColor from singletons folder instead.
      */
     setStatusBarColor(color?: string): void {
-        if (!CorePlatform.isMobile()) {
-            return;
-        }
-
-        if (!color) {
-            // Get the default color to change it.
-            color = CoreColors.getToolbarBackgroundColor();
-        }
-
-        this.logger.debug(`Set status bar color ${color}`);
-
-        StatusBar.backgroundColorByHexString(color);
+        NewCoreApp.setStatusBarColor(color);
     }
 
     /**
-     * Get the installed version for the given schema.
+     * Initialize database.
      *
-     * @param schema App schema.
-     * @returns Installed version number, or 0 if the schema is not installed.
+     * @deprecated since 5.0. Use CoreAppDB.initialize instead.
      */
-    protected async getInstalledSchemaVersion(schema: CoreAppSchema): Promise<number> {
-        try {
-            // Fetch installed version of the schema.
-            const entry = await this.schemaVersionsTable.getOneByPrimaryKey({ name: schema.name });
+    async initializeDatabase(): Promise<void> {
+        const { CoreAppDB } = await import('./app-db');
 
-            return entry.version;
-        } catch {
-            // No installed version yet.
-            return 0;
-        }
+        await CoreAppDB.initializeDatabase();
     }
 
     /**
-     * Set NavigationBar color for Android
+     * Install and upgrade a certain schema.
      *
-     * @param color RGB color to use as background. If not set the css variable will be read.
+     * @param schema The schema to create.
+     * @deprecated since 5.0. Use CoreAppDB.createTablesFromSchema instead.
      */
-    protected setAndroidNavigationBarColor(color?: string): void {
-        if (!CorePlatform.isAndroid()) {
-            return;
-        }
+    async createTablesFromSchema(schema: CoreAppSchema): Promise<void> {
+        const { CoreAppDB } = await import('./app-db');
 
-        if (!color) {
-            // Get the default color to change it.
-            color = CoreColors.getBottomPageBackgroundColor();
-        }
+        await CoreAppDB.createTablesFromSchema(schema);
 
-        this.logger.debug(`Set navigation bar color ${color}`);
+    }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (<any> window).StatusBar.navigationBackgroundColorByHexString(color);
+    /**
+     * Delete table schema.
+     *
+     * @param name Schema name.
+     * @deprecated since 5.0. Use CoreAppDB.deleteTableSchema instead.
+     */
+    async deleteTableSchema(name: string): Promise<void> {
+        const { CoreAppDB } = await import('./app-db');
+
+        await CoreAppDB.deleteTableSchema(name);
+    }
+
+    /**
+     * Get the application global database.
+     *
+     * @returns App's DB.
+     * @deprecated since 5.0. Use CoreAppDB.getDB instead.
+     */
+    getDB(): SQLiteDB {
+        return CoreAppDB.getDB();
     }
 
 }
 
+/**
+ * @deprecated since 5.0. Check the functions deprecation message.
+ */
+// eslint-disable-next-line deprecation/deprecation
 export const CoreApp = makeSingleton(CoreAppProvider);
-
-/**
- * Data stored for a redirect to another page/site.
- */
-export type CoreRedirectData = CoreRedirectPayload & {
-    siteId?: string; // ID of the site to load.
-    timemodified?: number; // Timestamp when this redirect was last modified.
-};
-
-/**
- * Store config data.
- */
-export type CoreStoreConfig = {
-    /**
-     * ID of the Apple store where the mobile iOS app is uploaded.
-     */
-    ios?: string;
-
-    /**
-     * ID of the Google play store where the android app is uploaded.
-     */
-    android?: string;
-
-    /**
-     * Fallback URL when the mobile options is not set.
-     */
-    mobile?: string;
-
-    /**
-     * Fallback URL when the other fallbacks options are not set.
-     */
-    default?: string;
-};
-
-/**
- * App DB schema and migration function.
- */
-export type CoreAppSchema = {
-    /**
-     * Name of the schema.
-     */
-    name: string;
-
-    /**
-     * Latest version of the schema (integer greater than 0).
-     */
-    version: number;
-
-    /**
-     * Tables to create when installing or upgrading the schema.
-     */
-    tables?: SQLiteDBTableSchema[];
-
-    /**
-     * Migrates the schema to the latest version.
-     *
-     * Called when upgrading the schema, after creating the defined tables.
-     *
-     * @param db The affected DB.
-     * @param oldVersion Old version of the schema or 0 if not installed.
-     * @returns Promise resolved when done.
-     */
-    migrate?(db: SQLiteDB, oldVersion: number): Promise<void>;
-
-    /**
-     * Make changes to install the schema.
-     *
-     * Called when installing the schema, after creating the defined tables.
-     *
-     * @param db Site database.
-     * @returns Promise resolved when done.
-     */
-    install?(db: SQLiteDB): Promise<void> | void;
-};

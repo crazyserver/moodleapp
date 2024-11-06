@@ -17,7 +17,7 @@ import { FileEntry, DirectoryEntry } from '@awesome-cordova-plugins/file/ngx';
 import { Md5 } from 'ts-md5/dist/md5';
 
 import { CoreLogger } from '@singletons/logger';
-import { CoreApp } from '@services/app';
+import { CoreAppDB } from '@services/app-db';
 import { CoreFile } from '@services/file';
 import { CoreUtils } from '@services/utils/utils';
 import { CoreMimetypeUtils } from '@services/utils/mimetype';
@@ -51,22 +51,19 @@ export class CoreSharedFilesProvider {
      * @returns Promise resolved when done.
      */
     async initializeDatabase(): Promise<void> {
-        try {
-            await CoreApp.createTablesFromSchema(APP_SCHEMA);
-        } catch (e) {
-            // Ignore errors.
-        }
+        await CoreAppDB.createTablesFromSchema(APP_SCHEMA);
 
-        const database = CoreApp.getDB();
-        const sharedFilesTable = new CoreDatabaseTableProxy<CoreSharedFilesDBRecord>(
-            { cachingStrategy: CoreDatabaseCachingStrategy.None },
-            database,
-            SHARED_FILES_TABLE_NAME,
-        );
+        this.sharedFilesTable.setLazyConstructor(async () => {
+            const table = new CoreDatabaseTableProxy<CoreSharedFilesDBRecord>(
+                { cachingStrategy: CoreDatabaseCachingStrategy.None },
+                CoreAppDB.getDB(),
+                SHARED_FILES_TABLE_NAME,
+            );
 
-        await sharedFilesTable.initialize();
+            await table.initialize();
 
-        this.sharedFilesTable.setInstance(sharedFilesTable);
+            return table;
+        });
     }
 
     /**
