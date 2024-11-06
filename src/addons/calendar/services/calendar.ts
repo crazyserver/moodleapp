@@ -40,7 +40,6 @@ import {
     CoreReminderData,
     CoreReminders,
     CoreRemindersPushNotificationData,
-    CoreRemindersService,
 } from '@features/reminders/services/reminders';
 import { CoreEvents } from '@singletons/events';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
@@ -60,6 +59,7 @@ import {
     AddonCalendarEventType,
 } from '../constants';
 import { AddonCalendarEventDBRecord, AddonCalendarFilter } from '../types';
+import { REMINDERS_DEFAULT_REMINDER_TIMEBEFORE } from '@features/reminders/constants';
 
 declare module '@singletons/events' {
 
@@ -684,7 +684,7 @@ export class AddonCalendarProvider {
         siteId?: string,
     ): Promise<void> {
 
-        timebefore = timebefore ?? CoreRemindersService.DEFAULT_REMINDER_TIMEBEFORE;
+        timebefore = timebefore ?? REMINDERS_DEFAULT_REMINDER_TIMEBEFORE;
 
         const previousReminders = await CoreReminders.getReminders({
             instanceId: event.id,
