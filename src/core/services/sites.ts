@@ -70,6 +70,7 @@ import { CoreErrorHelper } from './error-helper';
 import { CoreQueueRunner } from '@classes/queue-runner';
 import { CoreAppDB } from './app-db';
 import { CoreRedirects } from '@singletons/redirects';
+import { CorePromiseUtils } from '@singletons/promise-utils';
 
 export const CORE_SITE_SCHEMAS = new InjectionToken<CoreSiteSchema[]>('CORE_SITE_SCHEMAS');
 export const CORE_SITE_CURRENT_SITE_ID_CONFIG = 'current_site_id';
@@ -617,7 +618,7 @@ export class CoreSitesProvider {
             const siteId = this.createSiteID(info.siteurl, info.username);
 
             // Check if the site already exists.
-            const storedSite = await CoreUtils.ignoreErrors(this.getSite(siteId));
+            const storedSite = await CorePromiseUtils.ignoreErrors(this.getSite(siteId));
             let site: CoreSite;
 
             if (storedSite) {
@@ -1132,12 +1133,12 @@ export class CoreSitesProvider {
         delete this.sites[siteId];
 
         // DB remove shouldn't fail, but we'll go ahead even if it does.
-        await CoreUtils.ignoreErrors(this.sitesTable.deleteByPrimaryKey({ id: siteId }));
+        await CorePromiseUtils.ignoreErrors(this.sitesTable.deleteByPrimaryKey({ id: siteId }));
 
         // Site deleted from sites list, now delete the folder.
         await site.deleteFolder();
 
-        await CoreUtils.ignoreErrors(CoreNative.plugin('secureStorage')?.deleteCollection(siteId));
+        await CorePromiseUtils.ignoreErrors(CoreNative.plugin('secureStorage')?.deleteCollection(siteId));
 
         CoreEvents.trigger(CoreEvents.SITE_DELETED, site, siteId);
     }
@@ -1477,7 +1478,7 @@ export class CoreSitesProvider {
 
         promises.push(this.removeStoredCurrentSite());
 
-        await CoreUtils.ignoreErrors(Promise.all(promises));
+        await CorePromiseUtils.ignoreErrors(Promise.all(promises));
 
         if (options.removeAccount) {
             await CoreSites.deleteSite(siteId);
@@ -1536,7 +1537,7 @@ export class CoreSitesProvider {
      * Handle auto logout by checking autologout type and time if its required.
      */
     async handleAutoLogout(): Promise<void> {
-        await CoreUtils.ignoreErrors(( async () => {
+        await CorePromiseUtils.ignoreErrors(( async () => {
             const siteId = await this.getStoredCurrentSiteId();
             const site = await this.getSite(siteId);
             const autoLogoutType = Number(site.getStoredConfig('tool_mobile_autologout'));

@@ -34,6 +34,7 @@ import {
     ADDON_CALENDAR_MANUAL_SYNCED,
     ADDON_CALENDAR_SYNC_ID,
 } from '../constants';
+import { CorePromiseUtils } from '@singletons/promise-utils';
 
 /**
  * Service to sync calendar.
@@ -131,7 +132,7 @@ export class AddonCalendarSyncProvider extends CoreSyncBaseProvider<AddonCalenda
             updated: false,
         };
 
-        const eventIds: number[] = await CoreUtils.ignoreErrors(AddonCalendarOffline.getAllEventsIds(siteId), []);
+        const eventIds: number[] = await CorePromiseUtils.ignoreErrors(AddonCalendarOffline.getAllEventsIds(siteId), []);
 
         if (eventIds.length > 0) {
             if (!CoreNetwork.isOnline()) {
@@ -141,7 +142,7 @@ export class AddonCalendarSyncProvider extends CoreSyncBaseProvider<AddonCalenda
 
             const promises = eventIds.map((eventId) => this.syncOfflineEvent(eventId, result, siteId));
 
-            await CoreUtils.allPromises(promises);
+            await CorePromiseUtils.allPromises(promises);
 
             if (result.updated) {
 
@@ -151,12 +152,12 @@ export class AddonCalendarSyncProvider extends CoreSyncBaseProvider<AddonCalenda
                     AddonCalendarHelper.refreshAfterChangeEvents(result.toinvalidate, siteId),
                 ];
 
-                await CoreUtils.ignoreErrors(Promise.all(promises));
+                await CorePromiseUtils.ignoreErrors(Promise.all(promises));
             }
         }
 
         // Sync finished, set sync time.
-        await CoreUtils.ignoreErrors(this.setSyncTime(ADDON_CALENDAR_SYNC_ID, siteId));
+        await CorePromiseUtils.ignoreErrors(this.setSyncTime(ADDON_CALENDAR_SYNC_ID, siteId));
 
         // All done, return the result.
         return result;

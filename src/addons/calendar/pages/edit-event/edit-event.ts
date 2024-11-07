@@ -54,6 +54,7 @@ import { CorePopovers } from '@services/popovers';
 import { CoreLoadings } from '@services/loadings';
 import { AddonCalendarEventTypeOption } from '@addons/calendar/types';
 import { REMINDERS_DISABLED, CoreRemindersUnits } from '@features/reminders/constants';
+import { CorePromiseUtils } from '@singletons/promise-utils';
 
 /**
  * Page that displays a form to create/edit an event.
@@ -165,7 +166,7 @@ export class AddonCalendarEditEventPage implements OnInit, OnDestroy, CanLeave {
         try {
             const [types, accessInfo] = await Promise.all([
                 AddonCalendar.getAllowedEventTypes(this.courseId),
-                CoreUtils.ignoreErrors(AddonCalendar.getAccessInformation(this.courseId), {
+                CorePromiseUtils.ignoreErrors(AddonCalendar.getAccessInformation(this.courseId), {
                     canmanageentries: false,
                     canmanageownentries: false,
                     canmanagegroupentries: false,

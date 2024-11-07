@@ -35,7 +35,7 @@ import { CoreFilepool } from '@services/filepool';
 import { CoreLang } from '@services/lang';
 import { CoreSites } from '@services/sites';
 import { CoreText } from '@singletons/text';
-import { CoreUtils } from '@services/utils/utils';
+import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreWS } from '@services/ws';
 import { CoreEvents } from '@singletons/events';
 import { CoreLogger } from '@singletons/logger';
@@ -121,7 +121,7 @@ export class CoreSitePluginsInit {
         // Fetch the plugins on login.
         CoreEvents.on(CoreEvents.LOGIN, async (data) => {
             try {
-                const plugins = await CoreUtils.ignoreErrors(CoreSitePlugins.getPlugins(data.siteId));
+                const plugins = await CorePromiseUtils.ignoreErrors(CoreSitePlugins.getPlugins(data.siteId));
 
                 // Plugins fetched, check that site hasn't changed.
                 if (data.siteId !== CoreSites.getCurrentSiteId() || !plugins?.length) {
@@ -181,14 +181,14 @@ export class CoreSitePluginsInit {
         const componentId = uniqueName + '#main';
 
         // Remove the CSS files for this handler that aren't used anymore. Don't block the call for this.
-        const files = await CoreUtils.ignoreErrors(
+        const files = await CorePromiseUtils.ignoreErrors(
             CoreFilepool.getFilesByComponent(site.getId(), CORE_SITE_PLUGINS_COMPONENT, componentId),
         );
 
         files?.forEach((file) => {
             if (file.url !== url) {
                 // It's not the current file, delete it.
-                CoreUtils.ignoreErrors(CoreFilepool.removeFileByUrl(site.getId(), file.url));
+                CorePromiseUtils.ignoreErrors(CoreFilepool.removeFileByUrl(site.getId(), file.url));
             }
         });
 
@@ -365,7 +365,7 @@ export class CoreSitePluginsInit {
         if (plugin.parsedHandlers) {
             // Register all the handlers.
             const parsedHandlers = plugin.parsedHandlers;
-            await CoreUtils.allPromises(Object.keys(parsedHandlers).map(async (name) => {
+            await CorePromiseUtils.allPromises(Object.keys(parsedHandlers).map(async (name) => {
                 await this.registerHandler(plugin, name, parsedHandlers[name]);
             }));
         }
@@ -379,7 +379,7 @@ export class CoreSitePluginsInit {
     protected static async loadSitePlugins(plugins: CoreSitePluginsPlugin[]): Promise<void> {
         this.courseRestrictHandlers = {};
 
-        await CoreUtils.allPromises(plugins.map(async (plugin) => {
+        await CorePromiseUtils.allPromises(plugins.map(async (plugin) => {
             const pluginPromise = this.loadSitePlugin(plugin);
             CoreSitePlugins.registerSitePluginPromise(plugin.component, pluginPromise);
 
@@ -431,7 +431,7 @@ export class CoreSitePluginsInit {
         }
 
         // Styles have been loaded, now treat the CSS.
-        CoreUtils.ignoreErrors(
+        CorePromiseUtils.ignoreErrors(
             CoreFilepool.treatCSSCode(siteId, fileUrl, cssCode, CORE_SITE_PLUGINS_COMPONENT, uniqueName, version),
         );
     }
