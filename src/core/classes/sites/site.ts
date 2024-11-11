@@ -27,7 +27,7 @@ import {
 import { CoreDomUtils } from '@services/utils/dom';
 import { CoreTimeUtils } from '@services/utils/time';
 import { CoreUrl } from '@singletons/url';
-import { CoreUtils, CoreUtilsOpenInBrowserOptions } from '@services/utils/utils';
+import { CoreOpener, CoreOpenerOpenInBrowserOptions } from '@singletons/opener';
 import { CoreConstants } from '@/core/constants';
 import { SQLiteDB } from '@classes/sqlitedb';
 import { CoreError } from '@classes/errors/error';
@@ -472,7 +472,7 @@ export class CoreSite extends CoreAuthenticatedSite {
     async openInBrowserWithAutoLogin(
         url: string,
         alertMessage?: string,
-        options: CoreUtilsOpenInBrowserOptions = {},
+        options: CoreOpenerOpenInBrowserOptions = {},
     ): Promise<void> {
         await this.openWithAutoLogin(false, url, options, alertMessage);
     }
@@ -503,7 +503,7 @@ export class CoreSite extends CoreAuthenticatedSite {
     async openWithAutoLogin(
         inApp: boolean,
         url: string,
-        options: InAppBrowserOptions & CoreUtilsOpenInBrowserOptions = {},
+        options: InAppBrowserOptions & CoreOpenerOpenInBrowserOptions = {},
         alertMessage?: string,
     ): Promise<InAppBrowserObject | void> {
         // Get the URL to open.
@@ -539,7 +539,7 @@ export class CoreSite extends CoreAuthenticatedSite {
 
             return CoreInAppBrowser.open(autoLoginUrl, options);
         } else {
-            return CoreUtils.openInBrowser(autoLoginUrl, options);
+            return CoreOpener.openInBrowser(autoLoginUrl, options);
         }
     }
 

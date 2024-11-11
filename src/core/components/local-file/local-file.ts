@@ -23,12 +23,12 @@ import { CoreDomUtils } from '@services/utils/dom';
 import { CoreMimetypeUtils } from '@services/utils/mimetype';
 import { CoreText } from '@singletons/text';
 import { CoreTimeUtils } from '@services/utils/time';
-import { CoreUtils, CoreUtilsOpenFileOptions, OpenFileAction } from '@services/utils/utils';
 import { CoreForms } from '@singletons/form';
 import { CorePath } from '@singletons/path';
 import { CorePlatform } from '@services/platform';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreLoadings } from '@services/loadings';
+import { CoreOpener, CoreOpenerOpenFileOptions, OpenFileAction } from '@singletons/opener';
 
 /**
  * Component to handle a local file. Only files inside the app folder can be managed.
@@ -133,13 +133,13 @@ export class CoreLocalFileComponent implements OnInit {
             }
         }
 
-        const options: CoreUtilsOpenFileOptions = {};
+        const options: CoreOpenerOpenFileOptions = {};
         if (isOpenButton) {
             // Use the non-default method.
             options.iOSOpenFileAction = this.defaultIsOpenWithPicker ? OpenFileAction.OPEN : OpenFileAction.OPEN_WITH;
         }
 
-        CoreUtils.openFile(CoreFile.getFileEntryURL(this.file), options);
+        CoreOpener.openFile(CoreFile.getFileEntryURL(this.file), options);
     }
 
     /**

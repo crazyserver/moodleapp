@@ -20,7 +20,7 @@ import { CoreSites } from '@services/sites';
 import { CoreCustomURLSchemes } from '@services/urlschemes';
 import { CoreDomUtils } from '@services/utils/dom';
 import { CoreUrl } from '@singletons/url';
-import { CoreUtils } from '@services/utils/utils';
+import { CoreOpener } from '@singletons/opener';
 import { Translate } from '@singletons';
 import { CoreEvents } from '@singletons/events';
 import { CoreInAppBrowser } from '@singletons/iab';
@@ -69,7 +69,7 @@ export default function(): void {
         }
 
         // Open in browser should launch the right app if found and do nothing if not found.
-        CoreUtils.openInBrowser(url, { showBrowserWarning: false });
+        CoreOpener.openInBrowser(url, { showBrowserWarning: false });
 
         // At this point, URL schemes will stop working in IAB, and in Android the IAB is showing a "Webpage not available" error.
         // Re-loading the page inside the existing IAB doesn't fix it, we need to re-load the whole IAB.

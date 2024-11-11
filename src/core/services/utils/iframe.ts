@@ -22,7 +22,6 @@ import { CoreFileHelper } from '@services/file-helper';
 import { CoreSites } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
 import { CoreUrl } from '@singletons/url';
-import { CoreUtils } from '@services/utils/utils';
 
 import { makeSingleton, NgZone, Translate } from '@singletons';
 import { CoreLogger } from '@singletons/logger';
@@ -38,6 +37,7 @@ import { CoreSite } from '@classes/sites/site';
 import { CoreNative } from '@features/native/services/native';
 import { CoreLoadings } from '@services/loadings';
 import { CorePromiseUtils } from '@singletons/promise-utils';
+import { CoreOpener } from '@singletons/opener';
 
 type CoreFrameElement = FrameElement & {
     window?: Window;
@@ -519,7 +519,7 @@ export class CoreIframeUtilsProvider {
 
             // The frame is local or the link needs to be opened in a new window. Open in browser.
             if (!CoreSites.isLoggedIn()) {
-                CoreUtils.openInBrowser(link.href);
+                CoreOpener.openInBrowser(link.href);
             } else {
                 await CoreSites.getCurrentSite()?.openInBrowserWithAutoLogin(link.href);
             }
@@ -538,7 +538,7 @@ export class CoreIframeUtilsProvider {
             }
 
             try {
-                await CoreUtils.openFile(link.href);
+                await CoreOpener.openFile(link.href);
             } catch (error) {
                 CoreDomUtils.showErrorModal(error);
             }
@@ -686,7 +686,7 @@ export class CoreIframeUtilsProvider {
                     undefined;
 
                 if (localUrl) {
-                    CoreUtils.openFile(localUrl);
+                    CoreOpener.openFile(localUrl);
                 } else {
                     CoreDomUtils.showErrorModal('core.networkerrormsg', true);
                 }
@@ -694,11 +694,11 @@ export class CoreIframeUtilsProvider {
                 return;
             }
 
-            const mimetype = await CorePromiseUtils.ignoreErrors(CoreUtils.getMimeTypeFromUrl(url));
+            const mimetype = await CorePromiseUtils.ignoreErrors(CoreMimetypeUtils.getMimeTypeFromUrl(url));
 
             if (!mimetype || mimetype === 'text/html' || mimetype === 'text/plain') {
                 // It's probably a web page, open in browser.
-                options.site ? options.site.openInBrowserWithAutoLogin(url) : CoreUtils.openInBrowser(url);
+                options.site ? options.site.openInBrowserWithAutoLogin(url) : CoreOpener.openInBrowser(url);
 
                 return;
             }
@@ -710,7 +710,7 @@ export class CoreIframeUtilsProvider {
                 url = await options.site.checkAndFixPluginfileURL(url);
             }
 
-            CoreUtils.openOnlineFile(url);
+            CoreOpener.openOnlineFile(url);
 
         } finally {
             modal.dismiss();

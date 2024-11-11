@@ -26,6 +26,7 @@ import { AddonNotificationsHelper } from '../notifications-helper';
 import { CoreViewer } from '@features/viewer/services/viewer';
 import { CoreInAppBrowser } from '@singletons/iab';
 import { CorePromiseUtils } from '@singletons/promise-utils';
+import { CoreOpener } from '@singletons/opener';
 
 /**
  * Handler for non-messaging push notifications clicks.
@@ -96,7 +97,7 @@ export class AddonNotificationsPushClickHandlerService implements CorePushNotifi
                     return;
 
                 case 'browser':
-                    return CoreUtils.openInBrowser(url);
+                    return CoreOpener.openInBrowser(url);
 
                 default: {
                     const treated = await CoreContentLinksHelper.handleLink(url, undefined, undefined, true);
