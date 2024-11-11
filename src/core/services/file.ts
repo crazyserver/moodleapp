@@ -17,7 +17,7 @@ import { Injectable } from '@angular/core';
 import { FileEntry, DirectoryEntry, Entry, Metadata, IFile } from '@awesome-cordova-plugins/file/ngx';
 
 import { CoreMimetypeUtils } from '@services/utils/mimetype';
-import { CoreUtils } from '@services/utils/utils';
+import { CoreFile as CoreFileSingleton } from '@singletons/file';
 import { CoreConstants } from '@/core/constants';
 import { CoreError } from '@classes/errors/error';
 
@@ -1304,7 +1304,7 @@ export class CoreFileProvider {
      * @returns The file name.
      */
     getFileName(file: CoreFileEntry): string | undefined {
-        return CoreUtils.isFileEntry(file) ? file.name : file.filename;
+        return CoreFileSingleton.isFileEntry(file) ? file.name : file.filename;
     }
 
 }
