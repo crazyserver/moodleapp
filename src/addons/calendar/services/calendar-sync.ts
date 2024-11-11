@@ -35,6 +35,7 @@ import {
     ADDON_CALENDAR_SYNC_ID,
 } from '../constants';
 import { CorePromiseUtils } from '@singletons/promise-utils';
+import { CoreWSError } from '@classes/errors/wserror';
 
 /**
  * Service to sync calendar.
@@ -218,7 +219,7 @@ export class AddonCalendarSyncProvider extends CoreSyncBaseProvider<AddonCalenda
                 await Promise.all(promises);
             } catch (error) {
 
-                if (!CoreUtils.isWebServiceError(error)) {
+                if (!CoreWSError.isWebServiceError(error)) {
                     // Local error, reject.
                     throw error;
                 }
@@ -283,7 +284,7 @@ export class AddonCalendarSyncProvider extends CoreSyncBaseProvider<AddonCalenda
             return AddonCalendarOffline.deleteEvent(event.id, siteId);
 
         } catch (error) {
-            if (!CoreUtils.isWebServiceError(error)) {
+            if (!CoreWSError.isWebServiceError(error)) {
                 // Local error, reject.
                 throw error;
             }

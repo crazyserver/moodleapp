@@ -185,7 +185,7 @@ export class AddonCalendarProvider {
 
             return true;
         } catch (error) {
-            if (error && !CoreUtils.isWebServiceError(error)) {
+            if (error && !CoreWSError.isWebServiceError(error)) {
                 // Couldn't connect to server, store in offline.
                 return storeOffline();
             } else {
@@ -1539,7 +1539,7 @@ export class AddonCalendarProvider {
 
             return ({ sent: true, event });
         } catch (error) {
-            if (error && !CoreUtils.isWebServiceError(error)) {
+            if (error && !CoreWSError.isWebServiceError(error)) {
                 // Couldn't connect to server, store in offline.
                 return storeOffline();
             } else {
