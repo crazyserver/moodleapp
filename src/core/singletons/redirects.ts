@@ -26,6 +26,11 @@ export class CoreRedirects {
     private static redirect?: CoreRedirectData;
     protected static logger = CoreLogger.getInstance('CoreRedirects');
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Read redirect data from local storage and clear it if it existed.
      */

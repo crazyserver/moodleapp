@@ -21,6 +21,11 @@ export class CoreSSO {
 
     private static ssoAuthenticationDeferred?: CorePromisedValue<void>;
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Start an SSO authentication process.
      * Please notice that this function should be called when the app receives the new token from the browser,

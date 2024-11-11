@@ -29,6 +29,11 @@ export class CoreHTMLClasses {
     protected static readonly MOODLEAPP_VERSION_PREFIX = 'moodleapp-';
     protected static readonly MOODLE_SITE_THEME_PREFIX = 'theme-site-';
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Initialize HTML classes.
      */

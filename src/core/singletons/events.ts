@@ -122,6 +122,11 @@ export class CoreEvents {
     protected static observables: { [eventName: string]: Subject<unknown> } = {};
     protected static uniqueEvents: { [eventName: string]: {data: unknown} } = {};
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Listen for a certain event. To stop listening to the event:
      * let observer = eventsProvider.on('something', myCallBack);

@@ -28,6 +28,11 @@ export class CoreInAppBrowser {
 
     private static iabInstance?: InAppBrowserObject;
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Close the InAppBrowser window.
      */

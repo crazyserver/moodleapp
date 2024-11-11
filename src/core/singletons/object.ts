@@ -30,6 +30,11 @@ export type CoreObjectWithoutUndefined<T> = Pretty<{
  */
 export class CoreObject {
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Returns a value of an object and deletes it from the object.
      *

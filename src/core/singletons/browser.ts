@@ -17,6 +17,11 @@
  */
 export class CoreBrowser {
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Check whether the given cookie is set.
      *

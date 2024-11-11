@@ -25,6 +25,11 @@ export class CoreKeyboard {
     protected static keyboardOpening = false;
     protected static keyboardClosing = false;
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Closes the keyboard.
      */

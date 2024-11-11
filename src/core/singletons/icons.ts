@@ -28,6 +28,11 @@ export class CoreIcons {
 
     protected static logger = CoreLogger.getInstance('CoreIcons');
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Add custom icons to Ionicons.
      */

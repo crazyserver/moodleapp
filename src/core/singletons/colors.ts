@@ -42,6 +42,11 @@ export enum CoreIonicColorNames {
  */
 export class CoreColors {
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Returns better contrast color.
      *

@@ -20,6 +20,11 @@ import { Translate } from '@singletons';
  */
 export class CoreCountries {
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Get country name based on country code.
      *

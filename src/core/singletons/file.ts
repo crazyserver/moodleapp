@@ -21,6 +21,11 @@ import { Translate } from '@singletons';
  */
 export class CoreFile {
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Check if a file is a FileEntry
      *

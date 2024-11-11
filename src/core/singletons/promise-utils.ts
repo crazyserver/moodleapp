@@ -21,6 +21,11 @@ export class CorePromiseUtils {
 
     protected static logger = CoreLogger.getInstance('CorePromiseUtils');
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Similar to Promise.all, but if a promise fails this function's promise won't be rejected until ALL promises have finished.
      *

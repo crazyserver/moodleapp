@@ -37,6 +37,11 @@ export class CoreOpener {
 
     protected static logger = CoreLogger.getInstance('CoreOpener');
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Show a confirm before opening a link in browser, unless the user previously marked to not show again.
      *

@@ -25,6 +25,11 @@ export class CoreDirectivesRegistry {
     private static instances: WeakMap<Element, unknown[]> = new WeakMap();
     protected static logger = CoreLogger.getInstance('CoreDirectivesRegistry');
 
+    // Avoid creating singleton instances.
+    private constructor() {
+        // Nothing to do.
+    }
+
     /**
      * Register a directive instance.
      *
