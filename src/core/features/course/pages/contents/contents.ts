@@ -43,6 +43,7 @@ import { CoreSites } from '@services/sites';
 import { CoreWait } from '@singletons/wait';
 import { CoreCourseModuleCompletionStatus, COURSE_AUTO_SYNCED, COURSE_PROGRESS_UPDATED_EVENT } from '@features/course/constants';
 import { CorePromiseUtils } from '@singletons/promise-utils';
+import { CoreObject } from '@singletons/object';
 
 /**
  * Page that displays the contents of a course.
@@ -280,7 +281,7 @@ export class CoreCourseContentsPage implements OnInit, OnDestroy, CoreRefreshCon
 
         if ('courseformatoptions' in this.course && this.course.courseformatoptions) {
             // Already loaded.
-            this.formatOptions = CoreUtils.objectToKeyValueMap(this.course.courseformatoptions, 'name', 'value');
+            this.formatOptions = CoreObject.toKeyValueMap(this.course.courseformatoptions, 'name', 'value');
 
             return;
         }
@@ -290,7 +291,7 @@ export class CoreCourseContentsPage implements OnInit, OnDestroy, CoreRefreshCon
         course && Object.assign(this.course, course);
 
         if (course?.courseformatoptions) {
-            this.formatOptions = CoreUtils.objectToKeyValueMap(course.courseformatoptions, 'name', 'value');
+            this.formatOptions = CoreObject.toKeyValueMap(course.courseformatoptions, 'name', 'value');
         }
     }
 

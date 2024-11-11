@@ -39,7 +39,7 @@ export class CoreFile {
      */
     static valueIsFileEntry(file: unknown): file is FileEntry {
         // We cannot use instanceof because FileEntry is a type. Check some of the properties.
-        return !!(file && typeof file == 'object' && 'isFile' in file && 'filesystem' in file &&
+        return !!(file && typeof file === 'object' && 'isFile' in file && 'filesystem' in file &&
             'toInternalURL' in file && 'copyTo' in file);
     }
 
