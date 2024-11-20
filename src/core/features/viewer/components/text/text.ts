@@ -15,11 +15,13 @@
 import { ContextLevel } from '@/core/constants';
 import { CoreSharedModule } from '@/core/shared.module';
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CoreFileEntry } from '@services/file-helper';
 
 import { CoreText } from '@singletons/text';
 import { ModalController } from '@singletons';
+import { CoreDom } from '@singletons/dom';
+import { CoreMath } from '@singletons/math';
 
 /**
  * Modal component to render a certain text.
@@ -33,7 +35,7 @@ import { ModalController } from '@singletons';
         CoreSharedModule,
     ],
 })
-export class CoreViewerTextComponent {
+export class CoreViewerTextComponent implements OnInit {
 
     @Input() title?: string; // Modal title.
     @Input() content?: string; // Modal content.
@@ -45,6 +47,18 @@ export class CoreViewerTextComponent {
     @Input() instanceId?: number; // The instance ID related to the context.
     @Input() courseId?: number; // Course ID the text belongs to. It can be used to improve performance with filters.
     @Input({ transform: toBoolean }) displayCopyButton = false; // Whether to display a button to copy the contents.
+    @Input() focusMode = false; // Whether to display zoom controls.
+
+    private static readonly MAX_ZOOM = 300;
+    private static readonly MIN_ZOOM = 80;
+
+    zoom = 100; // Zoom level.
+
+    ngOnInit(): void {
+        if (this.focusMode) {
+            this.content = CoreDom.removeAllStyles(this.content || '');
+        }
+    }
 
     /**
      * Close modal.
@@ -58,6 +72,15 @@ export class CoreViewerTextComponent {
      */
     copyText(): void {
         CoreText.copyToClipboard(this.content || '');
+    }
+
+    /**
+     * Zoom In or Out.
+     *
+     * @param zoomIn True to zoom in, false to zoom out.
+     */
+    changeZoom(zoomIn: number): void {
+        this.zoom = CoreMath.clamp(zoomIn, CoreViewerTextComponent.MIN_ZOOM, CoreViewerTextComponent.MAX_ZOOM);
     }
 
 }

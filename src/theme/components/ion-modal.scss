@@ -122,4 +122,9 @@ ion-modal {
             justify-content: space-between;
         }
     }
+
+    &.core-modal-auto-height {
+        --height: auto;
+        min-height: 200px;
+    }
 }

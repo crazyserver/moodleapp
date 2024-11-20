@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="!focusMode">
     <ion-toolbar>
         <ion-title>
             <h1>{{ title }}</h1>
@@ -10,7 +10,7 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding">
+<ion-content class="ion-padding" [ngStyle]="{zoom: zoom+'%'}" [class.core-focus-mode-content]="focusMode">
     <core-format-text [text]="content" [component]="component" [componentId]="componentId" [filter]="filter" [contextLevel]="contextLevel"
         [contextInstanceId]="instanceId" [courseId]="courseId" />
 
@@ -18,9 +18,33 @@
         <core-file *ngFor="let file of files" [file]="file" [component]="component" [componentId]="componentId" />
     </ion-card>
 </ion-content>
-<ion-footer *ngIf="displayCopyButton">
-    <ion-button expand="block" fill="outline" (click)="copyText()">
-        <ion-icon name="fas-copy" aria-hidden="true" slot="start" />
-        {{ 'core.copytoclipboard' | translate }}
-    </ion-button>
+<ion-footer>
+    <ion-row class="ion-justify-content-between ion-align-items-center ion-no-padding">
+        <ion-col size="auto">
+            <ion-button fill="clear" (click)="closeModal()" [ariaLabel]="'core.close' | translate">
+                <ion-icon name="fas-xmark" slot="icon-only" aria-hidden="true" />
+            </ion-button>
+        </ion-col>
+        <ion-col *ngIf="displayCopyButton" size="auto">
+            <ion-button expand="block" fill="outline" (click)="copyText()">
+                <ion-icon name="fas-copy" aria-hidden="true" slot="start" />
+                {{ 'core.copytoclipboard' | translate }}
+            </ion-button>
+        </ion-col>
+        @if (focusMode) {
+        <ion-col>
+            <ion-range aria-label="Zoom" min="80" max="300" step="10" [value]="zoom" (ionInput)="changeZoom($event.detail.value)">
+                <ion-button slot="start" fill="clear" [ariaLabel]="'core.zoomout' | translate" (click)="changeZoom(zoom - 10)"
+                    class="button-small">
+                    <ion-icon name="fas-a" slot="icon-only" aria-hidden="true" />
+                </ion-button>
+                <ion-button slot="end" fill="clear" [ariaLabel]="'core.zoomin' | translate" (click)="changeZoom(zoom + 10)">
+                    <ion-icon name="fas-a" slot="icon-only" aria-hidden="true" />
+                </ion-button>
+            </ion-range>
+        </ion-col>
+        } @else {
+        <ion-col />
+        }
+    </ion-row>
 </ion-footer>

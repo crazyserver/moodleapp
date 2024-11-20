@@ -82,6 +82,7 @@ export class CoreViewerService {
             content,
             ...options,
         };
+        modalOptions.cssClass = 'core-modal-transparent';
 
         await CoreModals.openModal(modalOptions);
     }
@@ -112,5 +113,6 @@ export type CoreViewerTextOptions = {
     instanceId?: number; // The instance ID related to the context.
     courseId?: number; // Course ID the text belongs to. It can be used to improve performance with filters.
     displayCopyButton?: boolean; // Whether to display a button to copy the text.
+    focusMode?: boolean; // Whether to display zoom controls.
     modalOptions?: Partial<ModalOptions>; // Modal options.
 };

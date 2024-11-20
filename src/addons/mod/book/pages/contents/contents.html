@@ -24,7 +24,7 @@
         <div class="safe-area-padding-horizontal core-swipe-slides-container">
             <core-swipe-slides [manager]="manager" [options]="swiperOpts">
                 <ng-template let-chapter="item" let-active="active">
-                    <div class="ion-padding">
+                    <div class="ion-padding" core-focus-mode>
                         <core-format-text [component]="component" [componentId]="cmId" [text]="chapter.content" contextLevel="module"
                             [contextInstanceId]="cmId" [courseId]="courseId" [disabled]="!active" />
                         <div class="ion-margin-top" *ngIf="chapter.tags?.length > 0">
@@ -39,5 +39,5 @@
 
     <core-navigation-bar collapsible-footer appearOnBottom *ngIf="loaded && displayNavBar && navigationItems.length > 1"
         [items]="navigationItems" previousTranslate="addon.mod_book.navprevtitle" nextTranslate="addon.mod_book.navnexttitle"
-        (action)="changeChapter($event.id)" slot="fixed" />
+        (action)="changeChapter($event.id)" slot="fixed" [addFocusModeButton]="true" />
 </ion-content>

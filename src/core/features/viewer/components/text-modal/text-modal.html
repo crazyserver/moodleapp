@@ -1,0 +1,20 @@
+<ion-content class="ion-padding">
+    <ion-row class="ion-justify-content-between ion-align-items-center ion-no-padding">
+        <ion-col size="auto">
+            <ion-button fill="clear" (click)="closeModal()" [ariaLabel]="'core.close' | translate">
+                <ion-icon name="fas-xmark" slot="icon-only" aria-hidden="true" />
+            </ion-button>
+        </ion-col>
+        <ion-col>
+            <ion-range aria-label="Zoom" min="80" max="300" step="10" [value]="zoom" (ionInput)="changeZoom($event.detail.value)">
+                <ion-button slot="start" fill="clear" [ariaLabel]="'core.zoomout' | translate" (click)="changeZoom(zoom - 10)"
+                    class="button-small">
+                    <ion-icon name="fas-a" slot="icon-only" aria-hidden="true" />
+                </ion-button>
+                <ion-button slot="end" fill="clear" [ariaLabel]="'core.zoomin' | translate" (click)="changeZoom(zoom + 10)">
+                    <ion-icon name="fas-a" slot="icon-only" aria-hidden="true" />
+                </ion-button>
+            </ion-range>
+        </ion-col>
+    </ion-row>
+</ion-content>

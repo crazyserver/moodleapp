@@ -739,6 +739,32 @@ export class CoreDom {
         return css.replace(regExp, prefix + ' $1 $2');
     }
 
+    /**
+     * Remove all classes from all the DOM.
+     *
+     * @returns Clean text.
+     */
+    static removeAllStyles(text: string | undefined): string {
+        if (!text) {
+            return '';
+        }
+
+        const dom = convertTextToHTMLElement(text);
+
+        // Remove all classes from all the DOM.
+        dom.querySelectorAll('*').forEach((element) => {
+            element.className = '';
+            element.removeAttribute('style');
+        });
+
+        // Remove all style tags.
+        dom.querySelectorAll('style, img, video').forEach((element) => {
+            element.remove();
+        });
+
+        return dom.innerHTML;
+    }
+
 }
 
 /**

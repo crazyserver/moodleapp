@@ -35,6 +35,7 @@ import { CoreContentDirective } from './content';
 import { CoreUpdateNonReactiveAttributesDirective } from './update-non-reactive-attributes';
 import { CoreUserTourDirective } from './user-tour';
 import { CoreIonDatetimeDirective } from './datetime';
+import { CoreFocusModeDirective } from './focus-mode';
 
 @NgModule({
     declarations: [
@@ -59,6 +60,7 @@ import { CoreIonDatetimeDirective } from './datetime';
         CoreUpdateNonReactiveAttributesDirective,
         CoreUserTourDirective,
         CoreIonDatetimeDirective,
+        CoreFocusModeDirective,
     ],
     exports: [
         CoreAutoFocusDirective,
@@ -82,6 +84,7 @@ import { CoreIonDatetimeDirective } from './datetime';
         CoreUpdateNonReactiveAttributesDirective,
         CoreUserTourDirective,
         CoreIonDatetimeDirective,
+        CoreFocusModeDirective,
     ],
 })
 export class CoreDirectivesModule {}

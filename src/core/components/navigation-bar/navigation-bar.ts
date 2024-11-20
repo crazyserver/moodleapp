@@ -40,6 +40,7 @@ export class CoreNavigationBarComponent implements OnChanges {
     @Input() contextLevel?: ContextLevel; // The context level.
     @Input() contextInstanceId?: number; // The instance ID related to the context.
     @Input() courseId?: number; // Course ID the text belongs to. It can be used to improve performance with filters.
+    @Input() addFocusModeButton?: boolean; // Whether to add a focus mode button.
 
     previousTitle?: string; // Previous item title.
     nextTitle?: string; // Next item title.
