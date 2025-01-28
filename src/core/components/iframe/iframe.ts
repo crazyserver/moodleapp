@@ -14,6 +14,7 @@
 
 import {
     Component, Input, Output, ViewChild, ElementRef, EventEmitter, OnChanges, SimpleChange, OnDestroy,
+    effect,
 } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
@@ -83,16 +84,29 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
     protected fullScreenInitialized = false;
     protected iframe?: HTMLIFrameElement;
     protected style?: HTMLStyleElement;
-    protected orientationObs?: CoreEventObserver;
     protected navSubscription?: Subscription;
     protected messageListenerFunction: (event: MessageEvent) => Promise<void>;
     protected backButtonListener?: (event: BackButtonEvent) => void;
+    protected orientation = CoreScreen.orientationSignal();
+    protected autoFullscreenOnRotateEnabled = false;
 
     constructor(protected elementRef: ElementRef<HTMLElement>) {
         this.loaded = new EventEmitter<HTMLIFrameElement>();
 
         // Listen for messages from the iframe.
         window.addEventListener('message', this.messageListenerFunction = (event) => this.onIframeMessage(event));
+
+        effect(() => {
+            if (!this.autoFullscreenOnRotateEnabled) {
+                return;
+            }
+
+            if (this.isInHiddenPage()) {
+                return;
+            }
+
+            this.toggleFullscreen(this.orientation() === CoreScreenOrientation.LANDSCAPE);
+        });
     }
 
     /**
@@ -122,11 +136,10 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
         if (!this.showFullscreenOnToolbar && !this.autoFullscreenOnRotate) {
             // Full screen disabled, stop watchers if enabled.
             this.navSubscription?.unsubscribe();
-            this.orientationObs?.off();
             this.style?.remove();
             this.backButtonListener && document.removeEventListener('ionBackButton', this.backButtonListener);
             this.navSubscription = undefined;
-            this.orientationObs = undefined;
+            this.autoFullscreenOnRotateEnabled = false;
             this.style = undefined;
             this.backButtonListener = undefined;
             this.fullScreenInitialized = true;
@@ -168,14 +181,13 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
         }
 
         if (!this.autoFullscreenOnRotate) {
-            this.orientationObs?.off();
-            this.orientationObs = undefined;
+            this.autoFullscreenOnRotateEnabled = false;
             this.fullScreenInitialized = true;
 
             return;
         }
 
-        if (this.orientationObs) {
+        if (this.autoFullscreenOnRotateEnabled) {
             this.fullScreenInitialized = true;
 
             return;
@@ -186,13 +198,7 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
             this.toggleFullscreen(CoreScreen.isLandscape);
         }
 
-        this.orientationObs = CoreEvents.on(CoreEvents.ORIENTATION_CHANGE, (data) => {
-            if (this.isInHiddenPage()) {
-                return;
-            }
-
-            this.toggleFullscreen(data.orientation == CoreScreenOrientation.LANDSCAPE);
-        });
+        this.autoFullscreenOnRotateEnabled = true;
 
         this.fullScreenInitialized = true;
     }
@@ -310,7 +316,6 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
      * @inheritdoc
      */
     ngOnDestroy(): void {
-        this.orientationObs?.off();
         this.navSubscription?.unsubscribe();
         window.removeEventListener('message', this.messageListenerFunction);
 

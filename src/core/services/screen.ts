@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { computed, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { makeSingleton } from '@singletons';
 import { CoreEvents } from '@singletons/events';
 import { CorePlatform } from '@services/platform';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 /**
  * Screen breakpoints.
@@ -64,49 +64,80 @@ export enum CoreScreenOrientation {
 @Injectable({ providedIn: 'root' })
 export class CoreScreenService {
 
-    protected breakpointsSubject: BehaviorSubject<Record<Breakpoint, boolean>>;
-    private _layoutObservable: Observable<CoreScreenLayout>;
+    private _breakpoints: WritableSignal<Record<Breakpoint, boolean>>;
+    private _layout: Signal<CoreScreenLayout>;
+    private _orientation: WritableSignal<CoreScreenOrientation>;
 
     constructor() {
-        this.breakpointsSubject = new BehaviorSubject(BREAKPOINT_NAMES.reduce((breakpoints, breakpoint) => ({
+        this._breakpoints = signal(BREAKPOINT_NAMES.reduce((breakpoints, breakpoint) => ({
             ...breakpoints,
             [breakpoint]: false,
         }), {} as Record<Breakpoint, boolean>));
 
-        this._layoutObservable = this.breakpointsObservable.pipe(
-            map(breakpoints => this.calculateLayout(breakpoints)),
-            distinctUntilChanged<CoreScreenLayout>(),
-        );
+        this._layout = computed(() => this.calculateLayout(this._breakpoints()));
+        this._orientation = signal(this.orientation);
     }
 
     get breakpoints(): Record<Breakpoint, boolean> {
-        return this.breakpointsSubject.value;
+        return this._breakpoints();
     }
 
+    /**
+     * Get breakpoints observable.
+     *
+     * @returns Breakpoints observable.
+     * @deprecated since 5.0.0. Use `breakpointsSignal` instead.
+     */
     get breakpointsObservable(): Observable<Record<Breakpoint, boolean>> {
-        return this.breakpointsSubject.asObservable();
+        return toObservable(this._breakpoints);
+    }
+
+    get breakpointsSignal(): Signal<Record<Breakpoint, boolean>> {
+        return this._breakpoints.asReadonly();
     }
 
     get layout(): CoreScreenLayout {
-        return this.calculateLayout(this.breakpointsSubject.value);
+        return this.calculateLayout(this._breakpoints());
     }
 
+    /**
+     * Get layout observable.
+     *
+     * @returns Layout observable.
+     * @deprecated since 5.0.0. Use `layoutSignal` instead.
+     */
     get layoutObservable(): Observable<CoreScreenLayout> {
-        return this._layoutObservable;
+        return toObservable(this._layout);
+    }
+
+    get layoutSignal(): Signal<CoreScreenLayout> {
+        return this._layout;
     }
 
     get isMobile(): boolean {
-        return this.layout === CoreScreenLayout.MOBILE;
+        return this._layout() === CoreScreenLayout.MOBILE;
     }
 
     get isTablet(): boolean {
-        return this.layout === CoreScreenLayout.TABLET;
+        return this._layout() === CoreScreenLayout.TABLET;
+    }
+
+    isMobileSignal(): Signal<boolean> {
+        return computed(() => this._layout() === CoreScreenLayout.MOBILE);
+    }
+
+    isTabletSignal(): Signal<boolean> {
+        return computed(() => this._layout() === CoreScreenLayout.TABLET);
     }
 
     get orientation(): CoreScreenOrientation {
         return screen.orientation.type.startsWith(CoreScreenOrientation.LANDSCAPE)
             ? CoreScreenOrientation.LANDSCAPE
             : CoreScreenOrientation.PORTRAIT;
+    }
+
+    orientationSignal(): Signal<CoreScreenOrientation> {
+        return this._orientation.asReadonly();
     }
 
     get isPortrait(): boolean {
@@ -124,7 +155,9 @@ export class CoreScreenService {
         await CorePlatform.ready();
 
         screen.orientation.addEventListener('change', () => {
-            CoreEvents.trigger(CoreEvents.ORIENTATION_CHANGE, { orientation: this.orientation });
+            const orientation = this.orientation;
+            CoreEvents.trigger(CoreEvents.ORIENTATION_CHANGE, { orientation });
+            this._orientation.set(orientation);
         });
     }
 
@@ -149,12 +182,12 @@ export class CoreScreenService {
      * @param visible Visible.
      */
     protected updateBreakpointVisibility(breakpoint: Breakpoint, visible: boolean): void {
-        if (this.breakpoints[breakpoint] === visible) {
+        if (this._breakpoints()[breakpoint] === visible) {
             return;
         }
 
-        this.breakpointsSubject.next({
-            ...this.breakpoints,
+        this._breakpoints.set({
+            ...this._breakpoints(),
             [breakpoint]: visible,
         });
     }

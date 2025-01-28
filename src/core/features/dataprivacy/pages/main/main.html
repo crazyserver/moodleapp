@@ -18,7 +18,7 @@
                 <h2 class="big">{{ 'core.dataprivacy.datarequests' | translate }}</h2>
             </ion-label>
         </ion-item-divider>
-        <ion-list *ngIf="requests.length && !isTablet">
+        <ion-list *ngIf="requests.length && !isTablet()">
             <ion-card *ngFor=" let request of requests">
                 <ion-item class="ion-text-wrap">
                     <ion-label>
@@ -61,7 +61,7 @@
             </ion-card>
         </ion-list>
 
-        <table *ngIf="requests.length && isTablet" class="core-table">
+        <table *ngIf="requests.length && isTablet()" class="core-table">
             <thead>
                 <tr>
                     <th>{{ 'core.dataprivacy.requesttype' | translate }}</th>
@@ -125,44 +125,44 @@
 
 <ng-template #statusBadge let-request="request">
     @switch (request.status) {
-        @case (0) {
-            <ion-badge color="info">{{'core.dataprivacy.statuspending' | translate }}</ion-badge>
-        } @case (1) {
-            <ion-badge color="info">{{'core.dataprivacy.statuspreprocessing' | translate }}</ion-badge>
-        } @case (2) {
-            <ion-badge color="info">{{'core.dataprivacy.statusawaitingapproval' | translate }}</ion-badge>
-        } @case (3) {
-            <ion-badge color="info">{{'core.dataprivacy.statusapproved' | translate }}</ion-badge>
-        } @case (4) {
-            <ion-badge color="info">{{'core.dataprivacy.statusprocessing' | translate }}</ion-badge>
-        } @case (5) {
-            <ion-badge color="success">{{'core.dataprivacy.statuscomplete' | translate }}</ion-badge>
-        } @case (6) {
-            <ion-badge color="warning">{{'core.dataprivacy.statuscancelled' | translate }}</ion-badge>
-        } @case (7) {
-            <ion-badge color="danger">{{'core.dataprivacy.statusrejected' | translate }}</ion-badge>
-        } @case (8) {
-            <ion-badge color="success">{{'core.dataprivacy.statusready' | translate }}</ion-badge>
-        } @case (9) {
-            <ion-badge color="secondary">{{'core.dataprivacy.statusexpired' | translate }}</ion-badge>
-        } @case (10) {
-            <ion-badge color="success">{{'core.dataprivacy.statusdeleted' | translate }}</ion-badge>
-        } @default {
-            <ion-badge class="ion-text-wrap">{{request.statuslabel}}</ion-badge>
-        }
+    @case (0) {
+    <ion-badge color="info">{{'core.dataprivacy.statuspending' | translate }}</ion-badge>
+    } @case (1) {
+    <ion-badge color="info">{{'core.dataprivacy.statuspreprocessing' | translate }}</ion-badge>
+    } @case (2) {
+    <ion-badge color="info">{{'core.dataprivacy.statusawaitingapproval' | translate }}</ion-badge>
+    } @case (3) {
+    <ion-badge color="info">{{'core.dataprivacy.statusapproved' | translate }}</ion-badge>
+    } @case (4) {
+    <ion-badge color="info">{{'core.dataprivacy.statusprocessing' | translate }}</ion-badge>
+    } @case (5) {
+    <ion-badge color="success">{{'core.dataprivacy.statuscomplete' | translate }}</ion-badge>
+    } @case (6) {
+    <ion-badge color="warning">{{'core.dataprivacy.statuscancelled' | translate }}</ion-badge>
+    } @case (7) {
+    <ion-badge color="danger">{{'core.dataprivacy.statusrejected' | translate }}</ion-badge>
+    } @case (8) {
+    <ion-badge color="success">{{'core.dataprivacy.statusready' | translate }}</ion-badge>
+    } @case (9) {
+    <ion-badge color="secondary">{{'core.dataprivacy.statusexpired' | translate }}</ion-badge>
+    } @case (10) {
+    <ion-badge color="success">{{'core.dataprivacy.statusdeleted' | translate }}</ion-badge>
+    } @default {
+    <ion-badge class="ion-text-wrap">{{request.statuslabel}}</ion-badge>
+    }
     }
 </ng-template>
 
 <ng-template #type let-request="request">
     @switch (request.type) {
-        @case (1) {
-            {{ 'core.dataprivacy.requesttypeexport' | translate }}
-        } @case (2) {
-            {{ 'core.dataprivacy.requesttypedelete' | translate }}
-        } @case (3) {
-            {{ 'core.dataprivacy.requesttypeothers' | translate }}
-        } @default {
-            {{request.typename}}
-        }
+    @case (1) {
+    {{ 'core.dataprivacy.requesttypeexport' | translate }}
+    } @case (2) {
+    {{ 'core.dataprivacy.requesttypedelete' | translate }}
+    } @case (3) {
+    {{ 'core.dataprivacy.requesttypeothers' | translate }}
+    } @default {
+    {{request.typename}}
+    }
     }
 </ng-template>

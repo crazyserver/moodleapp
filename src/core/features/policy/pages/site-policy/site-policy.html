@@ -122,12 +122,12 @@
 
             <div class="core-site-policy-buttons ion-margin-horizontal">
                 <ion-button *ngIf="(isPoliciesURL && sitePoliciesURL) || showConsentForm || agreeInOwnPage" type="submit"
-                    class="ion-text-wrap" [expand]="isTablet ? null : 'block'"
+                    class="ion-text-wrap" [expand]="isTablet() ? null : 'block'"
                     [disabled]="(isPoliciesURL || agreeInOwnPage) && !policiesForm.valid">
                     {{ 'core.continue' | translate }}
                 </ion-button>
                 <ion-button *ngIf="!isPoliciesURL && currentPolicy && !agreeInOwnPage" class="ion-text-wrap"
-                    [expand]="isTablet ? null : 'block'" (click)="nextPolicy($event)">
+                    [expand]="isTablet() ? null : 'block'" (click)="nextPolicy($event)">
                     {{ 'core.next' | translate }}
                 </ion-button>
             </div>

@@ -25,7 +25,6 @@ import { CoreNavigator } from '@services/navigator';
 import { CoreScreen } from '@services/screen';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { Translate } from '@singletons';
-import { Subscription } from 'rxjs';
 import { CoreAlerts } from '@services/overlays/alerts';
 import { CoreSharedModule } from '@/core/shared.module';
 
@@ -46,19 +45,12 @@ export default class CoreDataPrivacyMainPage implements OnInit {
     accessInfo?: CoreDataPrivacyGetAccessInformationWSResponse;
     requests: CoreDataPrivacyRequestToDisplay[] = [];
     loaded = false;
-    isTablet = false;
-    layoutSubscription?: Subscription;
+    isTablet = CoreScreen.isTabletSignal();
 
     /**
      * @inheritdoc
      */
     async ngOnInit(): Promise<void> {
-        this.isTablet = CoreScreen.isTablet;
-
-        this.layoutSubscription = CoreScreen.layoutObservable.subscribe(() => {
-            this.isTablet = CoreScreen.isTablet;
-        });
-
         await this.fetchContent();
 
         const createType = CoreNavigator.getRouteNumberParam('createType') as CoreDataPrivacyDataRequestType;

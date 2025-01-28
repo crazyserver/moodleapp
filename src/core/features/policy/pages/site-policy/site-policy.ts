@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
 import { CoreMimetype } from '@singletons/mimetype';
@@ -26,7 +26,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CoreUrl } from '@singletons/url';
 import { IonContent } from '@ionic/angular';
 import { CoreScreen } from '@services/screen';
-import { Subscription } from 'rxjs';
 import { CoreDom } from '@singletons/dom';
 import { CoreWait } from '@singletons/wait';
 import { CoreModals } from '@services/overlays/modals';
@@ -47,7 +46,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreSharedModule,
     ],
 })
-export default class CorePolicySitePolicyPage implements OnInit, OnDestroy {
+export default class CorePolicySitePolicyPage implements OnInit {
 
     @ViewChild(IonContent) content?: IonContent;
 
@@ -59,7 +58,7 @@ export default class CorePolicySitePolicyPage implements OnInit, OnDestroy {
     title = '';
     subTitle?: string;
     hasScroll = false;
-    isTablet = false;
+    isTablet = CoreScreen.isTabletSignal();
 
     // Variables for accepting policies using a URL.
     sitePoliciesURL?: string;
@@ -76,7 +75,6 @@ export default class CorePolicySitePolicyPage implements OnInit, OnDestroy {
 
     protected siteId?: string;
     protected currentSite!: CoreSite;
-    protected layoutSubscription?: Subscription;
 
     constructor(protected elementRef: ElementRef, protected changeDetector: ChangeDetectorRef) {}
 
@@ -105,11 +103,6 @@ export default class CorePolicySitePolicyPage implements OnInit, OnDestroy {
 
             return;
         }
-
-        this.isTablet = CoreScreen.isTablet;
-        this.layoutSubscription = CoreScreen.layoutObservable.subscribe(() => {
-            this.isTablet = CoreScreen.isTablet;
-        });
 
         this.isManageAcceptancesAvailable = await CorePolicy.isManageAcceptancesAvailable(this.siteId);
         this.isPoliciesURL = this.isManageAcceptancesAvailable ?
@@ -477,13 +470,6 @@ export default class CorePolicySitePolicyPage implements OnInit, OnDestroy {
             component: CorePolicyViewPolicyModalComponent,
             componentProps: { policy },
         });
-    }
-
-    /**
-     * @inheritdoc
-     */
-    ngOnDestroy(): void {
-        this.layoutSubscription?.unsubscribe();
     }
 
 }

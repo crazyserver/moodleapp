@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { IonContent, IonRouterOutlet } from '@ionic/angular';
 import { CoreScreen } from '@services/screen';
@@ -49,10 +49,15 @@ export class CoreSplitViewComponent implements AfterViewInit, OnDestroy {
     isNested = false;
     disabledScrollOuterContents: HTMLIonContentElement[] = [];
 
-    private outletRouteSubject = new BehaviorSubject<ActivatedRouteSnapshot | null>(null);
-    private subscriptions?: Subscription[];
+    protected outletRouteSubject = new BehaviorSubject<ActivatedRouteSnapshot | null>(null);
+    protected subscriptions: Subscription[] = [];
+    protected isMobile = CoreScreen.isMobileSignal();
 
-    constructor(private element: ElementRef<HTMLElement>) {}
+    constructor(protected element: ElementRef<HTMLElement>) {
+        effect(() => {
+            this.updateClasses();
+        });
+    }
 
     get outletRoute(): ActivatedRouteSnapshot | null {
         return this.outletRouteSubject.value;
@@ -81,7 +86,6 @@ export class CoreSplitViewComponent implements AfterViewInit, OnDestroy {
         this.subscriptions = [
             this.contentOutlet.activateEvents.subscribe(() => this.updateOutletRoute()),
             this.contentOutlet.deactivateEvents.subscribe(() => this.updateOutletRoute()),
-            CoreScreen.layoutObservable.subscribe(() => this.updateClasses()),
         ];
 
         this.updateClasses();
@@ -91,7 +95,7 @@ export class CoreSplitViewComponent implements AfterViewInit, OnDestroy {
      * @inheritdoc
      */
     ngOnDestroy(): void {
-        this.subscriptions?.forEach(subscription => subscription.unsubscribe());
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
 
         this.enableScrollOnParent();
     }
@@ -139,7 +143,7 @@ export class CoreSplitViewComponent implements AfterViewInit, OnDestroy {
             return CoreSplitViewMode.MENU_ONLY;
         }
 
-        if (CoreScreen.isMobile) {
+        if (this.isMobile()) {
             return this.contentOutlet.isActivated
                 ? CoreSplitViewMode.CONTENT_ONLY
                 : CoreSplitViewMode.MENU_ONLY;

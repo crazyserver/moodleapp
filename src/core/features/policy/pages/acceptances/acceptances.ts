@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
 import { CorePromiseUtils } from '@singletons/promise-utils';
@@ -21,7 +21,6 @@ import { Translate } from '@singletons';
 import { CorePolicy, CorePolicySitePolicy, CorePolicyStatus } from '@features/policy/services/policy';
 import { CoreTime } from '@singletons/time';
 import { CoreScreen } from '@services/screen';
-import { Subscription } from 'rxjs';
 import { CORE_DATAPRIVACY_FEATURE_NAME, CORE_DATAPRIVACY_PAGE_NAME } from '@features/dataprivacy/constants';
 import { CoreNavigator } from '@services/navigator';
 import { CoreDataPrivacy } from '@features/dataprivacy/services/dataprivacy';
@@ -42,18 +41,17 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreSharedModule,
     ],
 })
-export default class CorePolicyAcceptancesPage implements OnInit, OnDestroy {
+export default class CorePolicyAcceptancesPage implements OnInit {
 
     dataLoaded = false;
     policies: ActiveSitePolicy[] = [];
     activeStatus = CorePolicyStatus.Active;
     inactiveStatus = CorePolicyStatus.Archived;
-    isTablet = false;
+    isTablet = CoreScreen.isTabletSignal();
     hasOnBehalf = false;
     canContactDPO = false;
 
     protected logView: () => void;
-    protected layoutSubscription?: Subscription;
 
     constructor() {
         this.logView = CoreTime.once(() => {
@@ -73,11 +71,6 @@ export default class CorePolicyAcceptancesPage implements OnInit, OnDestroy {
      * @inheritdoc
      */
     ngOnInit(): void {
-        this.isTablet = CoreScreen.isTablet;
-        this.layoutSubscription = CoreScreen.layoutObservable.subscribe(() => {
-            this.isTablet = CoreScreen.isTablet;
-        });
-
         this.fetchCanContactDPO();
         this.fetchAcceptances().finally(() => {
             this.dataLoaded = true;
@@ -271,13 +264,6 @@ export default class CorePolicyAcceptancesPage implements OnInit, OnDestroy {
         event.stopPropagation();
 
         CoreNavigator.navigateToSitePath(CORE_DATAPRIVACY_PAGE_NAME);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    ngOnDestroy(): void {
-        this.layoutSubscription?.unsubscribe();
     }
 
 }

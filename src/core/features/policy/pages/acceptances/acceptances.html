@@ -29,7 +29,7 @@
         </div>
 
         <div class="x-scrollable core-policy-tablet-container">
-            <table *ngIf="isTablet && policies.length" class="core-table">
+            <table *ngIf="isTablet() && policies.length" class="core-table">
                 <thead>
                     <tr>
                         <th>{{ 'core.policy.policydocname' | translate }}</th>
@@ -51,7 +51,7 @@
             </table>
         </div>
 
-        <div *ngIf="!isTablet && policies.length" class="core-policy-mobile-container">
+        <div *ngIf="!isTablet() && policies.length" class="core-policy-mobile-container">
             <ng-container *ngFor="let policy of policies">
                 <ng-container *ngTemplateOutlet="policyMobileTemplate; context: {policy: policy, isPreviousVersion: false}" />
             </ng-container>
