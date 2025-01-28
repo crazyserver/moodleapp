@@ -28,15 +28,15 @@
         [courseId]="courseId" [hasDataToSync]="hasOffline" (completionChanged)="onCompletionChange()" />
 
     <!-- User tried to play in offline a package that must be played in online. -->
-    @if (triedToPlay && !isOnline && (!siteCanDownload || hasMissingDependencies)) {
+    @if (triedToPlay && !isOnline() && (!siteCanDownload || hasMissingDependencies)) {
         <ion-card class="core-warning-card">
             <ion-item>
                 <ion-icon name="fas-triangle-exclamation" slot="start" aria-hidden="true" />
                 <ion-label>
                     @if (!siteCanDownload) {
-                        {{ 'core.h5p.offlinedisabled' | translate }} {{ 'addon.mod_h5pactivity.offlinedisabledwarning' | translate }}
+                    {{ 'core.h5p.offlinedisabled' | translate }} {{ 'addon.mod_h5pactivity.offlinedisabledwarning' | translate }}
                     } @else {
-                        {{ 'core.course.activitynotavailableoffline' | translate }} {{ 'core.needinternettoaccessit' | translate }}
+                    {{ 'core.course.activitynotavailableoffline' | translate }} {{ 'core.needinternettoaccessit' | translate }}
                     }
                 </ion-label>
             </ion-item>

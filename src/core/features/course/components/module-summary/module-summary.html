@@ -206,7 +206,7 @@
         </ion-item>
     </core-loading>
 </ion-content>
-<ion-footer *ngIf="loaded && isOnline && displayOptions.displayRefresh">
+<ion-footer *ngIf="loaded && isOnline() && displayOptions.displayRefresh">
     <ion-button class="ion-margin" *ngIf="!hasOffline" (click)="refresh()" expand="block" fill="outline">
         <ion-icon name="fas-rotate-right" slot="start" aria-hidden="true" />
         <ion-label>

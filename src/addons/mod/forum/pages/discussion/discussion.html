@@ -14,10 +14,10 @@
 </ion-header>
 <core-navbar-buttons slot="end">
     <core-context-menu>
-        <core-context-menu-item *ngIf="discussionLoaded && !postHasOffline && isOnline" [priority]="650"
+        <core-context-menu-item *ngIf="discussionLoaded && !postHasOffline && isOnline()" [priority]="650"
             [content]="'addon.mod_forum.refreshposts' | translate" [iconAction]="refreshIcon" [closeOnClick]="false"
             (action)="doRefresh(null, $event)" />
-        <core-context-menu-item *ngIf="discussionLoaded && isMobile && postHasOffline && isOnline" [priority]="550"
+        <core-context-menu-item *ngIf="discussionLoaded && isMobile && postHasOffline && isOnline()" [priority]="550"
             [content]="'core.settings.synchronizenow' | translate" [iconAction]="syncIcon" [closeOnClick]="false"
             (action)="doRefresh(null, $event, true)" />
         <core-context-menu-item [hidden]="sort === 'flat-oldest'" [priority]="500"

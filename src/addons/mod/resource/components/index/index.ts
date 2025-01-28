@@ -24,8 +24,7 @@ import { CoreFileHelper } from '@services/file-helper';
 import { CoreSites } from '@services/sites';
 import { CoreMimetype } from '@singletons/mimetype';
 import { CoreText } from '@singletons/text';
-import { NgZone, Translate } from '@singletons';
-import { Subscription } from 'rxjs';
+import { Translate } from '@singletons';
 import {
     AddonModResource,
     AddonModResourceCustomData,
@@ -66,7 +65,7 @@ export class AddonModResourceIndexComponent extends CoreCourseModuleMainResource
     warning = '';
     isIOS = false;
     openFileAction = OpenFileAction;
-    isOnline = false;
+    isOnline = CoreNetwork.onlineSignal();
     isStreamedFile = false;
     shouldOpenInBrowser = false;
 
@@ -77,8 +76,6 @@ export class AddonModResourceIndexComponent extends CoreCourseModuleMainResource
     timemodified = -1;
     isExternalFile = false;
     outdatedStatus = DownloadStatus.OUTDATED;
-
-    protected onlineObserver?: Subscription;
 
     constructor(@Optional() courseContentsPage?: CoreCourseContentsPage) {
         super('AddonModResourceIndexComponent', courseContentsPage);
@@ -91,15 +88,6 @@ export class AddonModResourceIndexComponent extends CoreCourseModuleMainResource
         super.ngOnInit();
 
         this.isIOS = CorePlatform.isIOS();
-        this.isOnline = CoreNetwork.isOnline();
-
-        // Refresh online status when changes.
-        this.onlineObserver = CoreNetwork.onChange().subscribe(() => {
-            // Execute the callback in the Angular zone, so change detection doesn't stop working.
-            NgZone.run(() => {
-                this.isOnline = CoreNetwork.isOnline();
-            });
-        });
 
         await this.loadContent();
     }
@@ -221,7 +209,7 @@ export class AddonModResourceIndexComponent extends CoreCourseModuleMainResource
             downloadable = await AddonModResourceHelper.isMainFileDownloadable(this.module);
 
             if (downloadable) {
-                if (this.currentStatus === DownloadStatus.OUTDATED && !this.isOnline && !this.isExternalFile) {
+                if (this.currentStatus === DownloadStatus.OUTDATED && !this.isOnline() && !this.isExternalFile) {
                     // Warn the user that the file isn't updated.
                     const alert = await CoreAlerts.show({
                         message: Translate.instant('addon.mod_resource.resourcestatusoutdatedconfirm'),
@@ -243,7 +231,6 @@ export class AddonModResourceIndexComponent extends CoreCourseModuleMainResource
      */
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.onlineObserver?.unsubscribe();
     }
 
 }

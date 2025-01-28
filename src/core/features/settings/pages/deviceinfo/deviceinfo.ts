@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { CoreConstants } from '@/core/constants';
 import { CoreLocalNotifications } from '@services/local-notifications';
-import { Device, Translate, NgZone } from '@singletons';
+import { Device, Translate } from '@singletons';
 import { CoreLang } from '@services/lang';
 import { CoreFile } from '@services/file';
 import { CoreSites } from '@services/sites';
 import { CorePromiseUtils } from '@singletons/promise-utils';
-import { Subscription } from 'rxjs';
 import { CorePushNotifications } from '@features/pushnotifications/services/pushnotifications';
 import { CoreConfig } from '@services/config';
 import { CoreToasts } from '@services/overlays/toasts';
@@ -53,7 +52,7 @@ interface CoreSettingsDeviceInfo {
     locationHref?: string;
     deviceType: string;
     screen?: string;
-    isOnline: boolean;
+    online: Signal<boolean>;
     wifiConnection: string;
     cordovaVersion?: string;
     platform?: string;
@@ -77,7 +76,7 @@ interface CoreSettingsDeviceInfo {
         CoreSharedModule,
     ],
 })
-export default class CoreSettingsDeviceInfoPage implements OnDestroy {
+export default class CoreSettingsDeviceInfoPage {
 
     deviceInfo: CoreSettingsDeviceInfo;
     deviceOsTranslated?: string;
@@ -89,8 +88,6 @@ export default class CoreSettingsDeviceInfoPage implements OnDestroy {
     protected devOptionsForced = false;
     protected devOptionsClickTimeout?: number;
 
-    protected onlineObserver?: Subscription;
-
     constructor() {
         const navigator = window.navigator;
 
@@ -99,7 +96,7 @@ export default class CoreSettingsDeviceInfoPage implements OnDestroy {
             versionCode: CoreConstants.CONFIG.versioncode,
             compilationTime: CoreConstants.BUILD.compilationTime || 0,
             lastCommit: CoreConstants.BUILD.lastCommitHash || '',
-            isOnline: CoreNetwork.isOnline(),
+            online: CoreNetwork.onlineSignal(),
             wifiConnection: CoreNetwork.isWifi() ? 'yes' : 'no',
             localNotifAvailable: CoreLocalNotifications.isPluginAvailable() ? 'yes' : 'no',
             pushId: CorePushNotifications.getPushId(),
@@ -173,14 +170,6 @@ export default class CoreSettingsDeviceInfoPage implements OnDestroy {
         this.deviceInfo.siteId = currentSite?.getId();
         this.deviceInfo.siteVersion = currentSite?.getInfo()?.release;
 
-        // Refresh online status when changes.
-        this.onlineObserver = CoreNetwork.onChange().subscribe(() => {
-            // Execute the callback in the Angular zone, so change detection doesn't stop working.
-            NgZone.run(() => {
-                this.deviceInfo.isOnline = CoreNetwork.isOnline();
-            });
-        });
-
         this.asyncInit();
     }
 
@@ -220,7 +209,8 @@ export default class CoreSettingsDeviceInfoPage implements OnDestroy {
      * Copies device info into the clipboard.
      */
     copyInfo(): void {
-        CoreText.copyToClipboard(JSON.stringify(this.deviceInfo));
+        const deviceInfo = { ...this.deviceInfo, online: this.deviceInfo.online() };
+        CoreText.copyToClipboard(JSON.stringify(deviceInfo));
     }
 
     /**
@@ -233,13 +223,6 @@ export default class CoreSettingsDeviceInfoPage implements OnDestroy {
         const text = el?.closest('ion-item')?.textContent?.trim();
 
         text && CoreText.copyToClipboard(text);
-    }
-
-    /**
-     * Page destroyed.
-     */
-    ngOnDestroy(): void {
-        this.onlineObserver && this.onlineObserver.unsubscribe();
     }
 
     /**

@@ -89,15 +89,15 @@
     </core-loading>
 </ion-content>
 <ion-footer class="footer-adjustable">
-    <ion-toolbar [color]="isOnline && polling && loaded ? null : 'light'">
-        <p class="ion-text-center" *ngIf="!isOnline">
+    <ion-toolbar [color]="isOnline() && polling && loaded ? null : 'light'">
+        <p class="ion-text-center" *ngIf="!isOnline()">
             {{ 'addon.mod_chat.mustbeonlinetosendmessages' | translate }}
         </p>
 
-        <core-send-message-form [sendDisabled]="sending" *ngIf="isOnline && polling && loaded" [message]="newMessage"
+        <core-send-message-form [sendDisabled]="sending" *ngIf="isOnline() && polling && loaded" [message]="newMessage"
             (onSubmit)="sendMessage($event)" [placeholder]="'addon.messages.newmessage' | translate" />
 
-        <ion-button *ngIf="isOnline && !polling && loaded" (click)="reconnect()" expand="block" fill="outline">
+        <ion-button *ngIf="isOnline() && !polling && loaded" (click)="reconnect()" expand="block" fill="outline">
             {{ 'core.login.reconnect' | translate }}
         </ion-button>
     </ion-toolbar>

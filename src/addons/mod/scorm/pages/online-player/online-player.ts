@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, effect } from '@angular/core';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreEvents } from '@singletons/events';
@@ -26,9 +26,8 @@ import {
 import { AddonModScormHelper } from '../../services/scorm-helper';
 import { AddonModScormMode } from '../../constants';
 import { CoreSharedModule } from '@/core/shared.module';
-import { Subscription } from 'rxjs';
 import { CoreNetwork } from '@services/network';
-import { NgZone, Translate } from '@singletons';
+import { Translate } from '@singletons';
 import { CoreError } from '@classes/errors/error';
 import { CoreWait } from '@singletons/wait';
 import { CoreIframeComponent } from '@components/iframe/iframe';
@@ -65,26 +64,20 @@ export default class AddonModScormOnlinePlayerPage implements OnInit, OnDestroy 
     protected organizationId?: string; // Organization ID to load.
     protected attempt = 0; // The attempt number.
     protected initialScoId?: number; // Initial SCO ID to load.
-    protected onlineObserver: Subscription;
     protected isDestroyed = false;
 
     constructor() {
-        let isOnline = CoreNetwork.isOnline();
-        this.onlineObserver = CoreNetwork.onChange().subscribe(() => {
-            // Execute the callback in the Angular zone, so change detection doesn't stop working.
-            NgZone.run(() => {
-                const wasOnline = isOnline;
-                isOnline = CoreNetwork.isOnline();
+        effect(() => {
+            const isOnline = CoreNetwork.onlineSignal();
 
-                if (!isOnline && wasOnline) {
-                    // User lost connection while playing an online package. Show an error.
-                    CoreAlerts.showError(new CoreError(Translate.instant('core.course.changesofflinemaybelost'), {
-                        title: Translate.instant('core.youreoffline'),
-                    }));
+            if (!isOnline) {
+                // User lost connection while playing an online package. Show an error.
+                CoreAlerts.showError(new CoreError(Translate.instant('core.course.changesofflinemaybelost'), {
+                    title: Translate.instant('core.youreoffline'),
+                }));
 
-                    return;
-                }
-            });
+                return;
+            }
         });
     }
 
@@ -272,7 +265,6 @@ export default class AddonModScormOnlinePlayerPage implements OnInit, OnDestroy 
      */
     ngOnDestroy(): void {
         this.isDestroyed = true;
-        this.onlineObserver.unsubscribe();
 
         // Empty src when leaving the state so unload event is triggered in the iframe.
         this.src = '';

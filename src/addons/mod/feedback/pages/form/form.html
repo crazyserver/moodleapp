@@ -89,9 +89,9 @@
                         </ng-container>
 
                         <ng-container *ngIf="item.templateName === 'captcha'">
-                            <core-recaptcha *ngIf="!preview && !offline" [publicKey]="item.captcha.recaptchapublickey" [model]="item"
+                            <core-recaptcha *ngIf="!preview && isOnline" [publicKey]="item.captcha.recaptchapublickey" [model]="item"
                                 modelValueName="value" />
-                            <div *ngIf="!preview && (!item.captcha || offline)" class="core-warning-card">
+                            <div *ngIf="!preview && (!item.captcha || !isOnline)" class="core-warning-card">
                                 <ion-item>
                                     <ion-icon name="fas-triangle-exclamation" slot="start" aria-hidden="true" />
                                     <ion-label>{{ 'addon.mod_feedback.captchaofflinewarning' | translate }}</ion-label>
