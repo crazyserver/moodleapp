@@ -51,7 +51,7 @@ interface CoreSettingsDeviceInfo {
     locationHref?: string;
     deviceType: string;
     screen?: string;
-    networkStatus: string;
+    isOnline: boolean;
     wifiConnection: string;
     cordovaVersion?: string;
     platform?: string;
@@ -93,7 +93,7 @@ export class CoreSettingsDeviceInfoPage implements OnDestroy {
             versionCode: CoreConstants.CONFIG.versioncode,
             compilationTime: CoreConstants.BUILD.compilationTime || 0,
             lastCommit: CoreConstants.BUILD.lastCommitHash || '',
-            networkStatus: CoreNetwork.isOnline() ? 'online' : 'offline',
+            isOnline: CoreNetwork.isOnline(),
             wifiConnection: CoreNetwork.isWifi() ? 'yes' : 'no',
             localNotifAvailable: CoreLocalNotifications.isPluginAvailable() ? 'yes' : 'no',
             pushId: CorePushNotifications.getPushId(),
@@ -172,7 +172,7 @@ export class CoreSettingsDeviceInfoPage implements OnDestroy {
         this.onlineObserver = CoreNetwork.onChange().subscribe(() => {
             // Execute the callback in the Angular zone, so change detection doesn't stop working.
             NgZone.run(() => {
-                this.deviceInfo.networkStatus = CoreNetwork.isOnline() ? 'online' : 'offline';
+                this.deviceInfo.isOnline = CoreNetwork.isOnline();
             });
         });
 
