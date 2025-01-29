@@ -165,7 +165,7 @@ export class CoreFileHelperProvider {
         }
 
         // The file system is available.
-        const isWifi = CoreNetwork.isWifi();
+        const isWifi = CoreNetwork.connectionIsNotMeasured();
         const isOnline = CoreNetwork.isOnline();
 
         if (state === DownloadStatus.DOWNLOADED) {

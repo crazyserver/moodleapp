@@ -112,8 +112,8 @@
         </ion-item>
         <ion-item (longPress)="copyItemInfo($event)">
             <ion-label class="ion-text-wrap">
-                <p class="item-heading">{{ 'core.settings.wificonnection' | translate}}</p>
-                @if (deviceInfo.wifiConnection()) {
+                <p class="item-heading">{{ 'core.settings.measuredconnection' | translate}}</p>
+                @if (deviceInfo.measuredConnection()) {
                     <p>{{ 'core.yes' | translate }}</p>
                 } @else {
                     <p>{{ 'core.no' | translate }}</p>
