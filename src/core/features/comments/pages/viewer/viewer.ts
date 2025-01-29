@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, AfterViewInit, effect } from '@angular/core';
 import { CoreEventObserver, CoreEvents } from '@singletons/events';
 import { ActivatedRoute } from '@angular/router';
 import { CoreSites } from '@services/sites';
@@ -46,6 +46,7 @@ import { CORE_COMMENTS_AUTO_SYNCED } from '@features/comments/constants';
 import { CoreAlerts } from '@services/overlays/alerts';
 import { CoreWait } from '@singletons/wait';
 import { CoreDom } from '@singletons/dom';
+import { CoreKeyboard } from '@singletons/keyboard';
 
 /**
  * Page that displays comments.
@@ -87,7 +88,6 @@ export class CoreCommentsViewerPage implements OnInit, OnDestroy, AfterViewInit 
     protected addDeleteCommentsAvailable = false;
     protected syncObserver?: CoreEventObserver;
     protected onlineObserver: Subscription;
-    protected keyboardObserver: CoreEventObserver;
     protected viewDestroyed = false;
     protected scrollBottom = true;
     protected scrollElement?: HTMLElement;
@@ -123,9 +123,11 @@ export class CoreCommentsViewerPage implements OnInit, OnDestroy, AfterViewInit 
             });
         });
 
-        this.keyboardObserver = CoreEvents.on(CoreEvents.KEYBOARD_CHANGE, (keyboardHeight: number) => {
-            // Force when opening.
-            this.scrollToBottom(keyboardHeight > 0);
+        effect(() => {
+            const shown = CoreKeyboard.getKeyboardShownSignal();
+
+            /// Force when opening.
+            this.scrollToBottom(shown());
         });
     }
 
@@ -668,7 +670,6 @@ export class CoreCommentsViewerPage implements OnInit, OnDestroy, AfterViewInit 
         this.syncObserver?.off();
         this.onlineObserver.unsubscribe();
         this.viewDestroyed = true;
-        this.keyboardObserver.off();
     }
 
 }

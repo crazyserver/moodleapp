@@ -23,6 +23,7 @@ import {
     OnDestroy,
     Optional,
     AfterViewInit,
+    effect,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IonTextarea, IonContent } from '@ionic/angular';
@@ -48,6 +49,7 @@ import { CoreSwiper } from '@singletons/swiper';
 import { CoreWait } from '@singletons/wait';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreQRScan } from '@services/qrscan';
+import { CoreKeyboard } from '@singletons/keyboard';
 
 /**
  * Component to display a rich text editor if enabled.
@@ -115,7 +117,6 @@ export class CoreEditorRichTextEditorComponent implements OnInit, AfterViewInit,
     protected minHeight = 200; // Minimum height of the editor.
 
     protected valueChangeSubscription?: Subscription;
-    protected keyboardObserver?: CoreEventObserver;
     protected resetObserver?: CoreEventObserver;
     protected labelObserver?: MutationObserver;
     protected contentObserver?: MutationObserver;
@@ -176,6 +177,15 @@ export class CoreEditorRichTextEditorComponent implements OnInit, AfterViewInit,
         this.contentChanged = new EventEmitter<string>();
         this.element = elementRef.nativeElement;
         this.pageInstance = 'app_' + Date.now(); // Generate a "unique" ID based on timestamp.
+
+        effect(() => {
+            // Signal will be triggered when the keyboard is shown or hidden.
+            CoreKeyboard.getKeyboardShownSignal();
+
+            // Opening or closing the keyboard also calls the resize function, but sometimes the resize is called too soon.
+            // Check the height again, now the window height should have been updated.
+            this.maximizeEditorSize();
+        });
     }
 
     /**
@@ -306,12 +316,6 @@ export class CoreEditorRichTextEditorComponent implements OnInit, AfterViewInit,
         }, 50);
 
         document.addEventListener('selectionchange', this.selectionChangeFunction);
-
-        this.keyboardObserver = CoreEvents.on(CoreEvents.KEYBOARD_CHANGE, () => {
-            // Opening or closing the keyboard also calls the resize function, but sometimes the resize is called too soon.
-            // Check the height again, now the window height should have been updated.
-            this.maximizeEditorSize();
-        });
     }
 
     /**
@@ -1082,7 +1086,6 @@ export class CoreEditorRichTextEditorComponent implements OnInit, AfterViewInit,
         clearTimeout(this.hideMessageTimeout);
 
         this.resetObserver?.off();
-        this.keyboardObserver?.off();
         this.resizeListener?.off();
 
         this.labelObserver?.disconnect();
