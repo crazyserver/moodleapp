@@ -27,8 +27,8 @@
                             </ng-template>
                             <ion-icon name="fas-lock" *ngIf="module.visible === 0 || module.uservisible === false"
                                 [attr.aria-label]="'core.restricted' | translate" />
-                            <ion-icon *ngIf="prefetchStatusIcon$ | async as prefetchStatusIcon" [name]="prefetchStatusIcon" color="success"
-                                [attr.aria-label]="((prefetchStatusText$ | async) || '') | translate" />
+                            <ion-icon *ngIf="prefetchStatusIcon$()" [name]="prefetchStatusIcon$()" color="success"
+                                [attr.aria-label]="(prefetchStatusText$() || '') | translate" />
                         </p>
 
                         <div class="core-module-additional-info" *ngIf="module.visible === 0 || (module.visible !== 0 && module.isStealth)">
