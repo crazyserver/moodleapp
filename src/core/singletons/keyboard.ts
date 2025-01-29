@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { effect, Signal, signal } from '@angular/core';
 import { CorePlatform } from '@services/platform';
 import { Keyboard } from '@singletons';
 import { CoreEvents } from '@singletons/events';
@@ -21,13 +22,16 @@ import { CoreEvents } from '@singletons/events';
  */
 export class CoreKeyboard {
 
-    protected static isKeyboardShown = false;
-    protected static keyboardOpening = false;
-    protected static keyboardClosing = false;
+    protected static isKeyboardShown = signal(false);
+    protected static keyboardOpening = signal(false);
+    protected static keyboardClosing = signal(false);
+    protected static keyboardHeight = signal(0);
 
     // Avoid creating singleton instances.
     private constructor() {
-        // Nothing to do.
+        effect(() => {
+            document.body.classList.toggle('keyboard-is-open', CoreKeyboard.isKeyboardShown());
+        });
     }
 
     /**
@@ -49,53 +53,70 @@ export class CoreKeyboard {
         }
     }
 
+    static getKeyboardShownSignal(): Signal<boolean> {
+        return CoreKeyboard.isKeyboardShown.asReadonly();
+    }
+
+    static getKeyboardHeightSignal(): Signal<number> {
+        return CoreKeyboard.keyboardHeight.asReadonly();
+    }
+
     /**
      * Notify that Keyboard has been shown.
      *
      * @param keyboardHeight Keyboard height.
      */
     static onKeyboardShow(keyboardHeight: number): void {
-        document.body.classList.add('keyboard-is-open');
-        CoreKeyboard.setKeyboardShown(true);
         // Error on iOS calculating size.
-        // More info: https://github.com/ionic-team/ionic-plugin-keyboard/issues/276 .
-        CoreEvents.trigger(CoreEvents.KEYBOARD_CHANGE, keyboardHeight);
+        // More info: https://github.com/ionic-team/ionic-plugin-keyboard/issues/276
+        CoreKeyboard.setKeyboardShown(true, keyboardHeight);
     }
 
     /**
      * Notify that Keyboard has been hidden.
      */
     static onKeyboardHide(): void {
-        document.body.classList.remove('keyboard-is-open');
-        CoreKeyboard.setKeyboardShown(false);
-        CoreEvents.trigger(CoreEvents.KEYBOARD_CHANGE, 0);
+        CoreKeyboard.setKeyboardShown(false, 0);
     }
 
     /**
      * Notify that Keyboard is about to be shown.
+     *
+     * @param keyboardHeight Keyboard height.
      */
-    static onKeyboardWillShow(): void {
-        CoreKeyboard.keyboardOpening = true;
-        CoreKeyboard.keyboardClosing = false;
+    static onKeyboardWillShow(keyboardHeight?: number): void {
+        CoreKeyboard.keyboardOpening.set(true);
+        CoreKeyboard.keyboardClosing.set(false);
+
+        if (keyboardHeight !== undefined) {
+            this.keyboardHeight.set(keyboardHeight);
+        }
     }
 
     /**
      * Notify that Keyboard is about to be hidden.
      */
     static onKeyboardWillHide(): void {
-        CoreKeyboard.keyboardOpening = false;
-        CoreKeyboard.keyboardClosing = true;
+        CoreKeyboard.keyboardOpening.set(false);
+        CoreKeyboard.keyboardClosing.set(true);
+
+        this.keyboardHeight.set(0);
     }
 
     /**
      * Set keyboard shown or hidden.
      *
      * @param shown Whether the keyboard is shown or hidden.
+     * @param keyboardHeight Keyboard height.
      */
-    protected static setKeyboardShown(shown: boolean): void {
-        CoreKeyboard.isKeyboardShown = shown;
-        CoreKeyboard.keyboardOpening = false;
-        CoreKeyboard.keyboardClosing = false;
+    protected static setKeyboardShown(shown: boolean, keyboardHeight: number): void {
+        CoreKeyboard.isKeyboardShown.set(shown);
+        CoreKeyboard.keyboardOpening.set(false);
+        CoreKeyboard.keyboardClosing.set(false);
+        this.keyboardHeight.set(keyboardHeight);
+
+        // eslint-disable-next-line deprecation/deprecation
+        CoreEvents.trigger(CoreEvents.KEYBOARD_CHANGE, keyboardHeight);
     }
 
     /**
@@ -104,7 +125,7 @@ export class CoreKeyboard {
      * @returns Whether keyboard is closing (animating).
      */
     static isKeyboardClosing(): boolean {
-        return CoreKeyboard.keyboardClosing;
+        return CoreKeyboard.keyboardClosing();
     }
 
     /**
@@ -113,7 +134,7 @@ export class CoreKeyboard {
      * @returns Whether keyboard is opening (animating).
      */
     static isKeyboardOpening(): boolean {
-        return CoreKeyboard.keyboardOpening;
+        return CoreKeyboard.keyboardOpening();
     }
 
     /**
@@ -122,7 +143,7 @@ export class CoreKeyboard {
      * @returns Whether keyboard is visible.
      */
     static isKeyboardVisible(): boolean {
-        return CoreKeyboard.isKeyboardShown;
+        return CoreKeyboard.isKeyboardShown();
     }
 
 }
