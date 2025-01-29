@@ -41,7 +41,6 @@ import { CoreEventObserver, CoreEvents } from '@singletons/events';
 import { CoreTime } from '@singletons/time';
 import { CorePopovers } from '@services/overlays/popovers';
 import { CoreLoadings } from '@services/overlays/loadings';
-import { Subscription } from 'rxjs';
 import { CoreAlerts } from '@services/overlays/alerts';
 import { Translate } from '@singletons';
 
@@ -79,10 +78,9 @@ export class AddonBlogIndexPage implements OnInit, OnDestroy {
     contextInstanceId = 0;
     entryUpdateObserver: CoreEventObserver;
     syncObserver: CoreEventObserver;
-    onlineObserver: Subscription;
     optionsAvailable = false;
     hasOfflineDataToSync = signal(false);
-    isOnline = signal(false);
+    isOnline = CoreNetwork.onlineSignal();
     siteId: string;
     syncIcon = CoreConstants.ICON_SYNC;
     syncHidden = computed(() => !this.loaded() || !this.isOnline() || !this.hasOfflineDataToSync());
@@ -91,7 +89,6 @@ export class AddonBlogIndexPage implements OnInit, OnDestroy {
         this.currentUserId = CoreSites.getCurrentSiteUserId();
         this.siteHomeId = CoreSites.getCurrentSiteHomeId();
         this.siteId = CoreSites.getCurrentSiteId();
-        this.isOnline.set(CoreNetwork.isOnline());
 
         this.logView = CoreTime.once(async () => {
             await CorePromiseUtils.ignoreErrors(AddonBlog.logView(this.filter));
@@ -126,11 +123,6 @@ export class AddonBlogIndexPage implements OnInit, OnDestroy {
             this.loaded.set(false);
             await CorePromiseUtils.ignoreErrors(this.refresh(false));
             this.loaded.set(true);
-        });
-
-        // Refresh online status when changes.
-        this.onlineObserver = CoreNetwork.onChange().subscribe(async () => {
-            this.isOnline.set(CoreNetwork.isOnline());
         });
     }
 
@@ -496,7 +488,6 @@ export class AddonBlogIndexPage implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.entryUpdateObserver.off();
         this.syncObserver.off();
-        this.onlineObserver.unsubscribe();
     }
 
 }
