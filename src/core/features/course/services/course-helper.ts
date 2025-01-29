@@ -893,7 +893,7 @@ export class CoreCourseHelperProvider {
         }
 
         // Start the download if in wifi, but return the URL right away so the file is opened.
-        if (CoreNetwork.isWifi()) {
+        if (CoreNetwork.connectionIsNotMeasured()) {
             this.downloadModule(module, courseId, component, componentId, files, siteId);
         }
 

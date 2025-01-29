@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { computed, effect, Injectable, Signal, signal } from '@angular/core';
+import { effect, Injectable, Signal, signal } from '@angular/core';
 import { CorePlatform } from '@services/platform';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { makeSingleton } from '@singletons';
 import { Observable, Subject, merge } from 'rxjs';
 import { CoreHTMLClasses } from '@singletons/html-classes';
 
-export enum CoreNetworkConnection {
+enum CoreNetworkConnection {
     UNKNOWN = 'unknown',
     ETHERNET = 'ethernet',
     WIFI = 'wifi',
@@ -28,6 +28,13 @@ export enum CoreNetworkConnection {
     CELL_4G = '4g',
     CELL = 'cellular',
     NONE = 'none',
+}
+
+export enum CoreNetworkConnectionType {
+    UNKNOWN = 'unknown',
+    NOT_MEASURED = 'not_measured',
+    MEASURED = 'measured',
+    OFFLINE = 'offline',
 }
 
 /**
@@ -41,10 +48,10 @@ export class CoreNetworkService extends Network {
     protected connectObservable = new Subject<'connected'>();
     protected connectStableObservable = new Subject<'connected'>();
     protected disconnectObservable = new Subject<'disconnected'>();
-    protected forceConnectionMode?: CoreNetworkConnection;
+    protected forceConnectionMode?: CoreNetworkConnectionType;
     protected online = signal(false);
     protected connectStableTimeout?: number;
-    private _connectionType: Signal<CoreNetworkConnection>;
+    private _connectionType = signal(CoreNetworkConnectionType.UNKNOWN);
 
     constructor() {
         super();
@@ -67,20 +74,11 @@ export class CoreNetworkService extends Network {
             }
         });
 
-        this._connectionType = computed(() => {
-            if (this.forceConnectionMode !== undefined) {
-                return this.forceConnectionMode;
-            }
-
-            if (CorePlatform.isMobile()) {
-                return this.type as CoreNetworkConnection;
-            }
-
-            return this.online() ? CoreNetworkConnection.WIFI : CoreNetworkConnection.NONE;
-        });
     }
 
-    get connectionType(): CoreNetworkConnection {
+    get connectionType(): CoreNetworkConnectionType {
+        CoreNetwork.updateConnectionType();
+
         return this._connectionType();
     }
 
@@ -88,7 +86,7 @@ export class CoreNetworkService extends Network {
      * Initialize the service.
      */
     initialize(): void {
-        this.checkOnline();
+        this.updateOnline();
 
         if (CorePlatform.isMobile()) {
             // We cannot directly listen to onChange because it depends on
@@ -100,18 +98,6 @@ export class CoreNetworkService extends Network {
                 this.fireObservable();
             });
         } else {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (<any> window).Connection = {
-                UNKNOWN: CoreNetworkConnection.UNKNOWN, // eslint-disable-line @typescript-eslint/naming-convention
-                ETHERNET: CoreNetworkConnection.ETHERNET, // eslint-disable-line @typescript-eslint/naming-convention
-                WIFI: CoreNetworkConnection.WIFI, // eslint-disable-line @typescript-eslint/naming-convention
-                CELL_2G: CoreNetworkConnection.CELL_2G, // eslint-disable-line @typescript-eslint/naming-convention
-                CELL_3G: CoreNetworkConnection.CELL_3G, // eslint-disable-line @typescript-eslint/naming-convention
-                CELL_4G: CoreNetworkConnection.CELL_4G, // eslint-disable-line @typescript-eslint/naming-convention
-                CELL: CoreNetworkConnection.CELL, // eslint-disable-line @typescript-eslint/naming-convention
-                NONE: CoreNetworkConnection.NONE, // eslint-disable-line @typescript-eslint/naming-convention
-            };
-
             window.addEventListener('online', () => {
                 this.fireObservable();
             }, false);
@@ -139,7 +125,7 @@ export class CoreNetworkService extends Network {
      *
      * @param value Value to set.
      */
-    setForceConnectionMode(value: CoreNetworkConnection): void {
+    setForceConnectionMode(value: CoreNetworkConnectionType): void {
         this.forceConnectionMode = value;
         this.fireObservable();
     }
@@ -156,8 +142,11 @@ export class CoreNetworkService extends Network {
     /**
      * Returns whether we are online.
      */
-    checkOnline(): void {
-        if (this.forceConnectionMode === CoreNetworkConnection.NONE) {
+    protected updateOnline(): void {
+        // Recalculate connection type.
+        CoreNetwork.updateConnectionType();
+
+        if (this.forceConnectionMode === CoreNetworkConnectionType.OFFLINE) {
             this.online.set(false);
 
             return;
@@ -171,8 +160,8 @@ export class CoreNetworkService extends Network {
             return;
         }
 
-        const type = this.connectionType;
-        let online = type !== null && type !== CoreNetworkConnection.NONE && type !== CoreNetworkConnection.UNKNOWN;
+        const type = this._connectionType();
+        let online = type !== null && type !== CoreNetworkConnectionType.OFFLINE && type !== CoreNetworkConnectionType.UNKNOWN;
 
         // Double check we are not online because we cannot rely 100% in Cordova APIs.
         if (!online && navigator.onLine) {
@@ -180,6 +169,45 @@ export class CoreNetworkService extends Network {
         }
 
         this.online.set(online);
+    }
+
+    /**
+     * Check and update the connection type.
+     */
+    protected updateConnectionType(): void {
+        if (this.forceConnectionMode !== undefined) {
+            this._connectionType.set(this.forceConnectionMode);
+
+            return;
+        }
+
+        if (CorePlatform.isMobile()) {
+            switch (this.type) {
+                case CoreNetworkConnection.WIFI:
+                case CoreNetworkConnection.ETHERNET:
+                    this._connectionType.set(CoreNetworkConnectionType.NOT_MEASURED);
+
+                    return;
+                case CoreNetworkConnection.CELL:
+                case CoreNetworkConnection.CELL_2G:
+                case CoreNetworkConnection.CELL_3G:
+                case CoreNetworkConnection.CELL_4G:
+                    this._connectionType.set(CoreNetworkConnectionType.MEASURED);
+
+                    return;
+                case CoreNetworkConnection.NONE:
+                    this._connectionType.set(CoreNetworkConnectionType.OFFLINE);
+
+                    return;
+                default:
+                case CoreNetworkConnection.UNKNOWN:
+                    this._connectionType.set(CoreNetworkConnectionType.UNKNOWN);
+
+                    return;
+            }
+        }
+
+        this._connectionType.set(this.online() ? CoreNetworkConnectionType.NOT_MEASURED : CoreNetworkConnectionType.OFFLINE);
     }
 
     /**
@@ -201,12 +229,12 @@ export class CoreNetworkService extends Network {
     }
 
     /**
-     * Returns a signal to watch limited connection status.
+     * Returns a signal to watch connection type.
      *
      * @returns Signal.
      */
-    limitedConnectionSignal(): Signal<boolean> {
-        return computed(() => this.isOnline() && CoreNetwork.isNetworkAccessLimited());
+    connectionTypeSignal(): Signal<CoreNetworkConnectionType> {
+        return this._connectionType.asReadonly();
     }
 
     /**
@@ -262,18 +290,29 @@ export class CoreNetworkService extends Network {
      * Check if device uses a limited connection.
      *
      * @returns Whether the device uses a limited connection.
+     * @deprecated since 5.0. Use connectionIsMeasured instead.
      */
     isNetworkAccessLimited(): boolean {
-        const limited: CoreNetworkConnection[] = [
-            CoreNetworkConnection.CELL_2G,
-            CoreNetworkConnection.CELL_3G,
-            CoreNetworkConnection.CELL_4G,
-            CoreNetworkConnection.CELL,
-        ];
+        return this.connectionIsMeasured();
+    }
 
-        const type = this.connectionType;
+    /**
+     * Check if device uses a wifi connection.
+     *
+     * @returns Whether the device uses a wifi connection.
+     * @deprecated since 5.0. Use connectionIsNotMeasured instead.
+     */
+    isWifi(): boolean {
+        return this.connectionIsNotMeasured();
+    }
 
-        return limited.indexOf(type) > -1;
+    /**
+     * Check if device uses a limited connection.
+     *
+     * @returns Whether the device uses a limited connection.
+     */
+    connectionIsMeasured(): boolean {
+        return this.connectionType === CoreNetworkConnectionType.MEASURED;
     }
 
     /**
@@ -281,8 +320,8 @@ export class CoreNetworkService extends Network {
      *
      * @returns Whether the device uses a wifi connection.
      */
-    isWifi(): boolean {
-        return this.isOnline() && !this.isNetworkAccessLimited();
+    connectionIsNotMeasured(): boolean {
+        return this.connectionType === CoreNetworkConnectionType.NOT_MEASURED;
     }
 
 }

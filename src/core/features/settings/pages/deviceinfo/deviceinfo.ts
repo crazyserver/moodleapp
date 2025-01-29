@@ -25,7 +25,7 @@ import { CoreConfig } from '@services/config';
 import { CoreToasts } from '@services/overlays/toasts';
 import { CoreNavigator } from '@services/navigator';
 import { CorePlatform } from '@services/platform';
-import { CoreNetwork } from '@services/network';
+import { CoreNetwork, CoreNetworkConnectionType } from '@services/network';
 import { CoreLoginHelper } from '@features/login/services/login-helper';
 import { CoreSitesFactory } from '@services/sites-factory';
 import { CoreText } from '@singletons/text';
@@ -53,7 +53,7 @@ interface CoreSettingsDeviceInfo {
     deviceType: string;
     screen?: string;
     online: Signal<boolean>;
-    wifiConnection: string;
+    measuredConnection: Signal<boolean>;
     cordovaVersion?: string;
     platform?: string;
     osVersion?: string;
@@ -97,7 +97,7 @@ export default class CoreSettingsDeviceInfoPage {
             compilationTime: CoreConstants.BUILD.compilationTime || 0,
             lastCommit: CoreConstants.BUILD.lastCommitHash || '',
             online: CoreNetwork.onlineSignal(),
-            wifiConnection: CoreNetwork.isWifi() ? 'yes' : 'no',
+            measuredConnection: computed(() => CoreNetwork.connectionTypeSignal()() === CoreNetworkConnectionType.MEASURED),
             localNotifAvailable: CoreLocalNotifications.isPluginAvailable() ? 'yes' : 'no',
             pushId: CorePushNotifications.getPushId(),
             deviceType: '',
@@ -209,7 +209,12 @@ export default class CoreSettingsDeviceInfoPage {
      * Copies device info into the clipboard.
      */
     copyInfo(): void {
-        const deviceInfo = { ...this.deviceInfo, online: this.deviceInfo.online() };
+        CoreText.copyToClipboard(JSON.stringify(this.deviceInfo));
+        const deviceInfo = {
+            ...this.deviceInfo,
+            online: this.deviceInfo.isOnline(),
+            measuredConnection: this.deviceInfo.measuredConnection(),
+        };
         CoreText.copyToClipboard(JSON.stringify(deviceInfo));
     }
 

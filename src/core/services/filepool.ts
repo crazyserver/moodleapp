@@ -828,7 +828,7 @@ export class CoreFilepoolProvider {
         }
 
         // Calculate the size of the file.
-        const isWifi = CoreNetwork.isWifi();
+        const isWifi = CoreNetwork.connectionIsNotMeasured();
         const sizeUnknown = size <= 0;
 
         if (!sizeUnknown) {
@@ -3027,7 +3027,7 @@ export class CoreFilepoolProvider {
      */
     shouldDownload(size: number): boolean {
         return size <= CoreFilepoolProvider.DOWNLOAD_THRESHOLD ||
-            (CoreNetwork.isWifi() && size <= CoreFilepoolProvider.WIFI_DOWNLOAD_THRESHOLD);
+            (CoreNetwork.connectionIsNotMeasured() && size <= CoreFilepoolProvider.WIFI_DOWNLOAD_THRESHOLD);
     }
 
     /**

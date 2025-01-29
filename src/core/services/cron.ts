@@ -99,7 +99,7 @@ export class CoreCronDelegateService {
             // Check network connection.
             const syncOnlyOnWifi = await CoreConfig.get(CoreConstants.SETTINGS_SYNC_ONLY_ON_WIFI, false);
 
-            if (syncOnlyOnWifi && !CoreNetwork.isWifi()) {
+            if (syncOnlyOnWifi && !CoreNetwork.connectionIsNotMeasured()) {
                 // Cannot execute in this network connection, retry soon.
                 this.logger.debug(`Cron job failed because your device has a limited internet connection: ${name}`);
                 this.scheduleNextExecution(name, CoreCronDelegateService.MIN_INTERVAL);

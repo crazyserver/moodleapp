@@ -79,6 +79,6 @@
     "synchronizenowhelp": "Synchronising a site will send pending changes and all offline activity stored in the device and will synchronise some data like messages and notifications.",
     "syncsettings": "Synchronisation settings",
     "total": "Total",
-    "wificonnection": "Wi-Fi connection",
+    "measuredconnection": "Measured data connection",
     "youradev": "You are now a developer"
 }
