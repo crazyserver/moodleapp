@@ -25,7 +25,7 @@ import { CoreConfig } from '@services/config';
 import { CoreToasts } from '@services/overlays/toasts';
 import { CoreNavigator } from '@services/navigator';
 import { CorePlatform } from '@services/platform';
-import { CoreNetwork, CoreNetworkConnection } from '@services/network';
+import { CoreNetwork, CoreNetworkConnectionType } from '@services/network';
 import { CoreLoginHelper } from '@features/login/services/login-helper';
 import { CoreSitesFactory } from '@services/sites-factory';
 import { CoreText } from '@singletons/text';
@@ -53,7 +53,7 @@ interface CoreSettingsDeviceInfo {
     deviceType: string;
     screen?: string;
     isOnline: Signal<boolean>;
-    wifiConnection: Signal<boolean>;
+    measuredConnection: Signal<boolean>;
     cordovaVersion?: string;
     platform?: string;
     osVersion?: string;
@@ -97,7 +97,7 @@ export default class CoreSettingsDeviceInfoPage {
             compilationTime: CoreConstants.BUILD.compilationTime || 0,
             lastCommit: CoreConstants.BUILD.lastCommitHash || '',
             isOnline: CoreNetwork.onlineSignal(),
-            wifiConnection: computed(() => CoreNetwork.connectionTypeSignal()() === CoreNetworkConnection.WIFI),
+            measuredConnection: computed(() => CoreNetwork.connectionTypeSignal()() === CoreNetworkConnectionType.MEASURED),
             localNotifAvailable: CoreLocalNotifications.isPluginAvailable() ? 'yes' : 'no',
             pushId: CorePushNotifications.getPushId(),
             deviceType: '',
@@ -213,7 +213,7 @@ export default class CoreSettingsDeviceInfoPage {
         const deviceInfo = {
             ...this.deviceInfo,
             isOnline: this.deviceInfo.isOnline(),
-            wifiConnection: this.deviceInfo.wifiConnection(),
+            measuredConnection: this.deviceInfo.measuredConnection(),
         };
         CoreText.copyToClipboard(JSON.stringify(deviceInfo));
     }

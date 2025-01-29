@@ -398,7 +398,7 @@ export class CoreWSProvider {
      * @returns Timeout in ms.
      */
     getRequestTimeout(): number {
-        return CoreNetwork.isNetworkAccessLimited() ? CoreConstants.WS_TIMEOUT : CoreConstants.WS_TIMEOUT_WIFI;
+        return CoreNetwork.connectionIsMeasured() ? CoreConstants.WS_TIMEOUT : CoreConstants.WS_TIMEOUT_WIFI;
     }
 
     /**
