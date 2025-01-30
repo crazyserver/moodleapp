@@ -6,8 +6,7 @@
         <ion-title>
             @if (badge) {
                 <h1>{{ badge.name }}</h1>
-            }
-            @if (!badge) {
+            } @else {
                 <h1>{{ 'addon.badges.badges' | translate }}</h1>
             }
         </ion-title>

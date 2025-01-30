@@ -6,7 +6,9 @@
         <!-- Download all courses. -->
         @if (downloadCoursesEnabled && filteredCourses.length > 0) {
             <div class="core-button-spinner">
-                @if (!prefetchCoursesData.loading) {
+                @if (prefetchCoursesData.loading) {
+                    <ion-spinner [attr.aria-label]="'core.loading' | translate" />
+                } @else {
                     <ion-button fill="clear" (click)="prefetchCourses()" [ariaLabel]="prefetchCoursesData.statusTranslatable | translate">
                         <ion-icon [name]="prefetchCoursesData.icon" slot="icon-only" aria-hidden="true" />
                     </ion-button>
@@ -18,9 +20,7 @@
                         {{prefetchCoursesData.badge}}
                     </ion-badge>
                 }
-                @if (prefetchCoursesData.loading) {
-                    <ion-spinner [attr.aria-label]="'core.loading' | translate" />
-                }
+
             </div>
         }
     </div>
@@ -70,15 +70,11 @@
                             </ion-select-option>
                         }
                         @if (filters.show.custom) {
-
                             @for (customOption of filters.customFilters; track customOption; let index = $index; let last = $last) {
-
                                 <ion-select-option class="ion-text-wrap" value="custom-{{index}}"
                                     [class.core-select-option-border-bottom]="last">
                                     {{ customOption.name }}</ion-select-option>
-
                             }
-
                         }
                         @if (filters.show.favourite) {
                             <ion-select-option class="ion-text-wrap core-select-option-border-bottom" value="favourite">
@@ -141,8 +137,7 @@
                 <h3 class="item-heading">
                     {{'addon.block_myoverview.noresult' | translate}}
                 </h3>
-            }
-            @if (!hasCourses) {
+            } @else {
                 <h3 class="item-heading">
                     {{'addon.block_myoverview.nocoursesenrolled' | translate}}
                 </h3>
@@ -153,8 +148,7 @@
                     <p class="subdued">
                         {{'addon.block_myoverview.noresultdescription' | translate}}
                     </p>
-                }
-                @if (!hasCourses) {
+                } @else {
                     <p class="subdued">
                         {{'addon.block_myoverview.nocoursesenrolleddescription' | translate}}
                     </p>
@@ -163,7 +157,6 @@
                     <ion-icon name="fas-magnifying-glass" slot="start" aria-hidden="true" />
                     {{'addon.block_myoverview.browseallcourses' | translate}}
                 </ion-button>
-
             }
         </core-empty-box>
     }

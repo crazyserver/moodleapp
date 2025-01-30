@@ -16,9 +16,7 @@
         <div (onResize)="scrollControls.updateScrollPosition()" class="flex-row core-course-list">
             <div class="safe-area-pseudo-padding-start"></div>
             @for (course of courses; track course) {
-
                 <core-courses-course-list-item [course]="course" class="core-recentlyaccessedcourses" layout="summarycard" />
-
             }
             <div class="safe-area-pseudo-padding-end"></div>
         </div>
