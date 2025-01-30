@@ -2,7 +2,7 @@
 
 @mixin inline() {
     &:not(.core-loading-loaded) {
-        min-height: var(--internal-loading-inline-min-height);
+        min-height: calc(var(--internal-loading-inline-min-height) + 32px);
         width: 100%;
         position: relative;
     }
@@ -13,7 +13,7 @@
         height: auto;
 
         .core-loading-message {
-            @include margin(0, 0, 0, 10px);
+            @include margin(0px, 0px, 0px, 16px);
         }
     }
 }
@@ -29,6 +29,9 @@
     --loading-display: flex;
     --loading-display-message: block;
     --contents-display: block;
+    --loading-placeholder-direction: row;
+    --loading-placeholder-justify: center;
+    --loading-placeholder-wrap: wrap;
 
     @include core-transition(all, 200ms);
     display: var(--contents-display);
@@ -63,13 +66,49 @@
         flex-direction: column;
 
         .core-loading-message {
-            @include margin(10px, 0, 0, 0);
+            @include margin(16px, 0, 0, 0);
             display: var(--loading-display-message);
         }
 
         ion-spinner {
             --color: var(--loading-spinner);
             color: var(--color);
+        }
+
+        .placeholder {
+            position: absolute;
+            @include position(0, 0, 0, 0);
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: var(--loading-placeholder-direction);
+            padding: 16px;
+            gap: 16px;
+            flex-wrap: var(--loading-placeholder-wrap);
+            justify-content: var(--loading-placeholder-justify);
+            align-items: center;
+            overflow: hidden;
+
+            .placeholder-element {
+                width: 100px;
+                height: 100px;
+                background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+                background-size: 200% 100%;
+                animation: core-loading 5s infinite ease-in-out;
+                border-radius: 8px;
+                flex-shrink: 0;
+            }
+
+            &.rounded {
+                padding: 4px;
+                gap: 12px;
+
+                .placeholder-element {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 100%;
+                }
+            }
         }
     }
 
@@ -83,4 +122,9 @@
 :host-context(core-block) {
     // Implicit Inline.
     @include inline();
+}
+
+@keyframes core-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }

@@ -52,4 +52,8 @@
             @include margin(null, 12px, null, null);
         }
     }
+
+    core-loading {
+        --loading-placeholder-wrap: wrap;
+    }
 }

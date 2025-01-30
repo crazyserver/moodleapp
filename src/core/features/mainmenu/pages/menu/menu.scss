@@ -95,6 +95,7 @@ ion-tab-button {
 }
 
 ion-tabs.placement-bottom {
+
     ion-tab-button {
         border-top: 4px solid transparent;
         border-bottom: 4px solid transparent;
@@ -133,6 +134,11 @@ ion-tabs.placement-bottom {
 
 ion-tabs.placement-side {
     flex-direction: row;
+
+    core-loading {
+        --loading-placeholder-direction: column;
+        --loading-placeholder-justify: flex-start;
+    }
 
     ion-tab-bar {
         order: -1;

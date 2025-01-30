@@ -1,5 +1,15 @@
-<div class="core-loading-container" *ngIf="!hideUntil" role="status" @coreShowHideAnimation>
+<ng-content *ngIf="loaded" @coreShowHideAnimation />
+@if (!hideUntil) {
+<div class="core-loading-container" role="status" @coreShowHideAnimation [attr.aria-label]="message">
+    @if (!placeholderType) {
     <ion-spinner aria-hidden="true" />
     <p class="core-loading-message" *ngIf="message" role="status">{{message}}</p>
+    } @else {
+    <div class="{{placeholderType}} list-item-limited-width placeholder">
+        <div *ngFor="let _ of [].constructor(placeholderLimit)" class="placeholder-element"
+            [ngStyle]="{'width': placeholderWidth, 'height': placeholderHeight}">
+        </div>
+    </div>
+    }
 </div>
-<ng-content *ngIf="loaded" @coreShowHideAnimation />
+}
