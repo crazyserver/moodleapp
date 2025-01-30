@@ -22,12 +22,14 @@
             </ion-label>
         </ion-item>
 
-        <ion-item class="ion-text-wrap" [detail]="false" *ngFor="let item of reportDetailToDisplay">
-            <ion-label>
-                <p>{{ item.title | translate }}</p>
-                <core-format-text [text]="item.text" contextLevel="report" [contextInstanceId]="reportDetail.id" />
-            </ion-label>
-        </ion-item>
+        @for (item of reportDetailToDisplay; track item) {
+            <ion-item class="ion-text-wrap" [detail]="false">
+                <ion-label>
+                    <p>{{ item.title | translate }}</p>
+                    <core-format-text [text]="item.text" contextLevel="report" [contextInstanceId]="reportDetail.id" />
+                </ion-label>
+            </ion-item>
+        }
     </div>
 </ion-content>
 

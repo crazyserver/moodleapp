@@ -15,12 +15,16 @@
         <form [formGroup]="preflightForm" (ngSubmit)="sendData($event)" #preflightFormEl>
             <ion-list>
                 <!-- Access rules. -->
-                <ng-container *ngFor="let data of accessRulesData; let last = last">
+                @for (data of accessRulesData; track data; let last = $last) {
+
                     <core-dynamic-component [component]="data.component" [data]="data.data">
                         <p class="ion-padding">Couldn't find the directive to render this access rule.</p>
                     </core-dynamic-component>
-                    <core-spacer *ngIf="!last" />
-                </ng-container>
+                    @if (!last) {
+                        <core-spacer />
+                    }
+
+                }
 
                 <ion-button expand="block" type="submit" class="ion-margin">
                     {{ title | translate }}

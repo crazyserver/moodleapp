@@ -16,27 +16,38 @@
 <core-loading [hideUntil]="!showLoading">
 
     <!-- Activity info. -->
-    <core-course-module-info *ngIf="!subfolder" [module]="module" [description]="description" [component]="component"
-        [componentId]="componentId" [courseId]="courseId" />
+    @if (!subfolder) {
+        <core-course-module-info [module]="module" [description]="description" [component]="component" [componentId]="componentId"
+            [courseId]="courseId" />
+    }
 
-    <ion-list *ngIf="contents && (contents.files.length + contents.folders.length > 0)">
-        <ng-container *ngFor="let folder of contents.folders">
-            <ion-item class="ion-text-wrap item-file item-directory" (click)="openFolder(folder)" [detail]="true" button>
-                <ion-icon name="fas-folder" slot="start" [attr.aria-label]="'core.folder' | translate" />
-                <ion-label>
-                    <p class="item-heading">{{folder.filename}}</p>
-                </ion-label>
-            </ion-item>
-        </ng-container>
-        <ng-container *ngFor="let file of contents.files">
-            <core-file [file]="file" [component]="component" [componentId]="componentId" />
-        </ng-container>
-    </ion-list>
+    @if (contents && (contents.files.length + contents.folders.length > 0)) {
+        <ion-list>
+            @for (folder of contents.folders; track folder) {
 
-    <core-empty-box *ngIf="!contents || (contents.files.length + contents.folders.length === 0)" icon="far-folder-open"
-        [message]=" 'addon.mod_folder.emptyfilelist' | translate" />
+                <ion-item class="ion-text-wrap item-file item-directory" (click)="openFolder(folder)" [detail]="true" button>
+                    <ion-icon name="fas-folder" slot="start" [attr.aria-label]="'core.folder' | translate" />
+                    <ion-label>
+                        <p class="item-heading">{{folder.filename}}</p>
+                    </ion-label>
+                </ion-item>
+
+            }
+            @for (file of contents.files; track file) {
+
+                <core-file [file]="file" [component]="component" [componentId]="componentId" />
+
+            }
+        </ion-list>
+    }
+
+    @if (!contents || (contents.files.length + contents.folders.length === 0)) {
+        <core-empty-box icon="far-folder-open" [message]=" 'addon.mod_folder.emptyfilelist' | translate" />
+    }
 
 </core-loading>
 
-<core-course-module-navigation collapsible-footer appearOnBottom *ngIf="!subfolder" [hidden]="showLoading" [courseId]="courseId"
-    [currentModuleId]="module.id" (completionChanged)="onCompletionChange()" />
+@if (!subfolder) {
+    <core-course-module-navigation collapsible-footer appearOnBottom [hidden]="showLoading" [courseId]="courseId"
+        [currentModuleId]="module.id" (completionChanged)="onCompletionChange()" />
+}

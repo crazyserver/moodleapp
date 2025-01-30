@@ -1,5 +1,6 @@
 <!-- Render (no edit). -->
-<ion-item *ngIf="!edit && field && field.name">
+@if (!edit && field && field.name) {
+<ion-item>
     <ion-label>
         <p class="item-heading">
             <core-format-text [text]="field.name" [contextLevel]="contextLevel" [contextInstanceId]="contextInstanceId"
@@ -11,9 +12,11 @@
         </p>
     </ion-label>
 </ion-item>
+}
 
 <!-- Edit. -->
-<ion-item *ngIf="edit && field && field.shortname && form" class="ion-text-wrap" [formGroup]="form">
+@if (edit && field && field.shortname && form) {
+<ion-item class="ion-text-wrap" [formGroup]="form">
     <ion-input labelPlacement="stacked" type="text" [formControlName]="modelName" [placeholder]="field.name">
         <div [core-mark-required]="required" slot="label">
             <core-format-text [text]="field.name" [contextLevel]="contextLevel" [contextInstanceId]="contextInstanceId"
@@ -22,3 +25,4 @@
     </ion-input>
     <core-input-errors [control]="form.controls[modelName]" />
 </ion-item>
+}

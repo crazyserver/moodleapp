@@ -1,28 +1,36 @@
 <!-- Read only. -->
-<ion-item class="ion-text-wrap" *ngIf="(text || canEdit) && !edit">
-    <ion-label>
-        <h2>{{ plugin.name }}</h2>
-        <p>
-            <core-format-text [component]="component" [componentId]="assign.cmid" collapsible-item [text]="text" contextLevel="module"
-                [contextInstanceId]="assign.cmid" [courseId]="assign.course" />
-        </p>
-    </ion-label>
-    <div slot="end">
-        <div class="ion-text-end">
-            <ion-button fill="clear" *ngIf="canEdit" (click)="editComment()" [ariaLabel]="'core.edit' | translate">
-                <ion-icon name="fas-pen" slot="icon-only" aria-hidden="true" />
-            </ion-button>
+@if ((text || canEdit) && !edit) {
+    <ion-item class="ion-text-wrap">
+        <ion-label>
+            <h2>{{ plugin.name }}</h2>
+            <p>
+                <core-format-text [component]="component" [componentId]="assign.cmid" collapsible-item [text]="text" contextLevel="module"
+                    [contextInstanceId]="assign.cmid" [courseId]="assign.course" />
+            </p>
+        </ion-label>
+        <div slot="end">
+            <div class="ion-text-end">
+                @if (canEdit) {
+                    <ion-button fill="clear" (click)="editComment()" [ariaLabel]="'core.edit' | translate">
+                        <ion-icon name="fas-pen" slot="icon-only" aria-hidden="true" />
+                    </ion-button>
+                }
+            </div>
+            @if (!isSent) {
+                <ion-note color="dark">
+                    <ion-icon name="fas-clock" aria-hidden="true" /> {{ 'core.notsent' | translate }}
+                </ion-note>
+            }
         </div>
-        <ion-note *ngIf="!isSent" color="dark">
-            <ion-icon name="fas-clock" aria-hidden="true" /> {{ 'core.notsent' | translate }}
-        </ion-note>
-    </div>
-</ion-item>
+    </ion-item>
+}
 
 <!-- Edit -->
-<ion-item class="ion-text-wrap" *ngIf="edit && loaded">
-    <ion-label class="sr-only">{{ plugin.name }}</ion-label>
-    <core-rich-text-editor [control]="control" [placeholder]="plugin.name" name="assignfeedbackcomments_editor" [component]="component"
-        [componentId]="assign.cmid" [autoSave]="true" contextLevel="module" [contextInstanceId]="assign.cmid"
-        elementId="assignfeedbackcomments_editor" [draftExtraParams]="{userid: userId, action: 'grade'}" />
-</ion-item>
+@if (edit && loaded) {
+    <ion-item class="ion-text-wrap">
+        <ion-label class="sr-only">{{ plugin.name }}</ion-label>
+        <core-rich-text-editor [control]="control" [placeholder]="plugin.name" name="assignfeedbackcomments_editor" [component]="component"
+            [componentId]="assign.cmid" [autoSave]="true" contextLevel="module" [contextInstanceId]="assign.cmid"
+            elementId="assignfeedbackcomments_editor" [draftExtraParams]="{userid: userId, action: 'grade'}" />
+    </ion-item>
+}

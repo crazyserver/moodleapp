@@ -15,7 +15,8 @@
         <ion-refresher-content pullingText="{{ 'core.pulltorefresh' | translate }}" />
     </ion-refresher>
     <ion-list>
-        <ng-container *ngIf="searchAreaCategories.length > 0">
+        @if (searchAreaCategories.length > 0) {
+
             <core-spacer />
             <ion-item class="ion-text-wrap heading">
                 <ion-label>
@@ -27,13 +28,17 @@
                     [indeterminate]="allSearchAreaCategories === null" (ionChange)="allSearchAreaCategoriesUpdated()">{{
                     'core.search.allcategories' | translate }}</ion-checkbox>
             </ion-item>
-            <ion-item class="ion-text-wrap" *ngFor="let searchAreaCategory of searchAreaCategories">
-                <ion-checkbox labelPlacement="start" [(ngModel)]="searchAreaCategory.checked"
-                    (ionChange)="onSearchAreaCategoryInputChanged(searchAreaCategory)"><core-format-text
-                        [text]="searchAreaCategory.name" /></ion-checkbox>
-            </ion-item>
-        </ng-container>
-        <ng-container *ngIf="!hideCourses && courses.length > 0">
+            @for (searchAreaCategory of searchAreaCategories; track searchAreaCategory) {
+                <ion-item class="ion-text-wrap">
+                    <ion-checkbox labelPlacement="start" [(ngModel)]="searchAreaCategory.checked"
+                        (ionChange)="onSearchAreaCategoryInputChanged(searchAreaCategory)"><core-format-text
+                            [text]="searchAreaCategory.name" /></ion-checkbox>
+                </ion-item>
+            }
+
+        }
+        @if (!hideCourses && courses.length > 0) {
+
             <core-spacer />
             <ion-item class="ion-text-wrap heading">
                 <ion-label>
@@ -45,10 +50,13 @@
                     (ionChange)="allCoursesUpdated()">
                     {{ 'core.search.allcourses' | translate }}</ion-checkbox>
             </ion-item>
-            <ion-item class="ion-text-wrap" *ngFor="let course of courses">
-                <ion-checkbox labelPlacement="start" [(ngModel)]="course.checked"
-                    (ionChange)="onCourseInputChanged(course)"><core-format-text [text]="course.shortname" /></ion-checkbox>
-            </ion-item>
-        </ng-container>
+            @for (course of courses; track course) {
+                <ion-item class="ion-text-wrap">
+                    <ion-checkbox labelPlacement="start" [(ngModel)]="course.checked"
+                        (ionChange)="onCourseInputChanged(course)"><core-format-text [text]="course.shortname" /></ion-checkbox>
+                </ion-item>
+            }
+
+        }
     </ion-list>
 </ion-content>

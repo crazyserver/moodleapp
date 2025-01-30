@@ -26,24 +26,34 @@
             </ion-label>
         </ion-item>
 
-        <ion-item class="ion-text-wrap" *ngFor="let item of items" (click)="openImscp(item.href)" button [detail]="true">
-            <ion-label [class.core-bold]="!item.href">
-                <p>
-                    <span class="ion-padding-start" *ngFor="let i of getNumberForPadding(item.level)"></span>
-                    {{item.title}}
-                </p>
-            </ion-label>
-        </ion-item>
+        @for (item of items; track item) {
+            <ion-item class="ion-text-wrap" (click)="openImscp(item.href)" button [detail]="true">
+                <ion-label [class.core-bold]="!item.href">
+                    <p>
+                        @for (i of getNumberForPadding(item.level); track i) {
+                            <span class="ion-padding-start"></span>
+                        }
+                        {{item.title}}
+                    </p>
+                </ion-label>
+            </ion-item>
+        }
     </ion-list>
 
-    <div collapsible-footer appearOnBottom *ngIf="!showLoading" slot="fixed">
-        <div class="list-item-limited-width">
-            <ion-button class="ion-margin ion-text-wrap" expand="block" (click)="openImscp()">
-                <span *ngIf="!hasStarted">{{ 'core.start' | translate }}</span>
-                <span *ngIf="hasStarted">{{ 'core.resume' | translate }}</span>
-            </ion-button>
-        </div>
+    @if (!showLoading) {
+        <div collapsible-footer appearOnBottom slot="fixed">
+            <div class="list-item-limited-width">
+                <ion-button class="ion-margin ion-text-wrap" expand="block" (click)="openImscp()">
+                    @if (!hasStarted) {
+                        <span>{{ 'core.start' | translate }}</span>
+                    }
+                    @if (hasStarted) {
+                        <span>{{ 'core.resume' | translate }}</span>
+                    }
+                </ion-button>
+            </div>
 
-        <core-course-module-navigation [courseId]="courseId" [currentModuleId]="module.id" />
-    </div>
+            <core-course-module-navigation [courseId]="courseId" [currentModuleId]="module.id" />
+        </div>
+    }
 </core-loading>

@@ -12,7 +12,8 @@
 </ion-header>
 <ion-content>
     <ion-list>
-        <ng-container *ngFor="let question of questions">
+        @for (question of questions; track question) {
+
             <ion-item button class="ion-text-wrap divider" (click)="toggle(question)" [attr.aria-expanded]="isOpen(question)"
                 [attr.aria-controls]="'question-' + question.id + '-answer'" role="heading" [detail]="false">
                 <ion-icon name="fas-chevron-right" flip-rtl slot="start" aria-hidden="true" class="expandable-status-icon"
@@ -25,12 +26,19 @@
                 [class]="question.answer.class + ' ion-text-wrap core-login-site-help--answer'" [class.open]="isOpen(question)"
                 [tabindex]="isOpen(question) ? null : -1" [attr.inert]="isOpen(question) ? null : 'true'">
                 <ion-label>
-                    <p *ngIf="question.answer.format === 'text'">{{ question.answer.text }}</p>
-                    <p *ngIf="question.answer.format === 'safe-html'" [innerHTML]="question.answer.text"></p>
-                    <core-format-text *ngIf="question.answer.format === 'unsafe-html'" [text]="question.answer.text" [filter]="false" />
+                    @if (question.answer.format === 'text') {
+                        <p>{{ question.answer.text }}</p>
+                    }
+                    @if (question.answer.format === 'safe-html') {
+                        <p [innerHTML]="question.answer.text"></p>
+                    }
+                    @if (question.answer.format === 'unsafe-html') {
+                        <core-format-text [text]="question.answer.text" [filter]="false" />
+                    }
                 </ion-label>
             </ion-item>
-        </ng-container>
+
+        }
         <ion-item>
             <ion-label>
                 <p [innerHTML]="'core.login.faqmore' | translate"></p>

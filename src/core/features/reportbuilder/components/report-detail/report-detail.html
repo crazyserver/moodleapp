@@ -1,4 +1,5 @@
-<ng-container *ngIf="state$ | async as state">
+@if (state$ | async; as state) {
+
 
     <core-loading [hideUntil]="state.loaded">
 
@@ -6,53 +7,77 @@
             <ion-refresher-content pullingText="{{ 'core.pulltorefresh' | translate }}" />
         </ion-refresher>
 
-        <ng-container *ngIf="state.report?.data?.rows?.length && state.report?.data?.headers && state.report?.details; else empty">
+        @if (state.report?.data?.rows?.length && state.report?.data?.headers && state.report?.details) {
 
-            <ng-container *ngIf="isCardLayout">
-                <ion-card *ngFor="let row of state.report.data.rows; let rowIndex = index">
-                    <ion-list class="ion-text-wrap">
-                        <core-report-builder-report-column *ngFor="let column of row.columns | slice:0:row.isExpanded ?
-                            row.columns.length : state.cardVisibleColumns; let columnIndex = index" [columnIndex]="columnIndex"
-                            [rowIndex]="rowIndex" [isExpandable]="columnIndex === 0 && row.columns.length > state.cardVisibleColumns"
-                            [isExpanded]="row.isExpanded" [showFirstTitle]="state.cardviewShowFirstTitle" [source]="source$ | async"
-                            [contextId]="state.report.details.contextid" [header]="state.report.data.headers[columnIndex]" [column]="column"
-                            (onToggleRow)="toggleRow(rowIndex)" />
-                    </ion-list>
-                </ion-card>
-            </ng-container>
 
-            <div *ngIf="!isCardLayout" class="x-scrollable">
-                <table class="core-table">
-                    <thead>
-                        <tr>
-                            <th *ngFor="let header of state.report.data.headers">
-                                {{ header }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="auto-striped">
-                        <tr *ngFor="let row of state.report.data.rows">
-                            <td *ngFor="let column of row.columns">
-                                <core-format-text *ngIf="isString(column); else notText" [text]="column" [contextLevel]="source$ | async"
-                                    [contextInstanceId]="state.report.details.contextid" />
-                                <ng-template #notText> {{ column }} </ng-template>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            @if (isCardLayout) {
 
-        </ng-container>
+                @for (row of state.report.data.rows; track row; let rowIndex = $index) {
+                    <ion-card>
+                        <ion-list class="ion-text-wrap">
+                            @for (column of row.columns | slice:0:row.isExpanded ?
+                            row.columns.length : state.cardVisibleColumns; track column; let columnIndex = $index) {
+                                <core-report-builder-report-column [columnIndex]="columnIndex" [rowIndex]="rowIndex"
+                                    [isExpandable]="columnIndex === 0 && row.columns.length > state.cardVisibleColumns"
+                                    [isExpanded]="row.isExpanded" [showFirstTitle]="state.cardviewShowFirstTitle" [source]="source$ | async"
+                                    [contextId]="state.report.details.contextid" [header]="state.report.data.headers[columnIndex]"
+                                    [column]="column" (onToggleRow)="toggleRow(rowIndex)" />
+                            }
+                        </ion-list>
+                    </ion-card>
+                }
 
-        <ng-template #empty>
+            }
+
+            @if (!isCardLayout) {
+                <div class="x-scrollable">
+                    <table class="core-table">
+                        <thead>
+                            <tr>
+                                @for (header of state.report.data.headers; track header) {
+                                    <th>
+                                        {{ header }}
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="auto-striped">
+                            @for (row of state.report.data.rows; track row) {
+                                <tr>
+                                    @for (column of row.columns; track column) {
+                                        <td>
+                                            @if (isString(column)) {
+                                                <core-format-text [text]="column" [contextLevel]="source$ | async"
+                                                    [contextInstanceId]="state.report.details.contextid" />
+                                            } @else {
+                                                {{ column }}
+                                            }
+
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+
+        } @else {
+
             <core-empty-box icon="fas-rectangle-list">
                 <p> {{ 'core.course.nocontentavailable' | translate }} </p>
             </core-empty-box>
-        </ng-template>
 
-        <core-infinite-loading *ngIf="!isBlock && state.report?.data?.rows?.length && state.report?.data?.headers && state.report?.details"
-            [enabled]="state.canLoadMoreRows" (action)="fetchMoreInfo($event)" [error]="state.errorLoadingRows" />
+        }
+
+
+
+        @if (!isBlock && state.report?.data?.rows?.length && state.report?.data?.headers && state.report?.details) {
+            <core-infinite-loading [enabled]="state.canLoadMoreRows" (action)="fetchMoreInfo($event)" [error]="state.errorLoadingRows" />
+        }
 
     </core-loading>
 
-</ng-container>
+
+}

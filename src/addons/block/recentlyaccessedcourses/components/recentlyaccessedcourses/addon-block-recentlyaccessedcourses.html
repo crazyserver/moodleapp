@@ -7,16 +7,19 @@
     </div>
 </ion-item-divider>
 <core-loading [hideUntil]="loaded">
-    <core-empty-box *ngIf="courses.length === 0" image="assets/img/icons/courses.svg"
-        [message]="'addon.block_recentlyaccessedcourses.nocourses' | translate" />
+    @if (courses.length === 0) {
+        <core-empty-box image="assets/img/icons/courses.svg" [message]="'addon.block_recentlyaccessedcourses.nocourses' | translate" />
+    }
     <!-- List of courses. -->
     <div [hidden]="courses.length === 0" [id]="scrollElementId" class="core-horizontal-scroll"
         (scroll)="scrollControls.updateScrollPosition()">
         <div (onResize)="scrollControls.updateScrollPosition()" class="flex-row core-course-list">
             <div class="safe-area-pseudo-padding-start"></div>
-            <ng-container *ngFor="let course of courses">
+            @for (course of courses; track course) {
+
                 <core-courses-course-list-item [course]="course" class="core-recentlyaccessedcourses" layout="summarycard" />
-            </ng-container>
+
+            }
             <div class="safe-area-pseudo-padding-end"></div>
         </div>
     </div>

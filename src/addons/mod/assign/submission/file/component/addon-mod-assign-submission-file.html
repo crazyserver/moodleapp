@@ -1,5 +1,6 @@
 <!-- Read only. -->
-<ion-item class="ion-text-wrap" *ngIf="files && files.length && !edit">
+@if (files && files.length && !edit) {
+<ion-item class="ion-text-wrap">
     <ion-label>
         <h2>{{ plugin.name }}</h2>
         <div>
@@ -7,9 +8,11 @@
         </div>
     </ion-label>
 </ion-item>
+}
 
 <!-- Edit -->
-<div *ngIf="edit">
+@if (edit) {
+<div>
     <ion-item-divider class="ion-text-wrap" [sticky]="true">
         <ion-label>
             <h2>{{ plugin.name }}</h2>
@@ -18,3 +21,4 @@
     <core-attachments [files]="files" [maxSize]="maxSize" [maxSubmissions]="maxSubmissions" [courseId]="assign.course"
         [component]="component" [componentId]="assign.cmid" [acceptedTypes]="acceptedTypes" [allowOffline]="allowOffline" />
 </div>
+}
