@@ -24,6 +24,7 @@ import { CoreBlockDefaultHandler } from './handlers/default-block';
 import { CoreNavigationOptions } from '@services/navigator';
 import type { ICoreBlockComponent } from '@features/block/classes/base-block-component';
 import { ContextLevel } from '@/core/constants';
+import { HandlerData } from '@singletons/loader';
 
 /**
  * Interface that all blocks must implement.
@@ -52,7 +53,7 @@ export interface CoreBlockHandler extends CoreDelegateHandler {
 /**
  * Data needed to render a block. It's returned by the handler.
  */
-export interface CoreBlockHandlerData {
+export interface CoreBlockHandlerData extends HandlerData<ICoreBlockComponent> {
     /**
      * Title to display for the block.
      */
@@ -62,12 +63,6 @@ export interface CoreBlockHandlerData {
      * Class to add to the displayed block.
      */
     class?: string;
-
-    /**
-     * The component to render the contents of the block.
-     * It's recommended to return the class of the component, but you can also return an instance of the component.
-     */
-    component: Type<ICoreBlockComponent>;
 
     /**
      * Data to pass to the component. All the properties in this object will be passed to the component as inputs.

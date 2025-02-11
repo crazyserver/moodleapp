@@ -20,6 +20,7 @@ import { CoreCourseBlock } from '@features/course/services/course';
 import type { ICoreBlockComponent } from '@features/block/classes/base-block-component';
 import { ContextLevel } from '@/core/constants';
 import { CoreSharedModule } from '@/core/shared.module';
+import { CoreLoader } from '@singletons/loader';
 
 /**
  * Component to render a block.
@@ -86,7 +87,7 @@ export class CoreBlockComponent implements OnChanges, OnDestroy {
             }
 
             this.class = data.class;
-            this.componentClass = data.component;
+            this.componentClass = await CoreLoader.getComponent(data);
 
             // Set up the data needed by the block component.
             this.data = Object.assign({

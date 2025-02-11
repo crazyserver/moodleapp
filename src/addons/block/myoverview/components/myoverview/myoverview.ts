@@ -61,7 +61,7 @@ const FILTER_PRIORITY: AddonBlockMyOverviewTimeFilters[] =
         CoreCoursesCourseListItemComponent,
     ],
 })
-export class AddonBlockMyOverviewComponent extends CoreBlockBaseComponent implements OnInit, OnDestroy, OnChanges {
+export default class AddonBlockMyOverviewComponent extends CoreBlockBaseComponent implements OnInit, OnDestroy, OnChanges {
 
     filteredCourses: CoreEnrolledCourseDataWithExtraInfoAndOptions[] = [];
 

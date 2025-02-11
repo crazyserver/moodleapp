@@ -24,6 +24,7 @@ import { CoreSitePluginsBlockHandlerData, CoreSitePluginsContent } from '@featur
 import { CoreLogger } from '@singletons/logger';
 import { CoreSitePluginsBaseHandler } from './base-handler';
 import { ContextLevel } from '@/core/constants';
+import { CoreLoader } from '@singletons/loader';
 
 /**
  * Handler to support a block using a site plugin.
@@ -72,7 +73,8 @@ export class CoreSitePluginsBlockHandler extends CoreSitePluginsBaseHandler impl
                 }
 
                 this.logger.debug(`Using fallback "${this.handlerSchema.fallback}" for block "${originalName}"`);
-                component = displayData.component;
+
+                component = await CoreLoader.getComponent(displayData);
             } catch (error) {
                 this.logger.error(`Error using fallback "${this.handlerSchema.fallback}" for block "${originalName}", ` +
                         'maybe it doesn\'t exist or isn\'t enabled.', error);

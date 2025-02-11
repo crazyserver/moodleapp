@@ -116,7 +116,7 @@ export type LazyRoutesModule = Type<any> |
 /**
  * Type to declare lazy standalone component. Extracted from Angular's LoadComponent type with default class.
  */
-export type LazyDefaultStandaloneComponent = Promise<DefaultExport<Type<unknown>>>;
+export type LazyDefaultStandaloneComponent<T = unknown> = Promise<DefaultExport<Type<T>>>;
 
 /**
  * Build url matcher using a regular expression.

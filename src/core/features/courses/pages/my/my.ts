@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AddonBlockMyOverviewComponent } from '@addons/block/myoverview/components/myoverview/myoverview';
+import AddonBlockMyOverviewComponent from '@addons/block/myoverview/components/myoverview/myoverview';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AsyncDirective } from '@classes/async-directive';
 import { PageLoadsManager } from '@classes/page-loads-manager';

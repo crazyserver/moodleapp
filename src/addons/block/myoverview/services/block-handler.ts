@@ -16,7 +16,6 @@ import { Injectable } from '@angular/core';
 import { CoreSites } from '@services/sites';
 import { CoreBlockHandlerData } from '@features/block/services/block-delegate';
 import { CoreCourses } from '@features/courses/services/courses';
-import { AddonBlockMyOverviewComponent } from '../components/myoverview/myoverview';
 import { CoreBlockBaseHandler } from '@features/block/classes/base-block-handler';
 import { makeSingleton } from '@singletons';
 
@@ -49,7 +48,7 @@ export class AddonBlockMyOverviewHandlerService extends CoreBlockBaseHandler {
         return {
             title: 'addon.block_myoverview.pluginname',
             class: 'addon-block-myoverview',
-            component: AddonBlockMyOverviewComponent,
+            loadComponent: () => import('../components/myoverview/myoverview'),
         };
     }
 
