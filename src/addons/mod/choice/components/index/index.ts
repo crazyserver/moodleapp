@@ -35,7 +35,7 @@ import {
 } from '../../services/choice-sync';
 import {
     ADDON_MOD_CHOICE_AUTO_SYNCED,
-    ADDON_MOD_CHOICE_COMPONENT,
+    ADDON_MOD_CHOICE_COMPONENT_LEGACY,
     ADDON_MOD_CHOICE_PUBLISH_ANONYMOUS,
     AddonModChoiceShowResults,
 } from '../../constants';
@@ -60,7 +60,7 @@ import { CoreCourseModuleInfoComponent } from '@features/course/components/modul
 })
 export class AddonModChoiceIndexComponent extends CoreCourseModuleMainActivityComponent implements OnInit {
 
-    component = ADDON_MOD_CHOICE_COMPONENT;
+    component = ADDON_MOD_CHOICE_COMPONENT_LEGACY;
     pluginName = 'choice';
 
     choice?: AddonModChoiceChoice;
