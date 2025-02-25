@@ -15,8 +15,8 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModWikiSync } from '../wiki-sync';
 import { AddonModWikiSyncCronHandlerService } from '@addons/mod/wiki/services/handlers/sync-cron';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -27,15 +27,17 @@ export class AddonModWikiSyncCronHandlerLazyService extends AddonModWikiSyncCron
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModWikiSync.syncAllWikis(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModWikiSync } = await import('../wiki-sync');
+
+        await AddonModWikiSync.syncAllWikis(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModWikiSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

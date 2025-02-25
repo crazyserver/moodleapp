@@ -15,8 +15,8 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModSurveySync } from '../survey-sync';
 import { AddonModSurveySyncCronHandlerService } from '@addons/mod/survey/services/handlers/sync-cron';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -30,6 +30,8 @@ export class AddonModSurveySyncCronHandlerLazyService
      * @inheritdoc
      */
     async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModSurveySync } = await import('../survey-sync');
+
         await AddonModSurveySync.syncAllSurveys(siteId, force);
     }
 
@@ -37,7 +39,7 @@ export class AddonModSurveySyncCronHandlerLazyService
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModSurveySync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

@@ -16,7 +16,6 @@ import { Injectable } from '@angular/core';
 
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { CorePushNotifications } from '../pushnotifications';
 
 /**
  * Cron handler to force a register on a Moodle site when a site is manually synchronized.
@@ -27,22 +26,18 @@ export class CorePushNotificationsRegisterCronHandlerService implements CoreCron
     name = 'CorePushNotificationsRegisterCronHandler';
 
     /**
-     * Check whether the sync can be executed manually. Call isSync if not defined.
-     *
-     * @returns Whether the sync can be executed manually.
+     * @inheritdoc
      */
     canManualSync(): boolean {
         return true; // Execute the handler when the site is manually synchronized.
     }
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
     async execute(siteId?: string): Promise<void> {
+        const { CorePushNotifications } = await import('../pushnotifications');
+
         if (!siteId || !CorePushNotifications.canRegisterOnMoodle()) {
             // It's not a specific site, don't do anything.
             return;
@@ -53,18 +48,14 @@ export class CorePushNotificationsRegisterCronHandlerService implements CoreCron
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
         return 86400000; // 1 day. We won't do anything with automatic execution, so use a big number.
     }
 
     /**
-     * Check whether it's a synchronization process or not. True if not defined.
-     *
-     * @returns Whether it's a synchronization process or not.
+     * @inheritdoc
      */
     isSync(): boolean {
         return false;

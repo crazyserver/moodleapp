@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModForumSync } from '../forum-sync';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -26,24 +26,19 @@ export class AddonModForumSyncCronHandlerService implements CoreCronHandler {
     name = 'AddonModForumSyncCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @param force Wether the execution is forced (manual sync).
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModForumSync.syncAllForums(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModForumSync } = await import('../forum-sync');
+
+        await AddonModForumSync.syncAllForums(siteId, force);
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
-        return AddonModForumSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

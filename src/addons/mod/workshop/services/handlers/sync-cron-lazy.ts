@@ -15,8 +15,8 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModWorkshopSync } from '../workshop-sync';
 import { AddonModWorkshopSyncCronHandlerService } from './sync-cron';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -29,15 +29,17 @@ export class AddonModWorkshopSyncCronHandlerLazyService
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModWorkshopSync.syncAllWorkshops(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModWorkshopSync } = await import ('../workshop-sync');
+
+        await  AddonModWorkshopSync.syncAllWorkshops(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModWorkshopSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

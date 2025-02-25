@@ -344,3 +344,7 @@ interface EnvironmentBuild {
     lastCommitHash: string;
     compilationTime: number;
 }
+
+export const CORE_CRON_SYNC_DEFAULT_INTERVAL = 3600000; // Default interval is 1 hour.
+export const CORE_CRON_SYNC_MIN_INTERVAL = 240000; // Minimum interval is 4 minutes.
+export const CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL = 300000; // Default interval for activities is 5 minutes.

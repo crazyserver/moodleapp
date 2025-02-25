@@ -15,8 +15,8 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModDataSync } from '../data-sync';
 import { AddonModDataSyncCronHandlerService } from '@addons/mod/data/services/handlers/sync-cron';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -27,15 +27,17 @@ export class AddonModDataSyncCronHandlerLazyService extends AddonModDataSyncCron
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModDataSync.syncAllDatabases(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModDataSync } = await import('../data-sync');
+
+        await AddonModDataSync.syncAllDatabases(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModDataSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

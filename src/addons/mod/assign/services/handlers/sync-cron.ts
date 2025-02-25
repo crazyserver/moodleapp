@@ -15,29 +15,40 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModAssignSync } from '../assign-sync';
 import { ADDON_MOD_ASSIGN_SYNC_CRON_NAME } from '../../constants';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
+import { CoreCronBaseHandler } from '@services/handlers/default-cron-handler';
+import { type AddonModAssignSyncProvider } from '../assign-sync';
 
 /**
  * Synchronization cron handler.
  */
 @Injectable({ providedIn: 'root' })
-export class AddonModAssignSyncCronHandlerService implements CoreCronHandler {
+export class AddonModAssignSyncCronHandlerService
+    extends CoreCronBaseHandler<AddonModAssignSyncProvider>
+    implements CoreCronHandler {
 
     name = ADDON_MOD_ASSIGN_SYNC_CRON_NAME;
 
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModAssignSync.syncAllAssignments(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        if (this.cronComponent !== undefined) {
+            return;
+        }
+
+        const { AddonModAssignSync } = await import('../assign-sync');
+        this.cronComponent = AddonModAssignSync;
+
+        await this.cronComponent?.syncAllAssignments(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModAssignSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

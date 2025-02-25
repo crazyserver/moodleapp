@@ -32,6 +32,7 @@ import {
     ADDON_MESSAGES_PAGE_NAME,
 } from '@addons/messages/constants';
 import { MAIN_MENU_HANDLER_BADGE_UPDATED_EVENT } from '@features/mainmenu/constants';
+import { CORE_CRON_SYNC_MIN_INTERVAL } from '@/core/constants';
 
 /**
  * Handler to inject an option into main menu.
@@ -204,20 +205,18 @@ export class AddonMessagesMainMenuHandlerService implements CoreMainMenuHandler,
             return;
         }
 
-        this.refreshBadge();
+        await this.refreshBadge();
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
         if (!this.isSync()) {
-            return 300000; // We have a WS to check the number, check it every 5 minutes.
+            return CORE_CRON_SYNC_MIN_INTERVAL; // We have a WS to check the number, check it every 5 minutes.
         }
 
-        return 600000; // Check it every 10 minutes.
+        return 2 * CORE_CRON_SYNC_MIN_INTERVAL; // Check it every 10 minutes.
     }
 
     /**

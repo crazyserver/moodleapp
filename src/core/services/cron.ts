@@ -18,7 +18,7 @@ import { CoreAppDB } from '@services/app-db';
 import { CoreNetwork } from '@services/network';
 import { CoreConfig } from '@services/config';
 import { CorePromiseUtils } from '@singletons/promise-utils';
-import { CoreConstants } from '@/core/constants';
+import { CORE_CRON_SYNC_DEFAULT_INTERVAL, CORE_CRON_SYNC_MIN_INTERVAL, CoreConstants } from '@/core/constants';
 import { CoreError } from '@classes/errors/error';
 
 import { makeSingleton, Translate } from '@singletons';
@@ -35,8 +35,8 @@ import { CoreDatabaseCachingStrategy, CoreDatabaseTableProxy } from '@classes/da
 export class CoreCronDelegateService {
 
     // Constants.
-    static readonly DEFAULT_INTERVAL = 3600000; // Default interval is 1 hour.
-    static readonly MIN_INTERVAL = 240000; // Minimum interval is 4 minutes.
+    static readonly DEFAULT_INTERVAL = CORE_CRON_SYNC_DEFAULT_INTERVAL; // Default interval is 1 hour.
+    static readonly MIN_INTERVAL = CORE_CRON_SYNC_MIN_INTERVAL; // Minimum interval is 5 minutes.
     static readonly MAX_TIME_PROCESS = 120000; // Max time a process can block the queue. Defaults to 2 minutes.
 
     protected logger: CoreLogger;

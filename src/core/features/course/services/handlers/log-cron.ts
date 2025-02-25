@@ -16,7 +16,6 @@ import { Injectable } from '@angular/core';
 
 import { CoreCronHandler } from '@services/cron';
 import { CoreSites } from '@services/sites';
-import { CoreCourse } from '@features/course/services/course';
 import { makeSingleton } from '@singletons';
 
 /**
@@ -28,15 +27,9 @@ export class CoreCourseLogCronHandlerService implements CoreCronHandler {
     name = 'CoreCourseLogCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @param force Wether the execution is forced (manual sync).
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async execute(siteId?: string, force?: boolean): Promise<void> {
+    async execute(siteId?: string): Promise<void> {
         if (!siteId && !CoreSites.isLoggedIn()) {
             // No current site, stop.
             return;
@@ -44,22 +37,20 @@ export class CoreCourseLogCronHandlerService implements CoreCronHandler {
 
         const site = await CoreSites.getSite(siteId);
 
-        return CoreCourse.logView(site.getSiteHomeId(), undefined, site.getId());
+        const { CoreCourse } = await import('../course');
+
+        await CoreCourse.logView(site.getSiteHomeId(), undefined, site.getId());
     }
 
     /**
-     * Check whether it's a synchronization process or not.
-     *
-     * @returns Whether it's a synchronization process or not.
+     * @inheritdoc
      */
     isSync(): boolean {
         return false;
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
         return 240000; // 4 minutes. By default platform will see the user as online if lastaccess is less than 5 minutes.

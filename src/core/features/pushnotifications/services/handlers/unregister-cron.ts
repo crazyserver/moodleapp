@@ -16,34 +16,31 @@ import { Injectable } from '@angular/core';
 
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { CorePushNotifications } from '../pushnotifications';
+import { CoreCronBaseHandler } from '@services/handlers/default-cron-handler';
+import { type CorePushNotificationsProvider } from '../pushnotifications';
 
 /**
  * Cron handler to retry pending unregisters.
  */
 @Injectable({ providedIn: 'root' })
-export class CorePushNotificationsUnregisterCronHandlerService implements CoreCronHandler {
+export class CorePushNotificationsUnregisterCronHandlerService
+    extends CoreCronBaseHandler<CorePushNotificationsProvider>
+    implements CoreCronHandler {
 
     name = 'CorePushNotificationsUnregisterCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
     async execute(siteId?: string): Promise<void> {
-        await CorePushNotifications.retryUnregisters(siteId);
-    }
+        if (this.cronComponent !== undefined) {
+            return;
+        }
 
-    /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
-     */
-    getInterval(): number {
-        return 300000;
+        const { CorePushNotifications } = await import('../pushnotifications');
+        this.cronComponent = CorePushNotifications;
+
+        await this.cronComponent?.retryUnregisters(siteId);
     }
 
 }

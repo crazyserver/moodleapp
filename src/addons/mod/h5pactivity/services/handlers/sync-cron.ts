@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModH5PActivitySync } from '../h5pactivity-sync';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -27,24 +27,19 @@ export class AddonModH5PActivitySyncCronHandlerService implements CoreCronHandle
     name = 'AddonModH5PActivitySyncCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @param force Wether the execution is forced (manual sync).
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModH5PActivitySync.syncAllActivities(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModH5PActivitySync } = await import('../h5pactivity-sync');
+
+        await AddonModH5PActivitySync.syncAllActivities(siteId, force);
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
-        return AddonModH5PActivitySync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }
