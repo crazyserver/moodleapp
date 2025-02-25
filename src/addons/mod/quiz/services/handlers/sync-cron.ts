@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModQuizSync } from '../quiz-sync';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -29,15 +29,17 @@ export class AddonModQuizSyncCronHandlerService implements CoreCronHandler {
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModQuizSync.syncAllQuizzes(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModQuizSync } = await import('../quiz-sync');
+
+        await AddonModQuizSync.syncAllQuizzes(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModQuizSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

@@ -15,7 +15,6 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonMessagesSync } from '../messages-sync';
 
 /**
  * Synchronization cron handler.
@@ -26,20 +25,16 @@ export class AddonMessagesSyncCronHandlerService implements CoreCronHandler {
     name = 'AddonMessagesSyncCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
-    execute(siteId?: string): Promise<void> {
-        return AddonMessagesSync.syncAllDiscussions(siteId);
+    async execute(siteId?: string): Promise<void> {
+        const { AddonMessagesSync } = await import('../messages-sync');
+
+        await AddonMessagesSync.syncAllDiscussions(siteId);
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
         return 300000; // 5 minutes.

@@ -13,26 +13,19 @@
 // limitations under the License.
 
 import { CORE_CRON_SYNC_MIN_INTERVAL } from '@/core/constants';
-import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
-import { makeSingleton } from '@singletons';
+import { CoreSingletonProxy } from '@singletons';
 
 /**
- * Synchronization cron handler.
+ * Base handler for cron.
+ * To easily implement a new handler, extend this class.
  */
-@Injectable( { providedIn: 'root' } )
-export class AddonNotesSyncCronHandlerService implements CoreCronHandler {
+export class CoreCronBaseHandler<T = unknown> implements CoreCronHandler {
 
-    name = 'AddonNotesSyncCronHandler';
+    name = 'CoreCronBaseHandler';
 
-    /**
-     * @inheritdoc
-     */
-    async execute(siteId?: string, force?: boolean): Promise<void> {
-        const { AddonNotesSync } = await import('../notes-sync');
-
-        await AddonNotesSync.syncAllNotes(siteId, force);
-    }
+    // Component to implement the cron functions.
+    cronComponent?: CoreSingletonProxy<T>;
 
     /**
      * @inheritdoc
@@ -42,4 +35,3 @@ export class AddonNotesSyncCronHandlerService implements CoreCronHandler {
     }
 
 }
-export const AddonNotesSyncCronHandler = makeSingleton(AddonNotesSyncCronHandlerService);

@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { CoreUserSync } from '../user-sync';
+import { CORE_CRON_SYNC_MIN_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -27,25 +27,19 @@ export class CoreUserSyncCronHandlerService implements CoreCronHandler {
     name = 'CoreUserSyncCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @param force Wether the execution is forced (manual sync).
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return CoreUserSync.syncPreferences(siteId);
+    async execute(siteId?: string): Promise<void> {
+        const { CoreUserSync } = await import('../user-sync');
+
+        await CoreUserSync.syncPreferences(siteId);
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
-        return 300000; // 5 minutes.
+        return CORE_CRON_SYNC_MIN_INTERVAL; // 5 minutes.
     }
 
 }

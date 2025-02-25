@@ -21,6 +21,7 @@ import { Translate } from '@singletons';
 import { CoreLogger } from '@singletons/logger';
 import { CoreAnyError, CoreError } from '@classes/errors/error';
 import { CoreErrorHelper } from '@services/error-helper';
+import { CORE_CRON_SYNC_MIN_INTERVAL } from '../constants';
 
 /**
  * Blocked sync error.
@@ -55,7 +56,7 @@ export class CoreSyncBaseProvider<T = void> {
     /**
      * Sync provider's interval.
      */
-    syncInterval = 300000;
+    syncInterval = CORE_CRON_SYNC_MIN_INTERVAL;
 
     // Store sync promises.
     protected syncPromises: { [siteId: string]: { [uniqueId: string]: Promise<T> } } = {};

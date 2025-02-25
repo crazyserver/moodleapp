@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { CORE_CRON_SYNC_MIN_INTERVAL } from '@/core/constants';
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { CoreCommentsSync } from '../comments-sync';
 /**
  * Synchronization cron handler.
  */
@@ -25,24 +25,19 @@ export class CoreCommentsSyncCronHandlerService implements CoreCronHandler {
     name = 'CoreCommentsSyncCronHandler';
 
     /**
-     * Execute the process.
-     * Receives the ID of the site affected, undefined for all sites.
-     *
-     * @param siteId ID of the site affected, undefined for all sites.
-     * @param force Wether the execution is forced (manual sync).
-     * @returns Promise resolved when done, rejected if failure.
+     * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return CoreCommentsSync.syncAllComments(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { CoreCommentsSync } = await import('../comments-sync');
+
+        await CoreCommentsSync.syncAllComments(siteId, force);
     }
 
     /**
-     * Get the time between consecutive executions.
-     *
-     * @returns Time between consecutive executions (in ms).
+     * @inheritdoc
      */
     getInterval(): number {
-        return 300000; // 5 minutes.
+        return CORE_CRON_SYNC_MIN_INTERVAL; // 5 minutes.
     }
 
 }

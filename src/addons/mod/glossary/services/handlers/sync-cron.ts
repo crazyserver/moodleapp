@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModGlossarySync } from '../glossary-sync';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -28,15 +28,17 @@ export class AddonModGlossarySyncCronHandlerService implements CoreCronHandler {
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModGlossarySync.syncAllGlossaries(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModGlossarySync } = await import('../glossary-sync');
+
+        await AddonModGlossarySync.syncAllGlossaries(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModGlossarySync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }

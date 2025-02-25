@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { CoreCronHandler } from '@services/cron';
 import { makeSingleton } from '@singletons';
-import { AddonModScormSync } from '../scorm-sync';
+import { CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL } from '@/core/constants';
 
 /**
  * Synchronization cron handler.
@@ -28,15 +28,17 @@ export class AddonModScormSyncCronHandlerService implements CoreCronHandler {
     /**
      * @inheritdoc
      */
-    execute(siteId?: string, force?: boolean): Promise<void> {
-        return AddonModScormSync.syncAllScorms(siteId, force);
+    async execute(siteId?: string, force?: boolean): Promise<void> {
+        const { AddonModScormSync } = await import('../scorm-sync');
+
+        await AddonModScormSync.syncAllScorms(siteId, force);
     }
 
     /**
      * @inheritdoc
      */
     getInterval(): number {
-        return AddonModScormSync.syncInterval;
+        return CORE_CRON_SYNC_DEFAULT_ACTIVITIES_INTERVAL;
     }
 
 }
