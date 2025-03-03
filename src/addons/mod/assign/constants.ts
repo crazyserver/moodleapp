@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { InjectionToken } from '@angular/core';
+import { AddonModAssignFeedbackHandler } from './services/feedback-delegate';
+import { AddonModAssignSubmissionHandler } from './services/submission-delegate';
+
 export const ADDON_MOD_ASSIGN_FEATURE_NAME = 'CoreCourseModuleDelegate_AddonModAssign';
 
 export const ADDON_MOD_ASSIGN_COMPONENT_LEGACY = 'mmaModAssign';
@@ -38,6 +42,11 @@ export const ADDON_MOD_ASSIGN_GRADED_EVENT = 'addon_mod_assign_graded';
 export const ADDON_MOD_ASSIGN_STARTED_EVENT = 'addon_mod_assign_started';
 export const ADDON_MOD_ASSIGN_AUTO_SYNCED = 'addon_mod_assign_autom_synced';
 export const ADDON_MOD_ASSIGN_MANUAL_SYNCED = 'addon_mod_assign_manual_synced';
+
+export const ADDON_MOD_ASSIGN_FEEDBACK_HANDLERS =
+    new InjectionToken<AddonModAssignFeedbackHandler[]>('ADDON_MOD_ASSIGN_FEEDBACK_HANDLERS');
+export const ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS =
+    new InjectionToken<AddonModAssignSubmissionHandler[]>('ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS');
 
 /**
  * Submission status.
