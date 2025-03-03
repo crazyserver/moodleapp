@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Injectable, Type } from '@angular/core';
-import { CoreDelegate, CoreDelegateHandler } from '@classes/delegate';
+import { Inject, Injectable, Optional, Type } from '@angular/core';
+import { CoreDelegateHandler } from '@classes/delegate';
 import { AddonModDataDefaultFieldHandler } from './handlers/default-field';
 import { makeSingleton } from '@singletons';
 import { AddonModDataEntryField,
@@ -26,7 +26,8 @@ import { FileEntry } from '@awesome-cordova-plugins/file/ngx';
 import { CoreFileEntry } from '@services/file-helper';
 import type { AddonModDataFieldPluginBaseComponent } from '@addons/mod/data/classes/base-field-plugin-component';
 import { CoreSites } from '@services/sites';
-import { ADDON_MOD_DATA_FEATURE_NAME } from '../constants';
+import { ADDON_MOD_DATA_FEATURE_NAME, ADDON_MOD_DATA_HANDLERS } from '../constants';
+import { CoreInjectedDelegate } from '@classes/delegate-injected';
 
 /**
  * Interface that all fields handlers must implement.
@@ -127,14 +128,17 @@ export interface AddonModDataFieldHandler extends CoreDelegateHandler {
  * Delegate to register database fields handlers.
  */
 @Injectable({ providedIn: 'root' })
-export class AddonModDataFieldsDelegateService extends CoreDelegate<AddonModDataFieldHandler> {
+export class AddonModDataFieldsDelegateService extends CoreInjectedDelegate<AddonModDataFieldHandler> {
 
     protected handlerNameProperty = 'type';
 
     constructor(
         protected defaultHandler: AddonModDataDefaultFieldHandler,
+        @Optional() @Inject(ADDON_MOD_DATA_HANDLERS) handlers: (() => Promise<AddonModDataFieldHandler>)[] | null,
     ) {
         super('AddonModDataFieldsDelegate');
+
+        this.injectedHandlers = handlers || [];
     }
 
     /**
