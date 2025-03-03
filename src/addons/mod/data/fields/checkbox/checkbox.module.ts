@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { AddonModDataFieldsDelegate } from '../../services/data-fields-delegate';
-import { AddonModDataFieldCheckboxHandler } from './services/handler';
+import { NgModule } from '@angular/core';
+import { ADDON_MOD_DATA_HANDLERS } from '../../constants';
 
 @NgModule({
     providers: [
         {
-            provide: APP_INITIALIZER,
+            provide: ADDON_MOD_DATA_HANDLERS,
             multi: true,
-            useValue: () => {
-                AddonModDataFieldsDelegate.registerHandler(AddonModDataFieldCheckboxHandler.instance);
+            useValue: async () => {
+                const { AddonModDataFieldCheckboxHandler } = await import('./services/handler');
+
+                return AddonModDataFieldCheckboxHandler.instance;
             },
         },
     ],
