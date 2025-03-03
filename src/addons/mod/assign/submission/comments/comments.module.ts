@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { AddonModAssignSubmissionCommentsHandler } from './services/handler';
-import { AddonModAssignSubmissionDelegate } from '../../services/submission-delegate';
+import { NgModule } from '@angular/core';
+import { ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS } from '../../constants';
 
 @NgModule({
     providers: [
         {
-            provide: APP_INITIALIZER,
+            provide: ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS,
             multi: true,
-            useValue: () => {
-                AddonModAssignSubmissionDelegate.registerHandler(AddonModAssignSubmissionCommentsHandler.instance);
+            useFactory: async () => {
+                const { AddonModAssignSubmissionCommentsHandler } = await import('./services/handler');
+
+                return AddonModAssignSubmissionCommentsHandler.instance;
             },
         },
     ],

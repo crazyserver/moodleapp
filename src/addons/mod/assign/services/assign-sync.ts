@@ -337,6 +337,8 @@ export class AddonModAssignSyncProvider extends CoreCourseActivitySyncBaseProvid
             return this.deleteSubmissionData(assign, offlineData, submission, siteId);
         }
 
+        await AddonModAssignSubmissionDelegate.loadInjectedHandlers();
+
         try {
             if (Object.keys(offlineData.plugindata).length == 0) {
                 await AddonModAssign.removeSubmissionOnline(assign.id, offlineData.userid, siteId);

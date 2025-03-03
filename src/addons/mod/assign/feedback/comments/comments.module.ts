@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { AddonModAssignFeedbackCommentsHandler } from './services/handler';
-import { AddonModAssignFeedbackDelegate } from '../../services/feedback-delegate';
+import { NgModule } from '@angular/core';
+import { ADDON_MOD_ASSIGN_FEEDBACK_HANDLERS } from '../../constants';
 
 @NgModule({
     providers: [
         {
-            provide: APP_INITIALIZER,
+            provide: ADDON_MOD_ASSIGN_FEEDBACK_HANDLERS,
             multi: true,
-            useValue: () => {
-                AddonModAssignFeedbackDelegate.registerHandler(AddonModAssignFeedbackCommentsHandler.instance);
+            useFactory: async () => {
+                const { AddonModAssignFeedbackCommentsHandler } = await import('./services/handler');
+
+                return AddonModAssignFeedbackCommentsHandler.instance;
             },
         },
     ],

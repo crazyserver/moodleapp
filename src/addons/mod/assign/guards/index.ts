@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NgModule } from '@angular/core';
-import { ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS } from '../../constants';
+import { CanActivateFn } from '@angular/router';
+import { AddonModAssignFeedbackDelegate } from '../services/feedback-delegate';
+import { AddonModAssignSubmissionDelegate } from '../services/submission-delegate';
 
-@NgModule({
-    providers: [
-        {
-            provide: ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS,
-            multi: true,
-            useFactory: async () => {
-                const { AddonModAssignSubmissionOnlineTextHandler } = await import('./services/handler');
+/**
+ * Load the data fields handlers.
+ *
+ * @returns Route.
+ */
+export const modAssignGuard: CanActivateFn = async () => {
+    await AddonModAssignFeedbackDelegate.loadInjectedHandlers();
+    await AddonModAssignSubmissionDelegate.loadInjectedHandlers();
 
-                return AddonModAssignSubmissionOnlineTextHandler.instance;
-            },
-        },
-    ],
-})
-export class AddonModAssignSubmissionOnlineTextModule {}
+    return true;
+};

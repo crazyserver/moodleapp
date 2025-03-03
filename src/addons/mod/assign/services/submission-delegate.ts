@@ -22,7 +22,7 @@ import { AddonModAssignSubmissionsDBRecordFormatted } from './assign-offline';
 import { CoreFormFields } from '@singletons/form';
 import type { AddonModAssignSubmissionPluginBaseComponent } from '@addons/mod/assign/classes/base-submission-plugin-component';
 import { CoreSites } from '@services/sites';
-import { ADDON_MOD_ASSIGN_FEATURE_NAME } from '../constants';
+import { ADDON_MOD_ASSIGN_FEATURE_NAME, ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS } from '../constants';
 
 /**
  * Interface that all submission handlers must implement.
@@ -310,7 +310,7 @@ export class AddonModAssignSubmissionDelegateService extends CoreDelegate<AddonM
     constructor(
         protected defaultHandler: AddonModAssignDefaultSubmissionHandler,
     ) {
-        super('AddonModAssignSubmissionDelegate');
+        super('AddonModAssignSubmissionDelegate', ADDON_MOD_ASSIGN_SUBMISSION_HANDLERS);
     }
 
     /**

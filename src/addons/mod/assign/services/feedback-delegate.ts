@@ -28,7 +28,7 @@ import { AddonModAssignSubmissionFormatted } from './assign-helper';
 import { CoreFormFields } from '@singletons/form';
 import type { IAddonModAssignFeedbackPluginComponent } from '@addons/mod/assign/classes/base-feedback-plugin-component';
 import { CoreSites } from '@services/sites';
-import { ADDON_MOD_ASSIGN_FEATURE_NAME } from '../constants';
+import { ADDON_MOD_ASSIGN_FEATURE_NAME, ADDON_MOD_ASSIGN_FEEDBACK_HANDLERS } from '../constants';
 
 /**
  * Interface that all feedback handlers must implement.
@@ -218,7 +218,7 @@ export class AddonModAssignFeedbackDelegateService extends CoreDelegate<AddonMod
     constructor(
         protected defaultHandler: AddonModAssignDefaultFeedbackHandler,
     ) {
-        super('AddonModAssignFeedbackDelegate');
+        super('AddonModAssignFeedbackDelegate', ADDON_MOD_ASSIGN_FEEDBACK_HANDLERS);
     }
 
     /**

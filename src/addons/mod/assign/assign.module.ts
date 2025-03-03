@@ -35,6 +35,7 @@ import { ADDON_MOD_ASSIGN_COMPONENT_LEGACY, ADDON_MOD_ASSIGN_PAGE_NAME } from '.
 import { conditionalRoutes } from '@/app/app-routing.module';
 import { canLeaveGuard } from '@guards/can-leave';
 import { CoreScreen } from '@services/screen';
+import { modAssignGuard } from './guards';
 
 /**
  * Get mod assign services.
@@ -117,6 +118,7 @@ const tabletRoutes: Routes = [
 const routes: Routes = [
     {
         path: ADDON_MOD_ASSIGN_PAGE_NAME,
+        canActivate: [modAssignGuard],
         loadChildren: () => [
             ...conditionalRoutes(mobileRoutes, () => CoreScreen.isMobile),
             ...conditionalRoutes(tabletRoutes, () => CoreScreen.isTablet),
