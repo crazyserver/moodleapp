@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { AddonModDataFieldsDelegate } from '../../services/data-fields-delegate';
-import { AddonModDataFieldDateHandler } from './services/handler';
+import { NgModule } from '@angular/core';
+import { ADDON_MOD_DATA_HANDLERS } from '../../constants';
 
 @NgModule({
     providers: [
         {
-            provide: APP_INITIALIZER,
+            provide: ADDON_MOD_DATA_HANDLERS,
             multi: true,
-            useValue: () => {
-                AddonModDataFieldsDelegate.registerHandler(AddonModDataFieldDateHandler.instance);
+            useFactory: async () => {
+                const { AddonModDataFieldDateHandler } = await import('./services/handler');
+
+                return AddonModDataFieldDateHandler.instance;
             },
         },
     ],

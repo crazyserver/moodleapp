@@ -36,10 +36,12 @@ import { AddonModDataFieldModule } from './fields/field.module';
 import { CoreCourseHelper } from '@features/course/services/course-helper';
 import { ADDON_MOD_DATA_COMPONENT_LEGACY, ADDON_MOD_DATA_PAGE_NAME } from './constants';
 import { canLeaveGuard } from '@guards/can-leave';
+import { modDataGuard } from './guards';
 
 const routes: Routes = [
     {
         path: ADDON_MOD_DATA_PAGE_NAME,
+        canActivate: [modDataGuard],
         loadChildren: () => [
             {
                 path: ':courseId/:cmId',

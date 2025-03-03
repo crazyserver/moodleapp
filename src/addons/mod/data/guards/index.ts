@@ -12,20 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NgModule } from '@angular/core';
-import { ADDON_MOD_DATA_HANDLERS } from '../../constants';
+import { CanActivateFn } from '@angular/router';
+import { AddonModDataFieldsDelegate } from '../services/data-fields-delegate';
 
-@NgModule({
-    providers: [
-        {
-            provide: ADDON_MOD_DATA_HANDLERS,
-            multi: true,
-            useFactory: async () => {
-                const { AddonModDataFieldNumberHandler } = await import('./services/handler');
+/**
+ * Load the data fields handlers.
+ *
+ * @returns Route.
+ */
+export const modDataGuard: CanActivateFn = async () => {
+    await AddonModDataFieldsDelegate.loadInjectedHandlers();
 
-                return AddonModDataFieldNumberHandler.instance;
-            },
-        },
-    ],
-})
-export class AddonModDataFieldNumberModule {}
+    return true;
+};

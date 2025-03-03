@@ -18,6 +18,7 @@ import { CoreSite } from '@classes/sites/site';
 import { CoreLogger } from '@singletons/logger';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { CorePromisedValue } from './promised-value';
+import { inject, InjectionToken } from '@angular/core';
 
 /**
  * Superclass to help creating delegates
@@ -38,6 +39,12 @@ export class CoreDelegate<HandlerType extends CoreDelegateHandler> {
      * List of registered handlers enabled for the current site.
      */
     protected enabledHandlers: { [s: string]: HandlerType } = {};
+
+    /**
+     * Handlers to be injected when loadInjectedHandlers is called.
+     * This requires to create the delegate with an injection token.
+     */
+    protected injectedHandlers: Promise<HandlerType>[] = [];
 
     /**
      * Default handler
@@ -81,8 +88,12 @@ export class CoreDelegate<HandlerType extends CoreDelegateHandler> {
      * Constructor of the Delegate.
      *
      * @param delegateName Delegate name used for logging purposes.
+     * @param injectionToken Injection token to load handlers.
      */
-    constructor(delegateName: string) {
+    constructor(
+        delegateName: string,
+        injectionToken?: InjectionToken<Promise<HandlerType>[]>,
+    ) {
         this.logger = CoreLogger.getInstance(delegateName);
 
         // Update handlers on this cases.
@@ -99,6 +110,10 @@ export class CoreDelegate<HandlerType extends CoreDelegateHandler> {
                 this.updateHandlers();
             }
         });
+
+        if (injectionToken) {
+            this.injectedHandlers = inject(injectionToken);
+        }
     }
 
     /**
@@ -108,6 +123,26 @@ export class CoreDelegate<HandlerType extends CoreDelegateHandler> {
      */
     async isEnabled(): Promise<boolean> {
         return true;
+    }
+
+    /**
+     * Load the injected handlers.
+     */
+    async loadInjectedHandlers(): Promise<void> {
+        const isEnabled = await this.isEnabled();
+        if (!isEnabled || !this.injectedHandlers.length) {
+            return;
+        }
+
+        await Promise.all(this.injectedHandlers.map(async (handlerFactory) => {
+            const handler = await handlerFactory;
+
+            this.registerHandler(handler);
+
+            this.injectedHandlers = this.injectedHandlers.filter((h) => h !== handlerFactory);
+
+            return this.updateHandler(handler);
+        }));
     }
 
     /**

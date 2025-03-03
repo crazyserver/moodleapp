@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { InjectionToken } from '@angular/core';
 import { CORE_COURSE_MODULE_FEATURE_PREFIX } from '@features/course/constants';
+import { AddonModDataFieldHandler } from './services/data-fields-delegate';
 
 export const ADDON_MOD_DATA_COMPONENT = 'AddonModData';
 export const ADDON_MOD_DATA_COMPONENT_LEGACY = 'mmaModData';
@@ -26,6 +28,8 @@ export const ADDON_MOD_DATA_ENTRY_CHANGED = 'addon_mod_data_entry_changed';
 export const ADDON_MOD_DATA_AUTO_SYNCED = 'addon_mod_data_autom_synced';
 
 export const ADDON_MOD_DATA_ENTRIES_PER_PAGE = 25;
+
+export const ADDON_MOD_DATA_HANDLERS = new InjectionToken<AddonModDataFieldHandler[]>('ADDON_MOD_DATA_HANDLERS');
 
 export enum AddonModDataAction {
     ADD = 'add',
