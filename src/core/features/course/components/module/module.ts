@@ -34,6 +34,7 @@ import { CoreRemindersDateComponent } from '../../../reminders/components/date/d
 import { CoreCourseModuleCompletionComponent } from '../module-completion/module-completion';
 import { CoreCourseModuleCompletionLegacyComponent } from '../module-completion-legacy/module-completion-legacy';
 import { CoreSharedModule } from '@/core/shared.module';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 
 /**
  * Component to display a module entry in a list of modules.
@@ -92,7 +93,7 @@ export class CoreCourseModuleComponent implements OnInit, OnDestroy {
         } else {
             this.indented = false;
         }
-        this.modNameTranslated = CoreCourse.translateModuleName(this.module.modname, this.module.modplural);
+        this.modNameTranslated = CoreCourseModuleHelper.translateModuleName(this.module.modname, this.module.modplural);
         if (this.showCompletion) {
             this.showLegacyCompletion = this.showLegacyCompletion ??
                 CoreConstants.CONFIG.uselegacycompletion ??
@@ -110,7 +111,7 @@ export class CoreCourseModuleComponent implements OnInit, OnDestroy {
         }
 
         this.module.handlerData.a11yTitle = this.module.handlerData.a11yTitle ?? this.module.handlerData.title;
-        this.moduleHasView = CoreCourse.moduleHasView(this.module);
+        this.moduleHasView = CoreCourseModuleHelper.moduleHasView(this.module);
 
         if (this.showDownloadStatus && this.module.handlerData.showDownloadButton) {
             const status = await CoreCourseModulePrefetchDelegate.getDownloadedModuleStatus(this.module, this.module.course);
