@@ -590,7 +590,7 @@ export class CoreSitePluginsProvider {
 
             // It's a method to get content.
             const preSets: CoreSiteWSPreSets = {
-                component: component,
+                component,
             };
             if (module) {
                 preSets.componentId = module.id;

@@ -710,6 +710,8 @@ export class CoreCourseProvider {
 
         const preSets: CoreSiteWSPreSets = {
             cacheKey: this.getModuleBasicInfoByInstanceCacheKey(instanceId, moduleName),
+            component: moduleName,
+            componentId: instanceId,
             updateFrequency: CoreCacheUpdateFrequency.RARELY,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
