@@ -53,7 +53,7 @@ import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreWSError } from '@classes/errors/wserror';
 import { CoreObject } from '@singletons/object';
 import { CoreTextFormat } from '@singletons/text';
-import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
+import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
 declare module '@singletons/events' {
 
@@ -1375,14 +1375,8 @@ type AddonModForumGetForumsByCoursesWSParams = {
 /**
  * General forum activity data.
  */
-export type AddonModForumData = {
-    id: number; // Forum id.
-    course: number; // Course id.
+export type AddonModForumData = CoreCourseModuleStandardElements & {
     type: AddonModForumType; // The forum type.
-    name: string; // Forum name.
-    intro: string; // The forum intro.
-    introformat: CoreTextFormat; // Intro format (1 = HTML, 0 = MOODLE, 2 = PLAIN or 4 = MARKDOWN).
-    introfiles?: CoreWSExternalFile[];
     duedate?: number; // Duedate for the user.
     cutoffdate?: number; // Cutoffdate for the user.
     assessed: number; // Aggregate type.
