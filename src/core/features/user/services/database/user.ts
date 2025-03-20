@@ -14,35 +14,26 @@
 
 import { CoreSiteSchema } from '@services/sites';
 import { CoreUserBasicData } from '../user';
+import { getStoredCacheDBSchema } from '@classes/stored-cache';
+import { SQLiteDB } from '@classes/sqlitedb';
 
 /**
  * Database variables for CoreUser service.
  */
-export const USERS_TABLE_NAME = 'users';
-export const CORE_USER_CACHE_SITE_SCHEMA: CoreSiteSchema = {
-    name: 'CoreUserProvider',
-    version: 1,
-    canBeCleared: [USERS_TABLE_NAME],
-    tables: [
-        {
-            name: USERS_TABLE_NAME,
-            columns: [
-                {
-                    name: 'id',
-                    type: 'INTEGER',
-                    primaryKey: true,
-                },
-                {
-                    name: 'fullname',
-                    type: 'TEXT',
-                },
-                {
-                    name: 'profileimageurl',
-                    type: 'TEXT',
-                },
-            ],
-        },
-    ],
+export const USERS_CACHE_TABLE_NAME = 'users_cache';
+export const CORE_USER_CACHE_SITE_SCHEMA = getStoredCacheDBSchema('CoreUser', USERS_CACHE_TABLE_NAME);
+
+// Migrate data and remove old tables.
+CORE_USER_CACHE_SITE_SCHEMA.install = async (db: SQLiteDB): Promise<void> => {
+    db.migrateTable(
+        'users',
+        USERS_CACHE_TABLE_NAME,
+        ({ id, fullname, profileimageurl }) => ({
+                id: id,
+                timemodified: 0,
+                data: JSON.stringify({ id, fullname, profileimageurl }),
+            }),
+        );
 };
 
 /**
