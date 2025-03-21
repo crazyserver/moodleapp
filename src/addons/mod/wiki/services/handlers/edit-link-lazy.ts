@@ -15,10 +15,9 @@
 import { Injectable } from '@angular/core';
 import { CoreCourse } from '@features/course/services/course';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
 import { AddonModWiki } from '../wiki';
-import { ADDON_MOD_WIKI_PAGE_NAME } from '../../constants';
+import { ADDON_MOD_WIKI_MODNAME, ADDON_MOD_WIKI_PAGE_NAME } from '../../constants';
 import { AddonModWikiEditLinkHandlerService } from '@addons/mod/wiki/services/handlers/edit-link';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { CoreAlerts } from '@services/overlays/alerts';
@@ -40,10 +39,10 @@ export class AddonModWikiEditLinkHandlerLazyService extends AddonModWikiEditLink
 
             const pageContents = await AddonModWiki.getPageContents(pageId, { siteId });
 
-            const module = await CoreCourse.getModuleBasicInfoByInstance(
+            const module = await CoreCourse.getModuleNavigationInfo(
                 pageContents.wikiid,
-                'wiki',
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+                ADDON_MOD_WIKI_MODNAME,
+                siteId,
             );
 
             let section = '';

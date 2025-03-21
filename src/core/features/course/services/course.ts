@@ -24,8 +24,10 @@ import { CoreCacheUpdateFrequency, DownloadStatus } from '@/core/constants';
 import { makeSingleton, Translate } from '@singletons';
 import { CoreStatusWithWarningsWSResponse, CoreWSExternalFile, CoreWSExternalWarning } from '@services/ws';
 import {
+    CoreCourseModuleIndexDBRecord,
     CoreCourseStatusDBRecord,
     CoreCourseViewedModulesDBRecord,
+    COURSE_MODULE_INDEX_TABLE,
 } from './database/course';
 import { CoreCourseOffline } from './course-offline';
 import { CoreError } from '@classes/errors/error';
@@ -462,7 +464,7 @@ export class CoreCourseProvider {
      *
      * @param moduleId The module ID.
      * @param courseId The course ID. Recommended to speed up the process and minimize data usage.
-     * @param sectionId The section ID.
+     * @param sectionId Not used since 5.0
      * @param preferCache True if shouldn't call WS if data is cached, false otherwise.
      * @param ignoreCache True if it should ignore cached data (it will always fail in offline or server down).
      * @param siteId Site ID. If not defined, current site.
@@ -549,12 +551,9 @@ export class CoreCourseProvider {
 
         if (!courseId) {
             // No courseId passed, try to retrieve it.
-            const module = await this.getModuleBasicInfo(
-                moduleId,
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-            );
-            courseId = module.course;
-            sectionId = module.section;
+            const moduleNavInfo = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
+
+            courseId = moduleNavInfo.course;
         }
 
         const site = await CoreSites.getSite(siteId);
@@ -585,14 +584,16 @@ export class CoreCourseProvider {
         let foundModule: CoreCourseGetContentsWSModule | undefined;
 
         const foundSection = sections.find((section) => {
-            if (section.id != CORE_COURSE_STEALTH_MODULES_SECTION_ID &&
-                sectionId !== undefined &&
-                sectionId != section.id
-            ) {
-                return false;
-            }
+            foundModule = section.modules.find((module) => {
+                this.storeModuleIndexRecord({
+                    id: module.id,
+                    modname: module.modname,
+                    instance: module.instance,
+                    course: courseId!,
+                }, siteId);
 
-            foundModule = section.modules.find((module) => module.id == moduleId);
+                return module.id === moduleId;
+            });
 
             return !!foundModule;
         });
@@ -638,27 +639,67 @@ export class CoreCourseProvider {
     }
 
     /**
+     * Function to get the navigation info of a module by cmId.
+     *
+     * @param id Module ID. If modname is not set, this is the course module Id. Otherwise, it's the instance Id.
+     * @param modname Name of the module.
+     * @param siteId Site ID. If not defined, current site.
+     * @returns The module's info.
+     */
+    async getModuleNavigationInfo(id: number, modname?: string, siteId?: string): Promise<CoreCourseModuleIndexDBRecord> {
+        siteId = siteId || CoreSites.getCurrentSiteId();
+
+        const indexRecord = await this.getCourseModuleIndexRecord(id, modname, siteId);
+        if (indexRecord) {
+            console.error('getModuleNavigationInfo', indexRecord);
+
+            return indexRecord;
+        }
+
+        const options = { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE };
+        const module = modname
+            ? await CoreCourse.getModuleBasicInfoByInstance(id, modname, options)
+            : await CoreCourse.getModuleBasicInfo(id, options);
+
+        return {
+            id: module.id,
+            modname: module.modname,
+            instance: module.instance,
+            course: module.course,
+        };
+
+    }
+
+    /**
      * Gets a module basic info by module ID.
      *
-     * @param moduleId Module ID.
-     * @param options Comon site WS options.
+     * @param cmId Module ID.
+     * @param options Common site WS options.
      * @returns Promise resolved with the module's info.
      */
-    async getModuleBasicInfo(moduleId: number, options: CoreSitesCommonWSOptions = {}): Promise<CoreCourseModuleBasicInfo> {
+    async getModuleBasicInfo(cmId: number, options: CoreSitesCommonWSOptions = {}): Promise<CoreCourseModuleBasicInfo> {
         const site = await CoreSites.getSite(options.siteId);
+
         const params: CoreCourseGetCourseModuleWSParams = {
-            cmid: moduleId,
+            cmid: cmId,
         };
         const preSets: CoreSiteWSPreSets = {
-            cacheKey: this.getModuleCacheKey(moduleId),
+            cacheKey: this.getModuleCacheKey(cmId),
             updateFrequency: CoreCacheUpdateFrequency.RARELY,
             ...CoreSites.getReadingStrategyPreSets(options.readingStrategy), // Include reading strategy preSets.
         };
         const response = await site.read<CoreCourseGetCourseModuleWSResponse>('core_course_get_course_module', params, preSets);
 
-        if (response.warnings && response.warnings.length) {
+        if (response.warnings?.length) {
             throw new CoreWSError(response.warnings[0]);
         }
+
+        this.storeModuleIndexRecord({
+            id: response.cm.id,
+            modname: response.cm.modname,
+            instance: response.cm.instance,
+            course: response.cm.course,
+        }, site.getId());
 
         return response.cm;
     }
@@ -719,13 +760,21 @@ export class CoreCourseProvider {
         const response: CoreCourseGetCourseModuleWSResponse =
             await site.read('core_course_get_course_module_by_instance', params, preSets);
 
-        if (response.warnings && response.warnings.length) {
+        if (response.warnings?.length) {
             throw new CoreWSError(response.warnings[0]);
-        } else if (response.cm) {
-            return response.cm;
         }
 
-        throw Error('WS core_course_get_course_module_by_instance failed');
+        if (!response.cm) {
+            throw Error('WS core_course_get_course_module_by_instance failed');
+        }
+        this.storeModuleIndexRecord({
+            id: response.cm.id,
+            modname: response.cm.modname,
+            instance: response.cm.instance,
+            course: response.cm.course,
+        }, site.getId());
+
+        return response.cm;
     }
 
     /**
@@ -1087,7 +1136,7 @@ export class CoreCourseProvider {
      *
      * @param module Module to load the contents.
      * @param courseId Not used since 4.0.
-     * @param sectionId The section ID.
+     * @param sectionId Not used since 5.0
      * @param preferCache True if shouldn't call WS if data is cached, false otherwise.
      * @param ignoreCache True if it should ignore cached data (it will always fail in offline or server down).
      * @param siteId Site ID. If not defined, current site.
@@ -1110,7 +1159,15 @@ export class CoreCourseProvider {
             return;
         }
 
-        const mod = await this.getModule(module.id, module.course, sectionId, preferCache, ignoreCache, siteId, modName);
+        const mod = await this.getModule(
+            module.id,
+            module.course,
+            undefined,
+            preferCache,
+            ignoreCache,
+            siteId,
+            modName,
+        );
 
         if (!mod.contents) {
             throw new CoreError(Translate.instant('core.course.modulenotfound'));
@@ -1447,6 +1504,41 @@ export class CoreCourseProvider {
 
         // Remove "Show more" option in 4.2 or older sites.
         return CoreDomUtils.removeElementFromHtml(availabilityInfo, 'li[data-action="showmore"]');
+    }
+
+    /**
+     * Get the whole course module index record from a course module ID.
+     *
+     * @param id Module ID. If modname is not set, this is the course module Id. Otherwise, it's the instance Id.
+     * @param modname Name of the module.
+     * @param siteId Site ID. If not defined, current site.
+     * @returns Course module index record.
+     */
+    protected async getCourseModuleIndexRecord(
+        id: number,
+        modname?: string,
+        siteId?: string,
+    ): Promise<CoreCourseModuleIndexDBRecord | undefined> {
+        const site = await CoreSites.getSite(siteId);
+        const db = site.getDb();
+
+        const queryParams = modname ? { instance: id, modname } : { id };
+
+        return await CorePromiseUtils.ignoreErrors(
+            db.getRecord<CoreCourseModuleIndexDBRecord>(COURSE_MODULE_INDEX_TABLE, queryParams),
+        );
+    }
+
+    /**
+     * Store a module index record.
+     *
+     * @param record Record to store.
+     * @param siteId Site ID. If not defined, current site.
+     */
+    protected async storeModuleIndexRecord(record: CoreCourseModuleIndexDBRecord, siteId?: string): Promise<void> {
+        const site = await CoreSites.getSite(siteId);
+
+        await site.getDb().insertRecord(COURSE_MODULE_INDEX_TABLE, record);
     }
 
 }

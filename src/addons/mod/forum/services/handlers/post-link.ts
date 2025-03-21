@@ -20,7 +20,7 @@ import { CoreNavigator } from '@services/navigator';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { makeSingleton } from '@singletons';
-import { ADDON_MOD_FORUM_FEATURE_NAME, ADDON_MOD_FORUM_PAGE_NAME } from '../../constants';
+import { ADDON_MOD_FORUM_FEATURE_NAME, ADDON_MOD_FORUM_MODNAME, ADDON_MOD_FORUM_PAGE_NAME } from '../../constants';
 
 /**
  * Content links handler for forum new discussion.
@@ -47,10 +47,10 @@ export class AddonModForumPostLinkHandlerService extends CoreContentLinksHandler
                 const forumId = parseInt(params.forum, 10);
 
                 try {
-                    const module = await CoreCourse.getModuleBasicInfoByInstance(
+                    const module = await CoreCourse.getModuleNavigationInfo(
                         forumId,
-                        'forum',
-                        { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+                        ADDON_MOD_FORUM_MODNAME,
+                        siteId,
                     );
 
                     await CoreNavigator.navigateToSitePath(

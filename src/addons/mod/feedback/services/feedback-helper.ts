@@ -189,10 +189,7 @@ export class AddonModFeedbackHelperProvider {
         const modal = await CoreLoadings.show();
 
         try {
-            const module = await CoreCourse.getModuleBasicInfo(
-                Number(params.id),
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-            );
+            const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
             if (params.showcompleted === undefined) {
                 // Param showcompleted not defined. Show entry list.

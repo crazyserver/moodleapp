@@ -53,16 +53,12 @@ export class AddonModLessonGradeLinkHandlerService extends CoreContentLinksModul
         courseId: number,
         siteId: string,
     ): Promise<void> {
-        const moduleId = Number(params.id);
         const userId = Number(params.userid) || 0;
 
         const modal = await CoreLoadings.show();
 
         try {
-            const module = await CoreCourse.getModuleBasicInfo(
-                moduleId,
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-            );
+            const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
             // Check if the user can see the user reports in the lesson.
             const accessInfo = await AddonModLesson.getAccessInformation(module.instance, { cmId: module.id, siteId });
@@ -77,9 +73,8 @@ export class AddonModLessonGradeLinkHandlerService extends CoreContentLinksModul
                 );
             } else {
                 // User cannot view the report, go to lesson index.
-                CoreCourseHelper.navigateToModule(moduleId, {
+                CoreCourseHelper.navigateToModule(module.id, {
                     courseId: module.course,
-                    sectionId: module.section,
                     siteId,
                 });
             }

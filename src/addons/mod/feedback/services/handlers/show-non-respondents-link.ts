@@ -41,13 +41,8 @@ export class AddonModFeedbackShowNonRespondentsLinkHandlerService extends CoreCo
             action: async (siteId: string) => {
                 const modal = await CoreLoadings.show();
 
-                const moduleId = Number(params.id);
-
                 try {
-                    const module = await CoreCourse.getModuleBasicInfo(
-                        moduleId,
-                        { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-                    );
+                    const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
                     await CoreNavigator.navigateToSitePath(
                         `${ADDON_MOD_FEEDBACK_PAGE_NAME}/${module.course}/${module.id}/nonrespondents`,

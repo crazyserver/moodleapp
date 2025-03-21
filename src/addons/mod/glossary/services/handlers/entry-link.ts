@@ -20,7 +20,7 @@ import { CoreNavigator } from '@services/navigator';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
 import { AddonModGlossary } from '../glossary';
-import { ADDON_MOD_GLOSSARY_FEATURE_NAME, ADDON_MOD_GLOSSARY_PAGE_NAME } from '../../constants';
+import { ADDON_MOD_GLOSSARY_FEATURE_NAME, ADDON_MOD_GLOSSARY_MODNAME, ADDON_MOD_GLOSSARY_PAGE_NAME } from '../../constants';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { CoreAlerts } from '@services/overlays/alerts';
 
@@ -50,10 +50,10 @@ export class AddonModGlossaryEntryLinkHandlerService extends CoreContentLinksHan
                         { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
                     );
 
-                    const module = await CoreCourse.getModuleBasicInfoByInstance(
+                    const module = await CoreCourse.getModuleNavigationInfo(
                         response.entry.glossaryid,
-                        'glossary',
-                        { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+                        ADDON_MOD_GLOSSARY_MODNAME,
+                        siteId,
                     );
 
                     await CoreNavigator.navigateToSitePath(

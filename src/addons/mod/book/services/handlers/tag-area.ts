@@ -16,7 +16,6 @@ import { Injectable, Type } from '@angular/core';
 import { CoreCourse } from '@features/course/services/course';
 import { CoreTagAreaHandler } from '@features/tag/services/tag-area-delegate';
 import { CoreTagFeedElement, CoreTagHelper } from '@features/tag/services/tag-helper';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreUrl } from '@singletons/url';
 import { makeSingleton } from '@singletons';
 import { AddonModBook } from '../book';
@@ -55,11 +54,11 @@ export class AddonModBookTagAreaHandlerService implements CoreTagAreaHandler {
             if (params.b && !params.id) {
                 const bookId = parseInt(params.b, 10);
 
-                const module = await CoreCourse.getModuleBasicInfoByInstance(
+                const module = await CoreCourse.getModuleNavigationInfo(
                     bookId,
                     ADDON_MOD_BOOK_MODNAME,
-                    { readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
                 );
+
                 item.url += `&id=${module.id}`;
             }
         }));

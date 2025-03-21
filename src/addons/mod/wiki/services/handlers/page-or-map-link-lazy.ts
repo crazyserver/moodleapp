@@ -15,11 +15,10 @@
 import { Injectable } from '@angular/core';
 import { CoreCourse } from '@features/course/services/course';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
 import { Md5 } from 'ts-md5';
 import { AddonModWiki } from '../wiki';
-import { ADDON_MOD_WIKI_PAGE_NAME } from '../../constants';
+import { ADDON_MOD_WIKI_MODNAME, ADDON_MOD_WIKI_PAGE_NAME } from '../../constants';
 import { AddonModWikiPageOrMapLinkHandlerService } from '@addons/mod/wiki/services/handlers/page-or-map-link';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { CoreAlerts } from '@services/overlays/alerts';
@@ -42,10 +41,10 @@ export class AddonModWikiPageOrMapLinkHandlerLazyService extends AddonModWikiPag
             // Get the page data to obtain wikiId, subwikiId, etc.
             const page = await AddonModWiki.getPageContents(pageId, { siteId });
 
-            const module = await CoreCourse.getModuleBasicInfoByInstance(
+            const module = await CoreCourse.getModuleNavigationInfo(
                 page.wikiid,
-                'wiki',
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+                ADDON_MOD_WIKI_MODNAME,
+                siteId,
             );
 
             const hash = Md5.hashAsciiStr(JSON.stringify({

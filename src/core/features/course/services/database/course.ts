@@ -21,9 +21,11 @@ import { CoreSiteSchema } from '@services/sites';
 export const COURSE_STATUS_TABLE = 'course_status';
 export const COURSE_VIEWED_MODULES_TABLE = 'course_viewed_modules';
 export const COURSE_VIEWED_MODULES_PRIMARY_KEYS = ['courseId', 'cmId'] as const;
-export const SITE_SCHEMA: CoreSiteSchema = {
+export const COURSE_MODULE_INDEX_TABLE = 'course_module_index';
+export const COURSE_SITE_SCHEMA: CoreSiteSchema = {
     name: 'CoreCourseProvider',
-    version: 2,
+    version: 3,
+    canBeCleared: [COURSE_MODULE_INDEX_TABLE],
     tables: [
         {
             name: COURSE_STATUS_TABLE,
@@ -79,6 +81,28 @@ export const SITE_SCHEMA: CoreSiteSchema = {
             ],
             primaryKeys: [...COURSE_VIEWED_MODULES_PRIMARY_KEYS],
         },
+        {
+            name: COURSE_MODULE_INDEX_TABLE,
+            columns: [
+                {
+                    name: 'id',
+                    type: 'INTEGER',
+                    primaryKey: true,
+                },
+                {
+                    name: 'modname',
+                    type: 'TEXT',
+                },
+                {
+                    name: 'instance',
+                    type: 'INTEGER',
+                },
+                {
+                    name: 'course',
+                    type: 'INTEGER',
+                },
+            ],
+        },
     ],
 };
 
@@ -86,7 +110,7 @@ export const SITE_SCHEMA: CoreSiteSchema = {
  * Database variables for CoreCourseOffline service.
  */
 export const MANUAL_COMPLETION_TABLE = 'course_manual_completion';
-export const OFFLINE_SITE_SCHEMA: CoreSiteSchema = {
+export const COURSE_OFFLINE_SITE_SCHEMA: CoreSiteSchema = {
     name: 'CoreCourseOfflineProvider',
     version: 1,
     tables: [
@@ -142,4 +166,11 @@ export type CoreCourseManualCompletionDBRecord = {
     completed: number;
     courseid: number;
     timecompleted: number;
+};
+
+export type CoreCourseModuleIndexDBRecord = {
+    id: number; // Coursemodule id.
+    modname: string; // Activity type name.
+    instance: number; // Activity id.
+    course: number; // Course id.
 };

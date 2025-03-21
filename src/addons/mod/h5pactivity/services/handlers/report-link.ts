@@ -18,11 +18,15 @@ import { CoreContentLinksHandlerBase } from '@features/contentlinks/classes/base
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
 import { CoreCourse } from '@features/course/services/course';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
+import { CoreSites } from '@services/sites';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { makeSingleton } from '@singletons';
 import { AddonModH5PActivity } from '../h5pactivity';
-import { ADDON_MOD_H5PACTIVITY_FEATURE_NAME, ADDON_MOD_H5PACTIVITY_PAGE_NAME } from '../../constants';
+import {
+    ADDON_MOD_H5PACTIVITY_FEATURE_NAME,
+    ADDON_MOD_H5PACTIVITY_MODNAME,
+    ADDON_MOD_H5PACTIVITY_PAGE_NAME,
+} from '../../constants';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { CoreAlerts } from '@services/overlays/alerts';
 
@@ -51,10 +55,10 @@ export class AddonModH5PActivityReportLinkHandlerService extends CoreContentLink
                 try {
                     const instanceId = Number(params.a);
 
-                    const module = await CoreCourse.getModuleBasicInfoByInstance(
+                    const module = await CoreCourse.getModuleNavigationInfo(
                         instanceId,
-                        'h5pactivity',
-                        { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+                        ADDON_MOD_H5PACTIVITY_MODNAME,
+                        siteId,
                     );
 
                     if (params.attemptid !== undefined) {

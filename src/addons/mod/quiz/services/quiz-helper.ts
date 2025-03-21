@@ -33,6 +33,7 @@ import {
 import { AddonModQuizOffline } from './quiz-offline';
 import {
     ADDON_MOD_QUIZ_IMMEDIATELY_AFTER_PERIOD,
+    ADDON_MOD_QUIZ_MODNAME,
     ADDON_MOD_QUIZ_PAGE_NAME,
     AddonModQuizAttemptStates,
     AddonModQuizDisplayOptionsAttemptStates,
@@ -350,10 +351,10 @@ export class AddonModQuizHelperProvider {
                 quizId = await this.getQuizIdByAttemptId(attemptId, { siteId });
             }
 
-            const module = await CoreCourse.getModuleBasicInfoByInstance(
+            const module = await CoreCourse.getModuleNavigationInfo(
                 quizId,
-                'quiz',
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+                ADDON_MOD_QUIZ_MODNAME,
+                siteId,
             );
 
             // Go to the review page.

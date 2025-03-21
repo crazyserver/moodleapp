@@ -91,17 +91,9 @@ export class AddonModLessonReportLinkHandlerService extends CoreContentLinksHand
 
         try {
             // Get the module object.
-            const module = await CoreCourse.getModule(
-                moduleId,
-                undefined,
-                undefined,
-                false,
-                false,
-                siteId,
-            );
+            const module = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
 
             const params = {
-                module,
                 action: 'report',
                 group: groupId === undefined || isNaN(groupId) ? null : groupId,
             };
@@ -137,12 +129,9 @@ export class AddonModLessonReportLinkHandlerService extends CoreContentLinksHand
 
         try {
             // Get the module object.
-            const module = await CoreCourse.getModuleBasicInfo(
-                moduleId,
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-            );
+            const module = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
             const params = {
-                retake: retake || 0,
+                retake: retake ?? 0,
             };
 
             CoreNavigator.navigateToSitePath(

@@ -1392,7 +1392,6 @@ export class CoreCourseHelperProvider {
      * @param instanceId Activity instance ID.
      * @param modName Module name of the activity.
      * @param options Other options.
-     * @returns Promise resolved when done.
      */
     async navigateToModuleByInstance(
         instanceId: number,
@@ -1403,7 +1402,7 @@ export class CoreCourseHelperProvider {
         const modal = await CoreLoadings.show();
 
         try {
-            const module = await CoreCourse.getModuleBasicInfoByInstance(instanceId, modName, { siteId: options.siteId });
+            const module = await CoreCourse.getModuleNavigationInfo(instanceId, modName, options.siteId);
 
             this.navigateToModule(
                 module.id,
@@ -1434,26 +1433,21 @@ export class CoreCourseHelperProvider {
     ): Promise<void> {
         const siteId = options.siteId || CoreSites.getCurrentSiteId();
         let courseId = options.courseId;
-        let sectionId = options.sectionId;
 
         const modal = await CoreLoadings.show();
 
         try {
-            if (!courseId || !sectionId) {
-                const module = await CoreCourse.getModuleBasicInfo(
-                    moduleId,
-                    { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-                );
+            if (!courseId) {
+                const moduleNavInfo = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
 
-                courseId = module.course;
-                sectionId = module.section;
+                courseId = moduleNavInfo.course;
             }
 
             // Get the site.
             const site = await CoreSites.getSite(siteId);
 
             // Get the module.
-            const module = await CoreCourse.getModule(moduleId, courseId, sectionId, false, false, siteId, options.modName);
+            const module = await CoreCourse.getModule(moduleId, courseId, undefined, false, false, siteId, options.modName);
 
             if (CoreSites.getCurrentSiteId() === site.getId()) {
                 // Try to use the module's handler to navigate cleanly.
@@ -1461,7 +1455,7 @@ export class CoreCourseHelperProvider {
                     module.modname,
                     module,
                     courseId,
-                    sectionId,
+                    module.section,
                     false,
                 );
 
@@ -1475,11 +1469,10 @@ export class CoreCourseHelperProvider {
             const params: Params = {
                 course: { id: courseId },
                 module,
-                sectionId,
                 modNavOptions: options.modNavOptions,
             };
 
-            if (courseId == site.getSiteHomeId()) {
+            if (courseId === site.getSiteHomeId()) {
                 // Check if site home is available.
                 const isAvailable = await CoreSiteHome.isAvailable();
 
@@ -1491,6 +1484,8 @@ export class CoreCourseHelperProvider {
             }
 
             modal.dismiss();
+
+            params.sectionId = module.section;
 
             await this.getAndOpenCourse(courseId, params, siteId);
         } catch (error) {
@@ -2312,7 +2307,6 @@ export type CoreCourseConfirmPrefetchCoursesOptions = {
  */
 type CoreCourseNavigateToModuleCommonOptions = {
     courseId?: number; // Course ID. If not defined we'll try to retrieve it from the site.
-    sectionId?: number; // Section the module belongs to. If not defined we'll try to retrieve it from the site.
     modNavOptions?: CoreNavigationOptions; // Navigation options to open the module, including params to pass to the module.
     siteId?: string; // Site ID. If not defined, current site.
 };

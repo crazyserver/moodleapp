@@ -18,7 +18,7 @@ import { CoreCourse } from '@features/course/services/course';
 import { CoreFileUploader, CoreFileUploaderStoreFilesResult } from '@features/fileuploader/services/fileuploader';
 import { CoreRatingOffline } from '@features/rating/services/rating-offline';
 import { FileEntry } from '@awesome-cordova-plugins/file/ngx';
-import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
+import { CoreSites } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
 import { CoreFormFields } from '@singletons/form';
 import { CoreText } from '@singletons/text';
@@ -46,6 +46,7 @@ import {
     AddonModDataAction,
     AddonModDataTemplateType,
     AddonModDataTemplateMode,
+    ADDON_MOD_DATA_MODNAME,
 } from '../constants';
 import { CoreToasts, ToastDuration } from '@services/overlays/toasts';
 import { CoreLoadings } from '@services/overlays/loadings';
@@ -526,10 +527,10 @@ export class AddonModDataHelperProvider {
             return courseId;
         }
 
-        const module = await CoreCourse.getModuleBasicInfoByInstance(
+        const module = await CoreCourse.getModuleNavigationInfo(
             dataId,
-            'data',
-            { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+            ADDON_MOD_DATA_MODNAME,
+            siteId,
         );
 
         return module.course;

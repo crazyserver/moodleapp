@@ -90,17 +90,14 @@ export class AddonModLessonIndexLinkHandlerService extends CoreContentLinksModul
 
         try {
             // Get the module.
-            const module = await CoreCourse.getModuleBasicInfo(
-                moduleId,
-                { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-            );
+            const module = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
+            courseId = module.course;
 
             // Store the password so it's automatically used.
             await CorePromiseUtils.ignoreErrors(AddonModLesson.storePassword(module.instance, password, siteId));
 
             await CoreCourseHelper.navigateToModule(moduleId, {
-                courseId: module.course,
-                sectionId: module.section,
+                courseId,
                 siteId,
             });
         } catch {

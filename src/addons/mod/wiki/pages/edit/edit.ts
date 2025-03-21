@@ -18,7 +18,7 @@ import { CoreError } from '@classes/errors/error';
 import { CoreCourse } from '@features/course/services/course';
 import { CanLeave } from '@guards/can-leave';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
+import { CoreSites } from '@services/sites';
 import { CoreSync } from '@services/sync';
 import { CoreText } from '@singletons/text';
 import { CorePromiseUtils } from '@singletons/promise-utils';
@@ -33,6 +33,7 @@ import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
 import {
     ADDON_MOD_WIKI_COMPONENT,
     ADDON_MOD_WIKI_COMPONENT_LEGACY,
+    ADDON_MOD_WIKI_MODNAME,
     ADDON_MOD_WIKI_PAGE_CREATED_EVENT,
     ADDON_MOD_WIKI_RENEW_LOCK_TIME,
 } from '../../constants';
@@ -215,8 +216,8 @@ export default class AddonModWikiEditPage implements OnInit, OnDestroy, CanLeave
                 await this.fetchModuleAndCourseId();
 
                 // Try to get wikiId.
-                if (!this.wikiId && this.cmId && this.courseId) {
-                    const module = await CoreCourse.getModule(this.cmId, this.courseId, undefined, true);
+                if (!this.wikiId && this.cmId) {
+                    const module = await CoreCourse.getModuleNavigationInfo(this.cmId);
 
                     this.wikiId = module.instance;
                 }
@@ -285,10 +286,9 @@ export default class AddonModWikiEditPage implements OnInit, OnDestroy, CanLeave
             return;
         }
 
-        const module = await CoreCourse.getModuleBasicInfoByInstance(
+        const module = await CoreCourse.getModuleNavigationInfo(
             this.wikiId,
-            'wiki',
-            { readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
+            ADDON_MOD_WIKI_MODNAME,
         );
 
         this.cmId = module.id;

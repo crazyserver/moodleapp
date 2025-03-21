@@ -43,13 +43,8 @@ export class AddonModGlossaryEditLinkHandlerService extends CoreContentLinksHand
             action: async (siteId: string) => {
                 const modal = await CoreLoadings.show();
 
-                const cmId = Number(params.cmid);
-
                 try {
-                    const module = await CoreCourse.getModuleBasicInfo(
-                        cmId,
-                        { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
-                    );
+                    const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
                     await CoreNavigator.navigateToSitePath(
                         `${ADDON_MOD_GLOSSARY_PAGE_NAME}/${module.course}/${module.id}/entry/new`,
