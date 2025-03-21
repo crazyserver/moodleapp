@@ -20,6 +20,7 @@ import { CorePromiseUtils } from '@singletons/promise-utils';
 import { makeSingleton } from '@singletons';
 import { CoreLogger } from '@singletons/logger';
 import { CoreCoursesDashboard } from '../dashboard';
+import { CORE_COURSES_DASHBOARD_PAGE_NAME } from '@features/courses/constants';
 
 /**
  * Handler to add dashboard into home page.
@@ -27,7 +28,7 @@ import { CoreCoursesDashboard } from '../dashboard';
 @Injectable({ providedIn: 'root' })
 export class CoreDashboardHomeHandlerService implements CoreMainMenuHomeHandler {
 
-    static readonly PAGE_NAME = 'dashboard';
+    static readonly PAGE_NAME = CORE_COURSES_DASHBOARD_PAGE_NAME;
 
     name = 'CoreCoursesDashboard';
     priority = 1200;
@@ -90,7 +91,7 @@ export class CoreDashboardHomeHandlerService implements CoreMainMenuHomeHandler 
     getDisplayData(): CoreMainMenuHomeHandlerToDisplay {
         return {
             title: 'core.courses.mymoodle',
-            page: CoreDashboardHomeHandlerService.PAGE_NAME,
+            page: CORE_COURSES_DASHBOARD_PAGE_NAME,
             class: 'core-courses-dashboard-handler',
             icon: 'fas-gauge-high',
         };

@@ -23,7 +23,11 @@ import { CorePushNotifications } from '@features/pushnotifications/services/push
 import { CorePushNotificationsDelegate } from '@features/pushnotifications/services/push-delegate';
 import { AddonNotifications } from '../notifications';
 import { MAIN_MENU_HANDLER_BADGE_UPDATED_EVENT } from '@features/mainmenu/constants';
-import { ADDONS_NOTIFICATIONS_READ_CHANGED_EVENT, ADDONS_NOTIFICATIONS_READ_CRON_EVENT } from '@addons/notifications/constants';
+import {
+    ADDONS_NOTICATIONS_MAIN_PAGE_NAME,
+    ADDONS_NOTIFICATIONS_READ_CHANGED_EVENT,
+    ADDONS_NOTIFICATIONS_READ_CRON_EVENT,
+} from '@addons/notifications/constants';
 
 /**
  * Handler to inject an option into main menu.
@@ -31,7 +35,7 @@ import { ADDONS_NOTIFICATIONS_READ_CHANGED_EVENT, ADDONS_NOTIFICATIONS_READ_CRON
 @Injectable({ providedIn: 'root' })
 export class AddonNotificationsMainMenuHandlerService implements CoreMainMenuHandler {
 
-    static readonly PAGE_NAME = 'notifications';
+    static readonly PAGE_NAME = ADDONS_NOTICATIONS_MAIN_PAGE_NAME;
 
     name = 'AddonNotifications';
     priority = 600;
@@ -39,7 +43,7 @@ export class AddonNotificationsMainMenuHandlerService implements CoreMainMenuHan
     protected handlerData: CoreMainMenuHandlerData = {
         icon: 'fas-bell',
         title: 'addon.notifications.notifications',
-        page: AddonNotificationsMainMenuHandlerService.PAGE_NAME,
+        page: ADDONS_NOTICATIONS_MAIN_PAGE_NAME,
         class: 'addon-notifications-handler',
         showBadge: true,
         badge: '',
