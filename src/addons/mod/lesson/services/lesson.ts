@@ -33,6 +33,7 @@ import {
     AddonModLessonJumpTo,
     AddonModLessonPageType,
     AddonModLessonPageSubtype,
+    ADDON_MOD_LESSON_MODNAME,
 } from '../constants';
 import { CoreGradeType } from '@features/grades/constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
@@ -1420,7 +1421,7 @@ export class AddonModLessonProvider {
             preSets,
         );
 
-        return CoreCourseModuleHelper.getActivityByField(response.lessons, key, value);
+        return CoreCourseModuleHelper.getActivityByField(response.lessons, key, value, ADDON_MOD_LESSON_MODNAME, site.getId());
     }
 
     /**

@@ -19,7 +19,7 @@ import { CoreSites, CoreSitesCommonWSOptions } from '@services/sites';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreWSExternalWarning } from '@services/ws';
 import { makeSingleton } from '@singletons';
-import { ADDON_MOD_LABEL_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_LABEL_COMPONENT_LEGACY, ADDON_MOD_LABEL_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -66,7 +66,7 @@ export class AddonModLabelProvider {
         const response =
             await site.read<AddonModLabelGetLabelsByCoursesWSResponse>('mod_label_get_labels_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.labels, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.labels, cmId, ADDON_MOD_LABEL_MODNAME, site.getId());
     }
 
     /**

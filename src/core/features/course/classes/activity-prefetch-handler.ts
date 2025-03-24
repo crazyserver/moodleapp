@@ -20,6 +20,7 @@ import { CoreFilepool } from '@services/filepool';
 import { CoreSites } from '@services/sites';
 import { CoreCourse, CoreCourseAnyModuleData } from '../services/course';
 import { CoreCourseModulePrefetchHandlerBase } from './module-prefetch-handler';
+import { CoreCourseModuleHelper } from '../services/course-module-helper';
 
 /**
  * Base prefetch handler to be registered in CoreCourseModulePrefetchDelegate. It is useful to minimize the amount of
@@ -116,7 +117,7 @@ export class CoreCourseActivityPrefetchHandlerBase extends CoreCourseModulePrefe
 
             // Package marked as downloading, get module info to be able to handle links. Get module filters too.
             await Promise.all([
-                CoreCourse.getModuleNavigationInfo(module.id, undefined, siteId),
+                CoreCourseModuleHelper.getModuleNavigationInfo(module.id, undefined, siteId),
                 CoreCourse.getModule(module.id, courseId, undefined, false, true, siteId),
                 CoreFilterHelper.getFilters(ContextLevel.MODULE, module.id, { courseId }),
             ]);

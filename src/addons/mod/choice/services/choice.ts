@@ -24,7 +24,7 @@ import { CoreStatusWithWarningsWSResponse, CoreWSExternalWarning } from '@servic
 import { makeSingleton } from '@singletons';
 import { AddonModChoiceOffline } from './choice-offline';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-import { ADDON_MOD_CHOICE_COMPONENT_LEGACY, AddonModChoiceShowResults } from '../constants';
+import { ADDON_MOD_CHOICE_COMPONENT_LEGACY, ADDON_MOD_CHOICE_MODNAME, AddonModChoiceShowResults } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreSite } from '@classes/sites/site';
@@ -245,7 +245,7 @@ export class AddonModChoiceProvider {
             preSets,
         );
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.choices, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.choices, cmId, ADDON_MOD_CHOICE_MODNAME, site.getId());
     }
 
     /**

@@ -41,6 +41,7 @@ import {
     ADDON_MOD_SCORM_LAUNCH_PREV_SCO_EVENT,
     ADDON_MOD_SCORM_UPDATE_TOC_EVENT,
     ADDON_MOD_SCORM_COMPONENT,
+    ADDON_MOD_SCORM_MODNAME,
 } from '../constants';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
@@ -1129,7 +1130,13 @@ export class AddonModScormProvider {
             preSets,
         );
 
-        const scorm: AddonModScormScorm = CoreCourseModuleHelper.getActivityByField(response.scorms, key, value);
+        const scorm: AddonModScormScorm = CoreCourseModuleHelper.getActivityByField(
+            response.scorms,
+            key,
+            value,
+            ADDON_MOD_SCORM_MODNAME,
+            site.getId(),
+        );
         // If the SCORM isn't available the WS returns a warning and it doesn't return timeopen and timeclosed.
         if (scorm.timeopen === undefined) {
             const warning = response.warnings?.find(warning => warning.itemid === scorm.id);

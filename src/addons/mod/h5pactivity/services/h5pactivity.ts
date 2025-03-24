@@ -28,6 +28,7 @@ import { CoreTime } from '@singletons/time';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
 import {
     ADDON_MOD_H5PACTIVITY_COMPONENT_LEGACY,
+    ADDON_MOD_H5PACTIVITY_MODNAME,
     ADDON_MOD_H5PACTIVITY_USERS_PER_PAGE,
     AddonModH5PActivityGradeMethod,
 } from '../constants';
@@ -524,7 +525,13 @@ export class AddonModH5PActivityProvider {
             preSets,
         );
 
-        const currentActivity = CoreCourseModuleHelper.getActivityByField(response.h5pactivities, key, value);
+        const currentActivity = CoreCourseModuleHelper.getActivityByField(
+            response.h5pactivities,
+            key,
+            value,
+            ADDON_MOD_H5PACTIVITY_MODNAME,
+            site.getId(),
+        );
 
         return {
             ...currentActivity,

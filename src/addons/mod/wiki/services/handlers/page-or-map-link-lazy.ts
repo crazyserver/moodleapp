@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Injectable } from '@angular/core';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
 import { makeSingleton, Translate } from '@singletons';
 import { Md5 } from 'ts-md5';
@@ -41,7 +41,7 @@ export class AddonModWikiPageOrMapLinkHandlerLazyService extends AddonModWikiPag
             // Get the page data to obtain wikiId, subwikiId, etc.
             const page = await AddonModWiki.getPageContents(pageId, { siteId });
 
-            const module = await CoreCourse.getModuleNavigationInfo(
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                 page.wikiid,
                 ADDON_MOD_WIKI_MODNAME,
                 siteId,

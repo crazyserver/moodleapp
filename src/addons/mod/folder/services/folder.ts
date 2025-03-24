@@ -20,7 +20,7 @@ import { CoreSites, CoreSitesCommonWSOptions } from '@services/sites';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreWSExternalWarning } from '@services/ws';
 import { makeSingleton } from '@singletons';
-import { ADDON_MOD_FOLDER_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_FOLDER_COMPONENT_LEGACY, ADDON_MOD_FOLDER_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -57,7 +57,7 @@ export class AddonModFolderProvider {
         const response =
             await site.read<AddonModFolderGetFoldersByCoursesWSResponse>('mod_folder_get_folders_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.folders, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.folders, cmId, ADDON_MOD_FOLDER_MODNAME, site.getId());
     }
 
     /**

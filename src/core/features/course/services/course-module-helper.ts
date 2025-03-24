@@ -17,11 +17,13 @@ import { Injectable } from '@angular/core';
 import { CoreAnyError, CoreError } from '@classes/errors/error';
 import { CoreErrorHelper } from '@services/error-helper';
 import { CoreEvents } from '@singletons/events';
-import { CoreSites } from '@services/sites';
+import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
 import {
+    CoreCourseModuleIndexDBRecord,
     CoreCourseViewedModulesDBPrimaryKeys,
     CoreCourseViewedModulesDBRecord,
+    COURSE_MODULE_INDEX_TABLE,
     COURSE_VIEWED_MODULES_PRIMARY_KEYS,
     COURSE_VIEWED_MODULES_TABLE,
 } from './database/course';
@@ -32,10 +34,11 @@ import { CoreDatabaseCachingStrategy } from '@classes/database/database-table-pr
 import { CoreArray } from '@singletons/array';
 import { CORE_COURSE_CORE_MODULES } from '../constants';
 import { ModFeature } from '@addons/mod/constants';
-import { CoreCourseModuleSummary } from './course';
+import { CoreCourse, CoreCourseModuleSummary } from './course';
 import { CoreCourseModuleData } from './course-helper';
 import { CoreCourseModuleDelegate } from './module-delegate';
 import { CoreWSExternalFile } from '@services/ws';
+import { CorePromiseUtils } from '@singletons/promise-utils';
 
 /**
  * Service that provides some features regarding a course.
@@ -69,14 +72,28 @@ export class CoreCourseModuleHelperService {
      *
      * @param activities List of activities.
      * @param cmId Course module ID.
+     * @param modname Name of the module.
+     * @param siteId Site ID
      * @returns Activity.
      */
-    getActivityByCmId<T extends { coursemodule: number }>(activities: T[] = [], cmId: number): T {
+    getActivityByCmId<T extends CoreCourseModulePermanentData>(
+        activities: T[] = [],
+        cmId: number,
+        modname: string,
+        siteId: string,
+    ): T {
         const activity = activities.find((activity) => activity.coursemodule === cmId);
 
         if (!activity) {
             throw new CoreError(Translate.instant('core.course.modulenotfound'));
         }
+
+        this.storeModuleIndexRecord({
+            id: activity.coursemodule,
+            modname: modname,
+            instance: activity.id,
+            course: activity.course,
+        }, siteId);
 
         return activity;
     }
@@ -94,11 +111,23 @@ export class CoreCourseModuleHelperService {
         activities: T[] = [],
         fieldName: FieldName,
         value: number | string | boolean,
+        modname: string,
+        siteId: string,
     ): T {
         const activity = activities.find((activity) => activity[fieldName] === value);
 
         if (!activity) {
             throw new CoreError(Translate.instant('core.course.modulenotfound'));
+        }
+
+        if ('id' in activity && 'course' in activity && ('coursemodule' in activity || 'cmid' in activity)) {
+            const cmId = 'coursemodule' in activity ? activity.coursemodule : activity.cmid;
+            this.storeModuleIndexRecord({
+                id: cmId as number,
+                modname: modname,
+                instance: activity.id as number,
+                course: activity.course as number,
+            }, siteId);
         }
 
         return activity;
@@ -284,6 +313,73 @@ export class CoreCourseModuleHelperService {
             (fallback || moduleName);
     }
 
+    /**
+     * Function to get the navigation info of a module by cmId.
+     *
+     * @param id Module ID. If modname is not set, this is the course module Id. Otherwise, it's the instance Id.
+     * @param modname Name of the module.
+     * @param siteId Site ID. If not defined, current site.
+     * @returns The module's info.
+     */
+    async getModuleNavigationInfo(id: number, modname?: string, siteId?: string): Promise<CoreCourseModuleIndexDBRecord> {
+        siteId = siteId || CoreSites.getCurrentSiteId();
+
+        const indexRecord = await this.getCourseModuleIndexRecord(id, modname, siteId);
+        if (indexRecord) {
+            console.error('getModuleNavigationInfo', indexRecord);
+
+            return indexRecord;
+        }
+
+        const options = { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE };
+        const module = modname
+            ? await CoreCourse.getModuleBasicInfoByInstance(id, modname, options)
+            : await CoreCourse.getModuleBasicInfo(id, options);
+
+        return {
+            id: module.id,
+            modname: module.modname,
+            instance: module.instance,
+            course: module.course,
+        };
+
+    }
+
+    /**
+     * Get the whole course module index record from a course module ID.
+     *
+     * @param id Module ID. If modname is not set, this is the course module Id. Otherwise, it's the instance Id.
+     * @param modname Name of the module.
+     * @param siteId Site ID. If not defined, current site.
+     * @returns Course module index record.
+     */
+    async getCourseModuleIndexRecord(
+        id: number,
+        modname?: string,
+        siteId?: string,
+    ): Promise<CoreCourseModuleIndexDBRecord | undefined> {
+        const site = await CoreSites.getSite(siteId);
+        const db = site.getDb();
+
+        const queryParams = modname ? { instance: id, modname } : { id };
+
+        return await CorePromiseUtils.ignoreErrors(
+            db.getRecord<CoreCourseModuleIndexDBRecord>(COURSE_MODULE_INDEX_TABLE, queryParams),
+        );
+    }
+
+    /**
+     * Store a module index record.
+     *
+     * @param record Record to store.
+     * @param siteId Site ID. If not defined, current site.
+     */
+    async storeModuleIndexRecord(record: CoreCourseModuleIndexDBRecord, siteId?: string): Promise<void> {
+        const site = await CoreSites.getSite(siteId);
+
+        await site.getDb().insertRecord(COURSE_MODULE_INDEX_TABLE, record);
+    }
+
 }
 export const CoreCourseModuleHelper = makeSingleton(CoreCourseModuleHelperService);
 
@@ -316,4 +412,10 @@ export type CoreCourseModuleStandardElements = {
     groupmode?: number; // Group mode.
     groupingid?: number; // Group id.
     lang?: string; // @since 4.1. Forced activity language.
+};
+
+type CoreCourseModulePermanentData = {
+    id: number; // Activity instance id.
+    coursemodule: number; // Course module id.
+    course: number; // Course id.
 };

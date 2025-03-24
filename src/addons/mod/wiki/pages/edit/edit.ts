@@ -15,7 +15,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { CoreError } from '@classes/errors/error';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CanLeave } from '@guards/can-leave';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSites } from '@services/sites';
@@ -217,7 +217,7 @@ export default class AddonModWikiEditPage implements OnInit, OnDestroy, CanLeave
 
                 // Try to get wikiId.
                 if (!this.wikiId && this.cmId) {
-                    const module = await CoreCourse.getModuleNavigationInfo(this.cmId);
+                    const module = await CoreCourseModuleHelper.getModuleNavigationInfo(this.cmId);
 
                     this.wikiId = module.instance;
                 }
@@ -286,7 +286,7 @@ export default class AddonModWikiEditPage implements OnInit, OnDestroy, CanLeave
             return;
         }
 
-        const module = await CoreCourse.getModuleNavigationInfo(
+        const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
             this.wikiId,
             ADDON_MOD_WIKI_MODNAME,
         );

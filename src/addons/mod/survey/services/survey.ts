@@ -24,7 +24,7 @@ import { CoreStatusWithWarningsWSResponse, CoreWSExternalWarning } from '@servic
 import { makeSingleton } from '@singletons';
 import { AddonModSurveyOffline } from './survey-offline';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-import { ADDON_MOD_SURVEY_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_SURVEY_COMPONENT_LEGACY, ADDON_MOD_SURVEY_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
@@ -112,7 +112,7 @@ export class AddonModSurveyProvider {
         const response =
             await site.read<AddonModSurveyGetSurveysByCoursesWSResponse>('mod_survey_get_surveys_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.surveys, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.surveys, cmId, ADDON_MOD_SURVEY_MODNAME, site.getId());
     }
 
     /**

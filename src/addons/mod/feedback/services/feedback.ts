@@ -28,6 +28,7 @@ import {
     ADDON_MOD_FEEDBACK_COMPONENT_LEGACY,
     ADDON_MOD_FEEDBACK_FORM_SUBMITTED,
     ADDON_MOD_FEEDBACK_LINE_SEP,
+    ADDON_MOD_FEEDBACK_MODNAME,
     ADDON_MOD_FEEDBACK_MULTICHOICE_ADJUST_SEP,
     ADDON_MOD_FEEDBACK_MULTICHOICE_TYPE_SEP,
     ADDON_MOD_FEEDBACK_MULTICHOICERATED_VALUE_SEP,
@@ -610,7 +611,7 @@ export class AddonModFeedbackProvider {
             preSets,
         );
 
-        return CoreCourseModuleHelper.getActivityByField(response.feedbacks, key, value);
+        return CoreCourseModuleHelper.getActivityByField(response.feedbacks, key, value, ADDON_MOD_FEEDBACK_MODNAME, site.getId());
     }
 
     /**

@@ -23,7 +23,7 @@ import { CoreText } from '@singletons/text';
 import { CoreObject } from '@singletons/object';
 import { CoreWSExternalFile, CoreWSExternalWarning } from '@services/ws';
 import { makeSingleton, Translate } from '@singletons';
-import { ADDON_MOD_BBB_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_BBB_COMPONENT_LEGACY, ADDON_MOD_BBB_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -85,7 +85,7 @@ export class AddonModBBBService {
             preSets,
         );
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.bigbluebuttonbns, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.bigbluebuttonbns, cmId, ADDON_MOD_BBB_MODNAME, site.getId());
     }
 
     /**

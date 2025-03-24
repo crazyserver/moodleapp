@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Injectable } from '@angular/core';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreUser } from '@features/user/services/user';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
@@ -189,7 +189,7 @@ export class AddonModFeedbackHelperProvider {
         const modal = await CoreLoadings.show();
 
         try {
-            const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
             if (params.showcompleted === undefined) {
                 // Param showcompleted not defined. Show entry list.

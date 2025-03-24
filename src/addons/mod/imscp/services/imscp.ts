@@ -25,7 +25,7 @@ import { CoreWSExternalWarning } from '@services/ws';
 import { makeSingleton } from '@singletons';
 import { CorePath } from '@singletons/path';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-import { ADDON_MOD_IMSCP_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_IMSCP_COMPONENT_LEGACY, ADDON_MOD_IMSCP_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -116,7 +116,7 @@ export class AddonModImscpProvider {
         const response =
             await site.read<AddonModImscpGetImscpsByCoursesWSResponse>('mod_imscp_get_imscps_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.imscps, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.imscps, cmId, ADDON_MOD_IMSCP_MODNAME, site.getId());
     }
 
     /**

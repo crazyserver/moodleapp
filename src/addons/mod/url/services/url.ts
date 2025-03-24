@@ -22,7 +22,7 @@ import { CoreCourse } from '@features/course/services/course';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreCourseLogHelper } from '@features/course/services/log-helper';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-import { ADDON_MOD_URL_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_URL_COMPONENT_LEGACY, ADDON_MOD_URL_MODNAME } from '../constants';
 import { ModResourceDisplay } from '@addons/mod/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -120,7 +120,7 @@ export class AddonModUrlProvider {
 
         const response = await site.read<AddonModUrlGetUrlsByCoursesResult>('mod_url_get_urls_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.urls, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.urls, cmId, ADDON_MOD_URL_MODNAME, site.getId());
     }
 
     /**

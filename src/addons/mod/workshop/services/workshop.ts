@@ -29,6 +29,7 @@ import {
     ADDON_MOD_WORKSHOP_ASSESSMENT_INVALIDATED,
     ADDON_MOD_WORKSHOP_ASSESSMENT_SAVED,
     ADDON_MOD_WORKSHOP_COMPONENT,
+    ADDON_MOD_WORKSHOP_MODNAME,
     ADDON_MOD_WORKSHOP_PER_PAGE,
     ADDON_MOD_WORKSHOP_SUBMISSION_CHANGED,
     AddonModWorkshopAction,
@@ -228,7 +229,13 @@ export class AddonModWorkshopProvider {
             preSets,
         );
 
-        const workshop = CoreCourseModuleHelper.getActivityByField(response.workshops, key, value);
+        const workshop = CoreCourseModuleHelper.getActivityByField(
+            response.workshops,
+            key,
+            value,
+            ADDON_MOD_WORKSHOP_MODNAME,
+            site.getId(),
+    );
 
         // Set submission types for Moodle 3.5.
         if (workshop.submissiontypetext === undefined) {

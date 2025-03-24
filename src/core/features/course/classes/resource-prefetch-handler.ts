@@ -22,6 +22,7 @@ import { CoreCourse, CoreCourseAnyModuleData } from '../services/course';
 import { CoreCourseModuleData } from '../services/course-helper';
 import { CoreCourseModulePrefetchHandlerBase } from './module-prefetch-handler';
 import { ContextLevel } from '@/core/constants';
+import { CoreCourseModuleHelper } from '../services/course-module-helper';
 
 /**
  * Base prefetch handler to be registered in CoreCourseModulePrefetchDelegate. It is useful to minimize the amount of
@@ -94,7 +95,7 @@ export class CoreCourseResourcePrefetchHandlerBase extends CoreCourseModulePrefe
         dirPath?: string,
     ): Promise<void> {
         // Get module info to be able to handle links.
-        await CoreCourse.getModuleNavigationInfo(module.id, undefined, siteId);
+        await CoreCourseModuleHelper.getModuleNavigationInfo(module.id, undefined, siteId);
 
         // Load module contents (ignore cache so we always have the latest data).
         await this.loadContents(module, courseId, true);

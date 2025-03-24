@@ -37,6 +37,7 @@ import { ContextLevel, CoreCacheUpdateFrequency } from '@/core/constants';
 import {
     ADDON_MOD_ASSIGN_COMPONENT_LEGACY,
     ADDON_MOD_ASSIGN_GRADED_EVENT,
+    ADDON_MOD_ASSIGN_MODNAME,
     ADDON_MOD_ASSIGN_STARTED_EVENT,
     ADDON_MOD_ASSIGN_SUBMISSION_REMOVED_EVENT,
     ADDON_MOD_ASSIGN_SUBMISSION_SAVED_EVENT,
@@ -192,7 +193,13 @@ export class AddonModAssignProvider {
         }
 
         // Search the assignment to return.
-        return CoreCourseModuleHelper.getActivityByField(response.courses?.[0].assignments, key, value);
+        return CoreCourseModuleHelper.getActivityByField(
+            response.courses?.[0].assignments,
+            key,
+            value,
+            ADDON_MOD_ASSIGN_MODNAME,
+            site.getId(),
+        );
     }
 
     /**

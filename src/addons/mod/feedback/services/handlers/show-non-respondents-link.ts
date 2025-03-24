@@ -15,9 +15,8 @@
 import { Injectable } from '@angular/core';
 import { CoreContentLinksHandlerBase } from '@features/contentlinks/classes/base-handler';
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton } from '@singletons';
 import { ADDON_MOD_FEEDBACK_FEATURE_NAME, ADDON_MOD_FEEDBACK_PAGE_NAME } from '../../constants';
 import { CoreLoadings } from '@services/overlays/loadings';
@@ -42,7 +41,7 @@ export class AddonModFeedbackShowNonRespondentsLinkHandlerService extends CoreCo
                 const modal = await CoreLoadings.show();
 
                 try {
-                    const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
+                    const module = await CoreCourseModuleHelper.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
                     await CoreNavigator.navigateToSitePath(
                         `${ADDON_MOD_FEEDBACK_PAGE_NAME}/${module.course}/${module.id}/nonrespondents`,

@@ -16,9 +16,8 @@ import { Injectable } from '@angular/core';
 
 import { CoreContentLinksHandlerBase } from '@features/contentlinks/classes/base-handler';
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton } from '@singletons';
 import { ADDON_MOD_LESSON_FEATURE_NAME, ADDON_MOD_LESSON_PAGE_NAME } from '../../constants';
 import { CoreLoadings } from '@services/overlays/loadings';
@@ -91,7 +90,7 @@ export class AddonModLessonReportLinkHandlerService extends CoreContentLinksHand
 
         try {
             // Get the module object.
-            const module = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(moduleId, undefined, siteId);
 
             const params = {
                 action: 'report',
@@ -129,7 +128,7 @@ export class AddonModLessonReportLinkHandlerService extends CoreContentLinksHand
 
         try {
             // Get the module object.
-            const module = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(moduleId, undefined, siteId);
             const params = {
                 retake: retake ?? 0,
             };

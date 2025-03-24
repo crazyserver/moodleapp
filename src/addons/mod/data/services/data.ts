@@ -32,6 +32,7 @@ import {
     ADDON_MOD_DATA_COMPONENT_LEGACY,
     ADDON_MOD_DATA_ENTRIES_PER_PAGE,
     ADDON_MOD_DATA_ENTRY_CHANGED,
+    ADDON_MOD_DATA_MODNAME,
     AddonModDataAction,
 } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
@@ -552,7 +553,7 @@ export class AddonModDataProvider {
         const response =
             await site.read<AddonModDataGetDatabasesByCoursesWSResponse>('mod_data_get_databases_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByField(response.databases, key, value);
+        return CoreCourseModuleHelper.getActivityByField(response.databases, key, value, ADDON_MOD_DATA_MODNAME, site.getId());
     }
 
     /**

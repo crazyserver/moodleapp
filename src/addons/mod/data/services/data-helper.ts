@@ -14,7 +14,7 @@
 
 import { ContextLevel } from '@/core/constants';
 import { Injectable, Type } from '@angular/core';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreFileUploader, CoreFileUploaderStoreFilesResult } from '@features/fileuploader/services/fileuploader';
 import { CoreRatingOffline } from '@features/rating/services/rating-offline';
 import { FileEntry } from '@awesome-cordova-plugins/file/ngx';
@@ -527,7 +527,7 @@ export class AddonModDataHelperProvider {
             return courseId;
         }
 
-        const module = await CoreCourse.getModuleNavigationInfo(
+        const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
             dataId,
             ADDON_MOD_DATA_MODNAME,
             siteId,

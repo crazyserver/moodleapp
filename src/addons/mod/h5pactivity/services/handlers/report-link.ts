@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 
 import { CoreContentLinksHandlerBase } from '@features/contentlinks/classes/base-handler';
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSites } from '@services/sites';
 import { CorePromiseUtils } from '@singletons/promise-utils';
@@ -55,7 +55,7 @@ export class AddonModH5PActivityReportLinkHandlerService extends CoreContentLink
                 try {
                     const instanceId = Number(params.a);
 
-                    const module = await CoreCourse.getModuleNavigationInfo(
+                    const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                         instanceId,
                         ADDON_MOD_H5PACTIVITY_MODNAME,
                         siteId,

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Injectable } from '@angular/core';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
 import { makeSingleton, Translate } from '@singletons';
 import { AddonModWiki } from '../wiki';
@@ -39,7 +39,7 @@ export class AddonModWikiEditLinkHandlerLazyService extends AddonModWikiEditLink
 
             const pageContents = await AddonModWiki.getPageContents(pageId, { siteId });
 
-            const module = await CoreCourse.getModuleNavigationInfo(
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                 pageContents.wikiid,
                 ADDON_MOD_WIKI_MODNAME,
                 siteId,

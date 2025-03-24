@@ -51,6 +51,7 @@ import {
     AddonModQuizDisplayOptionsAttemptStates,
     ADDON_MOD_QUIZ_IMMEDIATELY_AFTER_PERIOD,
     AddonModQuizNavMethods,
+    ADDON_MOD_QUIZ_MODNAME,
 } from '../constants';
 import { CoreIonicColorNames } from '@singletons/colors';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
@@ -835,7 +836,7 @@ export class AddonModQuizProvider {
         );
 
         // Search the quiz.
-        return CoreCourseModuleHelper.getActivityByCmId(response.quizzes, value);
+        return CoreCourseModuleHelper.getActivityByCmId(response.quizzes, value, ADDON_MOD_QUIZ_MODNAME, site.getId());
     }
 
     /**

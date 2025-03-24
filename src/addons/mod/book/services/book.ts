@@ -25,7 +25,7 @@ import { CoreText } from '@singletons/text';
 import { CoreDomUtils } from '@services/utils/dom';
 import { CoreError } from '@classes/errors/error';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-import { ADDON_MOD_BOOK_COMPONENT } from '../constants';
+import { ADDON_MOD_BOOK_COMPONENT, ADDON_MOD_BOOK_MODNAME } from '../constants';
 import { CoreUrl } from '@singletons/url';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
@@ -60,7 +60,7 @@ export class AddonModBookProvider {
 
         const response: AddonModBookGetBooksByCoursesWSResponse = await site.read('mod_book_get_books_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.books, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.books, cmId, ADDON_MOD_BOOK_MODNAME, site.getId());
     }
 
     /**

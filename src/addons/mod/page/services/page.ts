@@ -21,7 +21,7 @@ import { CoreCourse } from '@features/course/services/course';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreCourseLogHelper } from '@features/course/services/log-helper';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
-import { ADDON_MOD_PAGE_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_PAGE_COMPONENT_LEGACY, ADDON_MOD_PAGE_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreTextFormat } from '@singletons/text';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
@@ -57,7 +57,7 @@ export class AddonModPageProvider {
 
         const response = await site.read<AddonModPageGetPagesByCoursesWSResponse>('mod_page_get_pages_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.pages, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.pages, cmId, ADDON_MOD_PAGE_MODNAME, site.getId());
     }
 
     /**

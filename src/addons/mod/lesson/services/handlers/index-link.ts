@@ -16,9 +16,8 @@ import { Injectable } from '@angular/core';
 
 import { CoreContentLinksModuleIndexHandler } from '@features/contentlinks/classes/module-index-handler';
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreCourseHelper } from '@features/course/services/course-helper';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { makeSingleton } from '@singletons';
@@ -90,7 +89,7 @@ export class AddonModLessonIndexLinkHandlerService extends CoreContentLinksModul
 
         try {
             // Get the module.
-            const module = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(moduleId, undefined, siteId);
             courseId = module.course;
 
             // Store the password so it's automatically used.

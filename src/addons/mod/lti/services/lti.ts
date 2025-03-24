@@ -25,7 +25,7 @@ import { CoreUrl } from '@singletons/url';
 import { CoreOpener } from '@singletons/opener';
 import { CoreWSExternalWarning } from '@services/ws';
 import { makeSingleton, Translate } from '@singletons';
-import { ADDON_MOD_LTI_COMPONENT_LEGACY, ADDON_MOD_LTI_FEATURE_NAME } from '../constants';
+import { ADDON_MOD_LTI_COMPONENT_LEGACY, ADDON_MOD_LTI_FEATURE_NAME, ADDON_MOD_LTI_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -102,7 +102,7 @@ export class AddonModLtiProvider {
 
         const response = await site.read<AddonModLtiGetLtisByCoursesWSResponse>('mod_lti_get_ltis_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.ltis, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.ltis, cmId, ADDON_MOD_LTI_MODNAME, site.getId());
     }
 
     /**

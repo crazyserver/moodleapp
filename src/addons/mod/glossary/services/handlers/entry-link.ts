@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { CoreContentLinksHandlerBase } from '@features/contentlinks/classes/base-handler';
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
@@ -50,7 +50,7 @@ export class AddonModGlossaryEntryLinkHandlerService extends CoreContentLinksHan
                         { siteId, readingStrategy: CoreSitesReadingStrategy.PREFER_CACHE },
                     );
 
-                    const module = await CoreCourse.getModuleNavigationInfo(
+                    const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                         response.entry.glossaryid,
                         ADDON_MOD_GLOSSARY_MODNAME,
                         siteId,

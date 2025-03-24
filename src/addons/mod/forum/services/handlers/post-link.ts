@@ -15,9 +15,8 @@
 import { Injectable } from '@angular/core';
 import { CoreContentLinksHandlerBase } from '@features/contentlinks/classes/base-handler';
 import { CoreContentLinksAction } from '@features/contentlinks/services/contentlinks-delegate';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { makeSingleton } from '@singletons';
 import { ADDON_MOD_FORUM_FEATURE_NAME, ADDON_MOD_FORUM_MODNAME, ADDON_MOD_FORUM_PAGE_NAME } from '../../constants';
@@ -47,7 +46,7 @@ export class AddonModForumPostLinkHandlerService extends CoreContentLinksHandler
                 const forumId = parseInt(params.forum, 10);
 
                 try {
-                    const module = await CoreCourse.getModuleNavigationInfo(
+                    const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                         forumId,
                         ADDON_MOD_FORUM_MODNAME,
                         siteId,

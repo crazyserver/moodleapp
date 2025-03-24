@@ -20,7 +20,7 @@ import { CoreUser } from '@features/user/services/user';
 import { CoreSites, CoreSitesCommonWSOptions, CoreSitesReadingStrategy } from '@services/sites';
 import { CoreWSExternalWarning } from '@services/ws';
 import { makeSingleton, Translate } from '@singletons';
-import { ADDON_MOD_CHAT_COMPONENT_LEGACY } from '../constants';
+import { ADDON_MOD_CHAT_COMPONENT_LEGACY, ADDON_MOD_CHAT_MODNAME } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
 
@@ -55,7 +55,7 @@ export class AddonModChatProvider {
 
         const response = await site.read<AddonModChatGetChatsByCoursesWSResponse>('mod_chat_get_chats_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.chats, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.chats, cmId, ADDON_MOD_CHAT_MODNAME, site.getId());
     }
 
     /**

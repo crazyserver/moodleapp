@@ -42,6 +42,7 @@ import {
     ADDON_MOD_FORUM_COMPONENT_LEGACY,
     ADDON_MOD_FORUM_DISCUSSIONS_PER_PAGE,
     ADDON_MOD_FORUM_MARK_READ_EVENT,
+    ADDON_MOD_FORUM_MODNAME,
     ADDON_MOD_FORUM_NEW_DISCUSSION_EVENT,
     ADDON_MOD_FORUM_PREFERENCE_SORTORDER,
     ADDON_MOD_FORUM_REPLY_DISCUSSION_EVENT,
@@ -491,9 +492,11 @@ export class AddonModForumProvider {
      * @returns Promise resolved when the forum is retrieved.
      */
     async getForum(courseId: number, cmId: number, options: CoreSitesCommonWSOptions = {}): Promise<AddonModForumData> {
+        options.siteId = options.siteId || CoreSites.getCurrentSiteId();
+
         const forums = await this.getCourseForums(courseId, options);
 
-        return CoreCourseModuleHelper.getActivityByField(forums, 'cmid', cmId);
+        return CoreCourseModuleHelper.getActivityByField(forums, 'cmid', cmId, ADDON_MOD_FORUM_MODNAME, options.siteId);
     }
 
     /**
@@ -505,9 +508,11 @@ export class AddonModForumProvider {
      * @returns Promise resolved when the forum is retrieved.
      */
     async getForumById(courseId: number, forumId: number, options: CoreSitesCommonWSOptions = {}): Promise<AddonModForumData> {
+        options.siteId = options.siteId || CoreSites.getCurrentSiteId();
+
         const forums = await this.getCourseForums(courseId, options);
 
-        return CoreCourseModuleHelper.getActivityByField(forums, 'id', forumId);
+        return CoreCourseModuleHelper.getActivityByField(forums, 'id', forumId, ADDON_MOD_FORUM_MODNAME, options.siteId);
     }
 
     /**

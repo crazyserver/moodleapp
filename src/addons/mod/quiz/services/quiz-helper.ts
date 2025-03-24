@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 
 import { CoreCanceledError } from '@classes/errors/cancelederror';
 import { CoreError } from '@classes/errors/error';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSites, CoreSitesReadingStrategy } from '@services/sites';
 import { CoreDomUtils } from '@services/utils/dom';
@@ -351,7 +351,7 @@ export class AddonModQuizHelperProvider {
                 quizId = await this.getQuizIdByAttemptId(attemptId, { siteId });
             }
 
-            const module = await CoreCourse.getModuleNavigationInfo(
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                 quizId,
                 ADDON_MOD_QUIZ_MODNAME,
                 siteId,

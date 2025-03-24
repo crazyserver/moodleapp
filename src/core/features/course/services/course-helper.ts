@@ -85,6 +85,7 @@ import { CoreOpener, CoreOpenerOpenFileOptions } from '@singletons/opener';
 import { CoreAlerts } from '@services/overlays/alerts';
 import { CoreCourseDownloadStatusHelper } from './course-download-status-helper';
 import { CORE_SITEHOME_PAGE_NAME } from '@features/sitehome/constants';
+import { CoreCourseModuleHelper } from './course-module-helper';
 
 /**
  * Prefetch info of a module.
@@ -1402,7 +1403,7 @@ export class CoreCourseHelperProvider {
         const modal = await CoreLoadings.show();
 
         try {
-            const module = await CoreCourse.getModuleNavigationInfo(instanceId, modName, options.siteId);
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(instanceId, modName, options.siteId);
 
             this.navigateToModule(
                 module.id,
@@ -1438,7 +1439,7 @@ export class CoreCourseHelperProvider {
 
         try {
             if (!courseId) {
-                const moduleNavInfo = await CoreCourse.getModuleNavigationInfo(moduleId, undefined, siteId);
+                const moduleNavInfo = await CoreCourseModuleHelper.getModuleNavigationInfo(moduleId, undefined, siteId);
 
                 courseId = moduleNavInfo.course;
             }

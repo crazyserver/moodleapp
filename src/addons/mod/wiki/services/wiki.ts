@@ -29,6 +29,7 @@ import { AddonModWikiOffline } from './wiki-offline';
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
 import {
     ADDON_MOD_WIKI_COMPONENT_LEGACY,
+    ADDON_MOD_WIKI_MODNAME,
     ADDON_MOD_WIKI_PAGE_CREATED_EVENT,
 } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
@@ -376,7 +377,7 @@ export class AddonModWikiProvider {
 
         const response = await site.read<AddonModWikiGetWikisByCoursesWSResponse>('mod_wiki_get_wikis_by_courses', params, preSets);
 
-        return CoreCourseModuleHelper.getActivityByCmId(response.wikis, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(response.wikis, cmId, ADDON_MOD_WIKI_MODNAME, site.getId());
     }
 
     /**

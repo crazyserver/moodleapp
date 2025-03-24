@@ -15,10 +15,9 @@
 import { Injectable } from '@angular/core';
 
 import { CoreContentLinksModuleGradeHandler } from '@features/contentlinks/classes/module-grade-handler';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreCourseHelper } from '@features/course/services/course-helper';
 import { CoreNavigator } from '@services/navigator';
-import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
 import { AddonModLesson } from '../lesson';
 import { ADDON_MOD_LESSON_COMPONENT, ADDON_MOD_LESSON_MODNAME, ADDON_MOD_LESSON_PAGE_NAME } from '../../constants';
@@ -58,7 +57,7 @@ export class AddonModLessonGradeLinkHandlerService extends CoreContentLinksModul
         const modal = await CoreLoadings.show();
 
         try {
-            const module = await CoreCourse.getModuleNavigationInfo(Number(params.id), undefined, siteId);
+            const module = await CoreCourseModuleHelper.getModuleNavigationInfo(Number(params.id), undefined, siteId);
 
             // Check if the user can see the user reports in the lesson.
             const accessInfo = await AddonModLesson.getAccessInformation(module.instance, { cmId: module.id, siteId });

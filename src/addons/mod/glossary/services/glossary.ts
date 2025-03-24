@@ -36,12 +36,14 @@ import {
     ADDON_MOD_GLOSSARY_ENTRY_UPDATED,
     ADDON_MOD_GLOSSARY_LIMIT_CATEGORIES,
     ADDON_MOD_GLOSSARY_LIMIT_ENTRIES,
+    ADDON_MOD_GLOSSARY_MODNAME,
 } from '../constants';
 import { CoreCacheUpdateFrequency } from '@/core/constants';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreWSError } from '@classes/errors/wserror';
 import { CoreTextFormat, DEFAULT_TEXT_FORMAT } from '@singletons/text';
 import { CoreCourseModuleHelper, CoreCourseModuleStandardElements } from '@features/course/services/course-module-helper';
+import site from '@features/login/pages/site/site';
 
 /**
  * Service that provides some features for glossaries.
@@ -774,9 +776,11 @@ export class AddonModGlossaryProvider {
      * @returns Promise resolved with the glossary.
      */
     async getGlossary(courseId: number, cmId: number, options: CoreSitesCommonWSOptions = {}): Promise<AddonModGlossaryGlossary> {
+        options.siteId = options.siteId || CoreSites.getCurrentSiteId();
+
         const glossaries = await this.getCourseGlossaries(courseId, options);
 
-        return CoreCourseModuleHelper.getActivityByCmId(glossaries, cmId);
+        return CoreCourseModuleHelper.getActivityByCmId(glossaries, cmId, ADDON_MOD_GLOSSARY_MODNAME, options.siteId);
     }
 
     /**
@@ -792,9 +796,11 @@ export class AddonModGlossaryProvider {
         glossaryId: number,
         options: CoreSitesCommonWSOptions = {},
     ): Promise<AddonModGlossaryGlossary> {
+        options.siteId = options.siteId || CoreSites.getCurrentSiteId();
+
         const glossaries = await this.getCourseGlossaries(courseId, options);
 
-        return CoreCourseModuleHelper.getActivityByField(glossaries, 'id', glossaryId);
+        return CoreCourseModuleHelper.getActivityByField(glossaries, 'id', glossaryId, ADDON_MOD_GLOSSARY_MODNAME, options.siteId);
     }
 
     /**

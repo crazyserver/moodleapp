@@ -14,7 +14,7 @@
 
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CoreCourse } from '@features/course/services/course';
+import { CoreCourseModuleHelper } from '@features/course/services/course-module-helper';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { makeSingleton, Translate } from '@singletons';
@@ -108,7 +108,7 @@ export class AddonModWikiCreateLinkHandlerLazyService extends AddonModWikiCreate
                 path = `${path}/${routeParams.courseId}/${routeParams.cmId}/edit`;
             } else if (wikiId) {
                 // The URL specifies which wiki it belongs to. Get the module.
-                const module = await CoreCourse.getModuleNavigationInfo(
+                const module = await CoreCourseModuleHelper.getModuleNavigationInfo(
                     wikiId,
                     ADDON_MOD_WIKI_MODNAME,
                     siteId,
