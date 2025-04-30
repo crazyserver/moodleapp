@@ -9,10 +9,14 @@
 
 :root {
     --zoom-level: 100%;
-    zoom: var(--zoom-level);
+    &.md {
+        zoom: var(--zoom-level);
+    }
 
     &.ios {
-        font-size: var(--zoom-level);
+        transform: scale(var(--zoom-level));
+        transform-origin: top left;
+        width: var(--zoom-level-width, 100%);
     }
 }
 
