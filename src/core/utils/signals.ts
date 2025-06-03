@@ -49,25 +49,3 @@ export function effectWithInjectionContext(injector: Injector): typeof effect {
             injector,
         });
 }
-
-/**
- * Return a model wrapper that can be used to create a model with a certain injection context.
- * Example:
- *
- * ```
- * const modelWrapper = modelWithInjectionContext(injector);
- *
- * const myModel = modelWrapper('');
- * ```
- *
- * @param injector Injector to use for the model.
- * @returns Function to create the model.
- */
-export function modelWithInjectionContext<T = unknown>(injector: Injector): typeof model {
-    const modelFunction = (initialValue: T, opts?: ModelOptions): ModelSignal<T> =>
-        runInInjectionContext(injector, () => model(initialValue, opts));
-
-    modelFunction.required = (opts?: ModelOptions): ModelSignal<T> => runInInjectionContext(injector, () => model.required(opts));
-
-    return modelFunction as typeof model;
-}
