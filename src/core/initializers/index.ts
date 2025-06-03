@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { APP_INITIALIZER, Provider } from '@angular/core';
+import { EnvironmentProviders, provideAppInitializer } from '@angular/core';
 
 /**
  * Get the providers for the initializers.
@@ -20,7 +20,7 @@ import { APP_INITIALIZER, Provider } from '@angular/core';
  *
  * @returns List of providers.
  */
-export function getInitializerProviders(): Provider[] {
+export function getInitializerProviders(): EnvironmentProviders[] {
     if (!import.meta.webpackContext) {
         return [];
     }
@@ -37,13 +37,9 @@ export function getInitializerProviders(): Provider[] {
         const name = (fileName.match(/^(?:\.\/)?(.+)\.ts$/) || [])[1];
 
         if (name !== undefined && name !== 'index') {
-            providers.push({
-                provide: APP_INITIALIZER,
-                useValue: context(fileName).default,
-                multi: true,
-            });
+            providers.push(provideAppInitializer(context(fileName).default));
         }
 
         return providers;
-    }, [] as Provider[]);
+    }, [] as EnvironmentProviders[]);
 }
