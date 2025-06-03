@@ -22,6 +22,7 @@ import { AsyncDirective } from '@classes/async-directive';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export abstract class CoreEditorBaseComponent implements AsyncDirective {
 

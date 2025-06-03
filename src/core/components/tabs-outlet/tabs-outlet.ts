@@ -54,13 +54,12 @@ import { CoreUpdateNonReactiveAttributesDirective } from '@directives/update-non
     selector: 'core-tabs-outlet',
     templateUrl: 'core-tabs-outlet.html',
     styleUrl: '../tabs/tabs.scss',
-    standalone: true,
     imports: [
         CoreBaseModule,
         CoreUpdateNonReactiveAttributesDirective,
         CoreFaIconDirective,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CoreTabsOutletComponent extends CoreTabsBaseComponent<CoreTabsOutletTabWithId>
     implements AfterViewInit, OnChanges, OnDestroy {

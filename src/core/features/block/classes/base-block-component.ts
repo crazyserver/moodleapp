@@ -30,6 +30,7 @@ import { Translate } from '@singletons';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export abstract class CoreBlockBaseComponent implements OnInit, OnChanges, ICoreBlockComponent, AsyncDirective {
 

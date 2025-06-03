@@ -21,6 +21,7 @@ import { CoreCourseModuleCompletionData } from '@features/course/services/course
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class CoreCourseModuleCompletionBaseComponent implements OnChanges {
 

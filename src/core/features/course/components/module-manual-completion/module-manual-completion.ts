@@ -27,7 +27,6 @@ import { CoreEventObserver, CoreEvents } from '@singletons/events';
 @Component({
     selector: 'core-course-module-manual-completion',
     templateUrl: 'core-course-module-manual-completion.html',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],

@@ -34,6 +34,7 @@ import { AsyncDirective } from '@classes/async-directive';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class CoreQuestionBaseComponent<T extends AddonModQuizQuestion = AddonModQuizQuestion> implements OnInit, AsyncDirective {
 

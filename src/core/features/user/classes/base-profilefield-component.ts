@@ -25,6 +25,7 @@ import { CoreUserProfileField } from '@features/user/services/user';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export abstract class CoreUserProfileFieldBaseComponent<T = string> implements OnInit {
 

@@ -60,8 +60,7 @@ import { CoreTimesPipe } from '@pipes/times';
     templateUrl: 'core-loading.html',
     styleUrl: 'loading.scss',
     animations: [CoreAnimations.SHOW_HIDE],
-    standalone: true,
-    imports: [CoreBaseModule, CoreTimesPipe],
+    imports: [CoreBaseModule, CoreTimesPipe]
 })
 export class CoreLoadingComponent implements OnInit, OnChanges, AfterViewInit, AsyncDirective, OnDestroy {
 

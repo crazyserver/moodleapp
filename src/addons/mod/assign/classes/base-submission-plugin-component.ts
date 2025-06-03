@@ -21,6 +21,7 @@ import { toBoolean } from '@/core/transforms/boolean';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class AddonModAssignSubmissionPluginBaseComponent {
 

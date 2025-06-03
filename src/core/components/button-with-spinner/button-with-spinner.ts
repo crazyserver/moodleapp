@@ -30,8 +30,7 @@ import { CoreBaseModule } from '@/core/base.module';
     templateUrl: 'core-button-with-spinner.html',
     styleUrl: 'button-with-spinner.scss',
     animations: [CoreAnimations.SHOW_HIDE],
-    standalone: true,
-    imports: [CoreBaseModule],
+    imports: [CoreBaseModule]
 })
 export class CoreButtonWithSpinnerComponent {
 

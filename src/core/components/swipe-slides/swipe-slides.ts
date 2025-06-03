@@ -47,9 +47,8 @@ import { CoreBaseModule } from '@/core/base.module';
     selector: 'core-swipe-slides',
     templateUrl: 'swipe-slides.html',
     styleUrl: 'swipe-slides.scss',
-    standalone: true,
     imports: [CoreBaseModule],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CoreSwipeSlidesComponent<Item = unknown> implements OnChanges, OnDestroy, AsyncDirective {
 

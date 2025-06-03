@@ -24,6 +24,7 @@ import { toBoolean } from '@/core/transforms/boolean';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export abstract class AddonModDataFieldPluginBaseComponent implements OnInit, OnChanges {
 

@@ -23,6 +23,7 @@ import { CoreAlerts } from '@services/overlays/alerts';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class CoreCourseModuleMainActivityPage<ActivityType extends CoreCourseModuleMainResourceComponent> implements OnInit {
 

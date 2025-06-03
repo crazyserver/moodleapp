@@ -35,8 +35,7 @@ register();
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html',
-    standalone: true,
-    imports: [IonicModule],
+    imports: [IonicModule]
 })
 export class AppComponent implements OnInit, AfterViewInit {
 

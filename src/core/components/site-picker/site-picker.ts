@@ -30,8 +30,7 @@ import { CoreBaseModule } from '@/core/base.module';
 @Component({
     selector: 'core-site-picker',
     templateUrl: 'core-site-picker.html',
-    standalone: true,
-    imports: [CoreBaseModule],
+    imports: [CoreBaseModule]
 })
 export class CoreSitePickerComponent implements OnInit {
 

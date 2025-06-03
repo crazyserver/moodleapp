@@ -47,6 +47,7 @@ import { BackButtonPriority } from '../constants';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class CoreTabsBaseComponent<T extends CoreTabBase> implements AfterViewInit, OnChanges, OnDestroy, AsyncDirective {
 

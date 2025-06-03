@@ -46,13 +46,12 @@ import { CoreUpdateNonReactiveAttributesDirective } from '@directives/update-non
     selector: 'core-tabs',
     templateUrl: 'core-tabs.html',
     styleUrl: 'tabs.scss',
-    standalone: true,
     imports: [
         CoreBaseModule,
         CoreUpdateNonReactiveAttributesDirective,
         CoreFaIconDirective,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CoreTabsComponent extends CoreTabsBaseComponent<CoreTabComponent> implements AfterViewInit {
 

@@ -60,11 +60,10 @@ import { convertTextToHTMLElement } from '@/core/utils/create-html-element';
     selector: 'core-rich-text-editor',
     templateUrl: 'core-rich-text-editor.html',
     styleUrl: 'rich-text-editor.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CoreEditorRichTextEditorComponent implements AfterViewInit, OnDestroy, OnInit {
 

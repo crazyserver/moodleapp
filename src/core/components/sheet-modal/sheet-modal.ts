@@ -26,8 +26,7 @@ import { CoreBaseModule } from '@/core/base.module';
     selector: 'core-sheet-modal',
     templateUrl: 'sheet-modal.html',
     styleUrl: 'sheet-modal.scss',
-    standalone: true,
-    imports: [CoreBaseModule],
+    imports: [CoreBaseModule]
 })
 export class CoreSheetModalComponent<T extends CoreModalComponent> implements AfterViewInit {
 

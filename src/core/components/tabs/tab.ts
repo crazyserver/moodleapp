@@ -43,8 +43,7 @@ import { CoreBaseModule } from '@/core/base.module';
 @Component({
     selector: 'core-tab',
     template: '@if (loaded && template) {<ng-container [ngTemplateOutlet]="template" />}',
-    standalone: true,
-    imports: [CoreBaseModule],
+    imports: [CoreBaseModule]
 })
 export class CoreTabComponent implements OnInit, OnDestroy, CoreTabBase {
 

@@ -49,6 +49,7 @@ export type CoreCourseResourceDownloadResult = {
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class CoreCourseModuleMainResourceComponent implements OnInit, OnDestroy, CoreCourseModuleMainComponent {
 

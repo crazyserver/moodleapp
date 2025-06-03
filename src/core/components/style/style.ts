@@ -29,8 +29,7 @@ import { CoreDom } from '@singletons/dom';
 @Component({
     selector: 'core-style',
     template: '',
-    standalone: true,
-    imports: [],
+    imports: []
 })
 export class CoreStyleComponent implements OnChanges {
 

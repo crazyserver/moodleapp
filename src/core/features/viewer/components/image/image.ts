@@ -28,11 +28,10 @@ import { CoreSharedModule } from '@/core/shared.module';
     selector: 'core-viewer-image',
     templateUrl: 'image.html',
     styleUrl: 'image.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CoreViewerImageComponent implements OnInit {
 

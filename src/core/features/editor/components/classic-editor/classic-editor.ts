@@ -46,11 +46,10 @@ import { CoreEditorBaseComponent } from '@features/editor/classes/base-editor-co
     selector: 'core-editor-classic-editor',
     templateUrl: 'core-editor-classic-editor.html',
     styleUrl: 'classic-editor.scss',
-    standalone: true,
     imports: [
         CoreSharedModule,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CoreEditorClassicEditorComponent extends CoreEditorBaseComponent implements OnInit, AfterViewInit, OnDestroy {
 

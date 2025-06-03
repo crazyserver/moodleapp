@@ -31,6 +31,7 @@ import { CoreCourseModuleHelper } from '../services/course-module-helper';
  */
 @Component({
     template: '',
+    standalone: false,
 })
 export class CoreCourseModuleMainActivityComponent extends CoreCourseModuleMainResourceComponent implements OnInit, OnDestroy {
 
