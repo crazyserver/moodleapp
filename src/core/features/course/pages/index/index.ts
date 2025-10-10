@@ -201,8 +201,6 @@ export default class CoreCourseIndexPage implements OnInit, OnDestroy {
 
     /**
      * Load course option handlers.
-     *
-     * @returns Promise resolved when done.
      */
     protected async loadCourseHandlers(): Promise<void> {
         if (!this.course) {
@@ -246,8 +244,6 @@ export default class CoreCourseIndexPage implements OnInit, OnDestroy {
 
     /**
      * Load title for the page.
-     *
-     * @returns Promise resolved when done.
      */
     protected async loadBasinInfo(): Promise<void> {
         if (!this.course) {
@@ -277,8 +273,8 @@ export default class CoreCourseIndexPage implements OnInit, OnDestroy {
         const path = CoreNavigator.getRouteFullPath(this.route);
 
         CoreNavigator.decreaseRouteDepth(path.replace(/(\/deep)+/, ''));
-        this.selectTabObserver?.off();
-        this.progressObserver?.off();
+        this.selectTabObserver.off();
+        this.progressObserver.off();
     }
 
     /**
