@@ -57,7 +57,7 @@ export default class AddonStorageManagerCoursesStoragePage implements OnInit, On
         spaceUsage: 0,
     };
 
-    courseStatusObserver?: CoreEventObserver;
+    courseStatusObserver: CoreEventObserver;
     siteId: string;
 
     footerComponent?: Type<unknown>;
@@ -66,6 +66,10 @@ export default class AddonStorageManagerCoursesStoragePage implements OnInit, On
 
     constructor() {
         this.siteId = CoreSites.getCurrentSiteId();
+        this.courseStatusObserver = CoreEvents.on(
+            COURSE_STATUS_CHANGED_EVENT,
+            ({ courseId, status }) => this.onCourseUpdated(courseId, status),
+        );
     }
 
     /**
@@ -73,33 +77,17 @@ export default class AddonStorageManagerCoursesStoragePage implements OnInit, On
      */
     async ngOnInit(): Promise<void> {
         this.userCourses = await CoreCourses.getUserCourses();
-        this.courseStatusObserver = CoreEvents.on(
-            COURSE_STATUS_CHANGED_EVENT,
-            ({ courseId, status }) => this.onCourseUpdated(courseId, status),
-        );
 
-        const downloadedCourseIds = await CoreCourseDownloadStatusHelper.getDownloadedCourseIds();
-        const downloadedCourses = await Promise.all(
-            this.userCourses
-                .filter((course) => downloadedCourseIds.includes(course.id))
-                .map((course) => this.getDownloadedCourse(course)),
-        );
+        const courseStatusPromises =  this.userCourses
+            .map((course) => this.getDownloadedCourse(course.id, course.displayname || course.fullname));
 
         const siteHomeEnabled = await CoreSiteHome.isAvailable(this.siteId);
         if (siteHomeEnabled) {
             const siteHomeId = CoreSites.getCurrentSiteHomeId();
-            const size = await this.calculateDownloadedCourseSize(siteHomeId);
-            if (size > 0) {
-                const status = await CoreCourseDownloadStatusHelper.getCourseStatus(siteHomeId);
-
-                downloadedCourses.push({
-                    id: siteHomeId,
-                    title: Translate.instant('core.sitehome.sitehome'),
-                    totalSize: size,
-                    isDownloading: status === DownloadStatus.DOWNLOADING,
-                });
-            }
+            courseStatusPromises.push(this.getDownloadedCourse(siteHomeId, Translate.instant('core.sitehome.sitehome')));
         }
+
+        const downloadedCourses = (await Promise.all(courseStatusPromises)).filter((course) => course !== undefined);
 
         await this.downloadedCoursesQueue.run(() => this.setDownloadedCourses(downloadedCourses));
 
@@ -112,7 +100,7 @@ export default class AddonStorageManagerCoursesStoragePage implements OnInit, On
      * @inheritdoc
      */
     ngOnDestroy(): void {
-        this.courseStatusObserver?.off();
+        this.courseStatusObserver.off();
     }
 
     /**
@@ -227,16 +215,21 @@ export default class AddonStorageManagerCoursesStoragePage implements OnInit, On
     /**
      * Get downloaded course data.
      *
-     * @param course Course.
-     * @returns Course info.
+     * @param id Course id.
+     * @param title Course title.
+     * @returns Course info of partial or downloaded course, undefined if not downloaded.
      */
-    protected async getDownloadedCourse(course: CoreEnrolledCourseData): Promise<DownloadedCourse> {
-        const totalSize = await this.calculateDownloadedCourseSize(course.id);
-        const status = await CoreCourseDownloadStatusHelper.getCourseStatus(course.id);
+    protected async getDownloadedCourse(id: number, title: string): Promise<DownloadedCourse | undefined> {
+        const totalSize = await this.calculateDownloadedCourseSize(id);
+        const status = await CoreCourseDownloadStatusHelper.getCourseStatus(id);
+
+        if (totalSize <= 0 && !(status in [DownloadStatus.DOWNLOADED, DownloadStatus.DOWNLOADING, DownloadStatus.OUTDATED])) {
+            return;
+        }
 
         return {
-            id: course.id,
-            title: course.displayname || course.fullname,
+            id,
+            title,
             totalSize,
             isDownloading: status === DownloadStatus.DOWNLOADING,
         };
