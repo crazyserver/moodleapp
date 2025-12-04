@@ -296,28 +296,6 @@ export class CoreConstants {
      */
     static readonly LOGIN_LAUNCH_DATA = LOGIN_SSO_LAUNCH_DATA;
 
-    // Download status constants.
-    /**
-     * @deprecated since 4.4. Use DownloadStatus.DOWNLOADED instead.
-     */
-    static readonly DOWNLOADED = DownloadStatus.DOWNLOADED;
-    /**
-     * @deprecated since 4.4. Use DownloadStatus.DOWNLOADING instead.
-     */
-    static readonly DOWNLOADING = DownloadStatus.DOWNLOADING;
-    /**
-     * @deprecated since 4.4. Use DownloadStatus.DOWNLOADABLE_NOT_DOWNLOADED instead.
-     */
-    static readonly NOT_DOWNLOADED = DownloadStatus.DOWNLOADABLE_NOT_DOWNLOADED;
-    /**
-     * @deprecated since 4.4. Use DownloadStatus.OUTDATED instead.
-     */
-    static readonly OUTDATED = DownloadStatus.OUTDATED;
-    /**
-     * @deprecated since 4.4. Use DownloadStatus.NOT_DOWNLOADABLE instead.
-     */
-    static readonly NOT_DOWNLOADABLE = DownloadStatus.NOT_DOWNLOADABLE;
-
     // Download / prefetch status icon.
     /**
      * @deprecated since 5.1. Use CoreCourseDownloadStatusIcon.DOWNLOADED instead.

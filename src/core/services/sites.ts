@@ -70,6 +70,7 @@ import { CorePromiseUtils } from '@singletons/promise-utils';
 import { CoreOpener } from '@singletons/opener';
 import { CoreAlerts } from './overlays/alerts';
 import { CoreErrorLogs } from '@singletons/error-logs';
+import { CoreUserSupportConfig } from '@features/user/classes/support/support-config';
 
 export const CORE_SITE_SCHEMAS = new InjectionToken<CoreSiteSchema[]>('CORE_SITE_SCHEMAS');
 export const CORE_SITE_CURRENT_SITE_ID_CONFIG = 'current_site_id';
@@ -679,7 +680,7 @@ export class CoreSitesProvider {
             critical: true,
             title: Translate.instant('core.cannotconnect'),
             message: Translate.instant('core.siteunavailablehelp', { site: siteUrl }),
-            supportConfig: 'supportConfig' in error ? error.supportConfig : undefined,
+            supportConfig: 'supportConfig' in error ? error.supportConfig as CoreUserSupportConfig : undefined,
             debug: error.debug,
         };
 

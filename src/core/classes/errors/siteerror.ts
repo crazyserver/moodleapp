@@ -28,17 +28,6 @@ export class CoreSiteError extends CoreError {
         this.supportConfig = options.supportConfig;
     }
 
-    /**
-     * @deprecated since 4.4. This getter should not be called directly, but it's defined for backwards compatibility with many
-     * parts of the code that type errors as any and use it. We cannot rename those because the errors could also be
-     * CoreWSError instances which do have an "errorcode" property.
-     *
-     * @returns error code.
-     */
-    get errorcode(): string | undefined {
-        return this.debug?.code;
-    }
-
 }
 
 export type CoreSiteErrorOptions = CoreErrorOptions & {

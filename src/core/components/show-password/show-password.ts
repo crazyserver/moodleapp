@@ -12,12 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ViewEncapsulation, input, contentChild, effect } from '@angular/core';
-import { IonInput } from '@ionic/angular';
-import { convertTextToHTMLElement } from '@/core/utils/create-html-element';
+import { Component, ViewEncapsulation, input } from '@angular/core';
 
-import { CorePromiseUtils } from '@singletons/promise-utils';
-import { CoreLogger } from '@singletons/logger';
 import { CoreBaseModule } from '@/core/base.module';
 
 /**
@@ -57,36 +53,5 @@ export class CoreShowPasswordComponent {
      * @deprecated since 4.5. Not used anymore.
      */
     readonly initialShown = input('');
-
-    /**
-     * @deprecated since 4.4. Not used anymore.
-     */
-    readonly name = input('');
-
-    /**
-     * @deprecated since 4.4. Use slotted solution instead.
-     */
-    readonly ionInput = contentChild<IonInput | HTMLIonInputElement>(IonInput);
-
-    constructor() {
-        CoreLogger.getInstance('CoreShowPasswordComponent')
-            .warn('Deprecated component, use <ion-input-password-toggle /> instead.');
-
-        effect(async () => {
-            // eslint-disable-next-line @typescript-eslint/no-deprecated
-            const ionInput = this.ionInput();
-            if (!ionInput) {
-                return;
-            }
-
-            const input = await CorePromiseUtils.ignoreErrors(ionInput.getInputElement());
-            if (!input) {
-                return;
-            }
-
-            const toggle = convertTextToHTMLElement('<ion-input-password-toggle slot="end" />');
-            input.parentElement?.appendChild(toggle.children[0]);
-        });
-    }
 
 }
