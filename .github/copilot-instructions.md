@@ -161,3 +161,7 @@ Define tables with columns, indexes in site schemas. Version increments trigger 
 4. **Don't** import from barrel files that aren't configured in `tsconfig.json` paths
 5. **Do** run `gulp` before testing to ensure lang files are built
 6. **Do** use `CoreSitesReadingStrategy` when fetching data to control cache vs network behavior
+
+
+## Code reviews
+- When performing a code review check language in British English.

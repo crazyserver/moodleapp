@@ -1,9 +1,9 @@
 ---
-description: 'Angular-specific coding standards and best practices'
+description: 'Angular and Ionic 8 coding standards for Moodle Mobile App'
 applyTo: '**/*.ts, **/*.html, **/*.scss, **/*.css'
 ---
 
-# Angular Development Instructions
+# Angular & Ionic 8 Development Instructions
 
 Instructions for generating high-quality Angular applications with TypeScript, using Angular Signals for state management, adhering to Angular best practices as outlined at https://angular.dev.
 
@@ -12,7 +12,8 @@ Instructions for generating high-quality Angular applications with TypeScript, u
 - TypeScript for type safety
 - Angular CLI for project setup and scaffolding
 - Follow Angular Style Guide (https://angular.dev/style-guide)
-- Use Angular Material or other modern UI libraries for consistent styling (if specified)
+- Use Ionic 8 framework for mobile-optimized UI components
+- Use cordova for native device features
 
 ## Development Standards
 
@@ -32,7 +33,7 @@ Instructions for generating high-quality Angular applications with TypeScript, u
 
 ### Component Design
 - Follow Angular's component lifecycle hooks best practices
-- When using Angular >= 19, Use `input()` `output()`, `viewChild()`, `viewChildren()`, `contentChild()` and `contentChildren()` functions instead of decorators; otherwise use decorators
+- Use `input()` `output()`, `viewChild()`, `viewChildren()`, `contentChild()` and `contentChildren()` functions instead of decorators; otherwise use decorators
 - Leverage Angular's change detection strategy (default or `OnPush` for performance)
 - Keep templates clean and logic in component classes or services
 - Use Angular directives and pipes for reusable functionality
@@ -41,7 +42,6 @@ Instructions for generating high-quality Angular applications with TypeScript, u
 - Use Angular's component-level CSS encapsulation (default: ViewEncapsulation.Emulated)
 - Prefer SCSS for styling with consistent theming
 - Implement responsive design using CSS Grid, Flexbox, or Angular CDK Layout utilities
-- Follow Angular Material's theming guidelines if used
 - Maintain accessibility (a11y) with ARIA attributes and semantic HTML
 
 ### State Management
