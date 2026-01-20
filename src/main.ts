@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { enableProdMode, importProvidersFrom, provideAppInitializer } from '@angular/core';
+import { enableProdMode, importProvidersFrom, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 
 import { CoreConstants } from './core/constants';
 import { AppComponent } from './app/app.component';
@@ -48,6 +48,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
 
 bootstrapApplication(AppComponent, {
     providers: [
+        provideZoneChangeDetection(),
         importProvidersFrom(
             BrowserModule,
             IonicModule.forRoot({

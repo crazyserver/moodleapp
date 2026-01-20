@@ -920,7 +920,7 @@ export class CoreNavigatorService {
 export const CoreNavigator = makeSingleton(CoreNavigatorService);
 
 /**
- * Copied from: @ionic/angular/common/providers/nav-controller
+ * Copied from: "@ionic/angular/common/providers/nav-controller"
  * because the import of NavigationOptions was not working.
  */
 interface AnimationOptions {
