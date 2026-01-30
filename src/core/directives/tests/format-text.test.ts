@@ -27,6 +27,7 @@ import { CorePromiseUtils } from '@static/promise-utils';
 
 import { mock, mockSingleton, RenderConfig, renderTemplate, renderWrapperComponent } from '@/testing/utils';
 import { ContextLevel } from '@/core/constants';
+import { describe, beforeEach, expect, it } from 'vitest';
 
 describe('CoreFormatTextDirective', () => {
 

@@ -16,6 +16,7 @@ import { AppComponent } from '@/app/app.component';
 
 import { renderComponent } from '@/testing/utils';
 import { RouterModule } from '@angular/router';
+import { describe, it, expect } from 'vitest';
 
 describe('AppComponent', () => {
 

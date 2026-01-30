@@ -8,7 +8,7 @@ import jsdoc from 'eslint-plugin-jsdoc';
 import preferArrow from 'eslint-plugin-prefer-arrow';
 import promise from 'eslint-plugin-promise';
 import parser from '@typescript-eslint/parser';
-import jest from 'eslint-plugin-jest';
+import vitest from 'eslint-plugin-vitest';
 import stylistic from '@stylistic/eslint-plugin';
 
 import globals from 'globals';
@@ -339,16 +339,16 @@ const testsConfig = {
     },
     rules: {
         ...appConfig.rules,
-        'jest/expect-expect': 'off',
-        'jest/no-done-callback': 'off',
+        'vitest/expect-expect': 'off',
+        'vitest/no-done-callback': 'off',
     },
     plugins: {
         ...appConfig.plugins,
-        jest,
+        vitest,
     },
     extends: [
         ...appConfig.extends,
-        'jest/flat/recommended',
+        'plugin:vitest/recommended',
     ],
 };
 

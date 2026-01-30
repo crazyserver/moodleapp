@@ -20,6 +20,7 @@ import { CoreSiteHomeIndexLinkHandlerService } from '@features/sitehome/services
 import { CoreNavigator } from '@services/navigator';
 import { CoreSites } from '@services/sites';
 import { CoreCustomURLSchemes } from '@services/urlschemes';
+import { describe, it, expect } from 'vitest';
 
 describe('Site Home link handlers', () => {
 

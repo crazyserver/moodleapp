@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CorePath } from '@static/path';
+import { describe, it, expect } from 'vitest';
 
 describe('CorePath', () => {
 

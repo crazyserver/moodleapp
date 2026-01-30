@@ -14,6 +14,7 @@
 
 import { CoreConstants } from '@/core/constants';
 import { CoreIcons } from '@static/icons';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreIcons', () => {
 

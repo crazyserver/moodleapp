@@ -17,6 +17,7 @@ import { Route, UrlSegment, UrlSegmentGroup } from '@angular/router';
 import { mock } from '@/testing/utils';
 
 import { buildRegExpUrlMatcher } from './app-routing.module';
+import { describe, it, expect } from 'vitest';
 
 describe('Routing utils', () => {
 

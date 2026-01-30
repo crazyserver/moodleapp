@@ -91,7 +91,7 @@ jobs:
                       app/www/**/*
                       plugin/**/*
 
-    jest:
+    vitest:
         runs-on: ubuntu-latest
         needs: build
 
@@ -113,17 +113,17 @@ jobs:
                       app/www/**/*
                       plugin/**/*
 
-            - name: Run Jest tests
+            - name: Run Vitest tests
               working-directory: app
               run: |
                   NODE_ENV=testing npx gulp
-                  npx jest --coverage --coverageReporters=json
-                  mkdir ../coverage-jsons
-                  mv coverage/coverage-final.json ../coverage-jsons/jest.json
+                  npx vitest run --coverage --reporter=json
+                  mkdir -p ../coverage-jsons
+                  mv coverage/coverage-final.json ../coverage-jsons/vitest.json
 
             - uses: actions/upload-artifact@v4
               with:
-                  name: coverage-jsons-jest
+                  name: coverage-jsons-vitest
                   path: coverage-jsons
 
     behat:
@@ -250,8 +250,7 @@ jobs:
 
     complete:
         runs-on: ubuntu-latest
-        needs: [behat, jest]
-
+        needs: [behat, vitest]
         steps:
             - uses: actions/checkout@v4
               with:

@@ -16,6 +16,7 @@ import { mock } from '@/testing/utils';
 import { CoreSingletonProxy, makeSingleton, setSingletonsInjector } from '@singletons';
 
 import { MilkyWayService } from './stubs';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Singletons', () => {
 

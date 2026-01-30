@@ -16,6 +16,7 @@ import { mockSingleton, mockTranslate } from '@/testing/utils';
 import { CoreTime } from '@static/time';
 import { dayjs } from '@/core/utils/dayjs';
 import { CorePlatform } from '@services/platform';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('CoreTime', () => {
 
@@ -62,7 +63,7 @@ describe('CoreTime', () => {
     });
 
     it('calls a function only once', () => {
-        const testFunction = jest.fn();
+        const testFunction = vi.fn();
         const onceFunction = CoreTime.once(testFunction);
 
         expect(testFunction).not.toHaveBeenCalled();

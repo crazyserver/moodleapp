@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Locutus } from '@static/locutus';
+import { describe, it, expect } from 'vitest';
 
 describe('Locutus', () => {
 

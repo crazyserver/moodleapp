@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreDom } from '@static/dom';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreDom', () => {
 

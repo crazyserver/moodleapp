@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreArray } from '@static/array';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreArray', () => {
 

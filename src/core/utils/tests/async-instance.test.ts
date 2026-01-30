@@ -14,6 +14,7 @@
 
 import { AsyncInstance, LazyMethodsGuard, asyncInstance } from '@/core/utils/async-instance';
 import { expectAnyType, expectSameTypes } from '@/testing/utils';
+import { describe, it, expect } from 'vitest';
 
 describe('AsyncInstance', () => {
 

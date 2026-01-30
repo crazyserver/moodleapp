@@ -33,6 +33,7 @@ import { CoreIonLoadingElement } from '@classes/ion-loading';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DefaultUrlSerializer, UrlSerializer } from '@angular/router';
 import { Equal } from '@/core/utils/types';
+import { expect, vi } from 'vitest';
 
 abstract class WrapperComponent<U> {
 
@@ -70,7 +71,7 @@ const DEFAULT_SERVICE_SINGLETON_MOCKS: [CoreSingletonProxy, unknown][] = [
         onChange: () => new Observable(),
     })],
     [CoreLoadings, mock({
-        show: () => Promise.resolve(mock<CoreIonLoadingElement>({ dismiss: jest.fn() })),
+        show: () => Promise.resolve(mock<CoreIonLoadingElement>({ dismiss: vi.fn() })),
     })],
 ];
 
@@ -309,7 +310,7 @@ export function mock<Service>(
         Object.assign(instance as Record<string, unknown>, overrides);
     }
 
-    // Convert instance functions to jest functions.
+    // Convert instance functions to vitest functions.
     for (const property of Object.getOwnPropertyNames(instance)) {
         const value = instance[property];
 
@@ -317,13 +318,13 @@ export function mock<Service>(
             continue;
         }
 
-        instance[property] = jest.fn((...args) => value.call(instance, ...args));
+        instance[property] = vi.fn((...args) => value.call(instance, ...args));
     }
 
     // If overrides is a list of methods, add them now.
     if (Array.isArray(overrides)) {
         for (const method of overrides) {
-            instance[method] = jest.fn();
+            instance[method] = vi.fn();
         }
     }
 

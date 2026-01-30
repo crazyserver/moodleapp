@@ -16,6 +16,7 @@ import { mock, mockSingleton } from '@/testing/utils';
 import { CoreSite } from '@classes/sites/site';
 import { CoreUrl, CoreUrlPartNames } from '@static/url';
 import { CorePlatform } from '@services/platform';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('CoreUrl', () => {
 

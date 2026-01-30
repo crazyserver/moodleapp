@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreText } from '@static/text';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreText', () => {
 

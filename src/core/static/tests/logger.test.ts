@@ -17,15 +17,16 @@
 import { CoreConstants } from '@/core/constants';
 import { CoreBrowser } from '@static/browser';
 import { CoreLogger } from '@static/logger';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 describe('CoreLogger', () => {
 
     beforeEach(() => {
-        console.log = jest.fn();
-        console.info = jest.fn();
-        console.warn = jest.fn();
-        console.debug = jest.fn();
-        console.error = jest.fn();
+        console.log = vi.fn();
+        console.info = vi.fn();
+        console.warn = vi.fn();
+        console.debug = vi.fn();
+        console.error = vi.fn();
     });
 
     it('adds logs to the console in dev environment', () => {
@@ -38,19 +39,19 @@ describe('CoreLogger', () => {
         const logger = CoreLogger.getInstance('TestName');
 
         logger.log('Log message');
-        expect((<jest.Mock> console.log).mock.calls[0][0]).toContain('TestName: Log message');
+        expect((<Mock> console.log).mock.calls[0][0]).toContain('TestName: Log message');
 
         logger.info('Info message');
-        expect((<jest.Mock> console.info).mock.calls[0][0]).toContain('TestName: Info message');
+        expect((<Mock> console.info).mock.calls[0][0]).toContain('TestName: Info message');
 
         logger.warn('Warn message');
-        expect((<jest.Mock> console.warn).mock.calls[0][0]).toContain('TestName: Warn message');
+        expect((<Mock> console.warn).mock.calls[0][0]).toContain('TestName: Warn message');
 
         logger.debug('Debug message');
-        expect((<jest.Mock> console.debug).mock.calls[0][0]).toContain('TestName: Debug message');
+        expect((<Mock> console.debug).mock.calls[0][0]).toContain('TestName: Debug message');
 
         logger.error('Error message');
-        expect((<jest.Mock> console.error).mock.calls[0][0]).toContain('TestName: Error message');
+        expect((<Mock> console.error).mock.calls[0][0]).toContain('TestName: Error message');
 
         CoreConstants.BUILD.isTesting = isTesting;
         CoreConstants.BUILD.isProduction = isProduction;
@@ -63,19 +64,19 @@ describe('CoreLogger', () => {
         const logger = CoreLogger.getInstance('TestName');
 
         logger.log('Log message');
-        expect((<jest.Mock> console.log).mock.calls[0][0]).toContain('TestName: Log message');
+        expect((<Mock> console.log).mock.calls[0][0]).toContain('TestName: Log message');
 
         logger.info('Info message');
-        expect((<jest.Mock> console.info).mock.calls[0][0]).toContain('TestName: Info message');
+        expect((<Mock> console.info).mock.calls[0][0]).toContain('TestName: Info message');
 
         logger.warn('Warn message');
-        expect((<jest.Mock> console.warn).mock.calls[0][0]).toContain('TestName: Warn message');
+        expect((<Mock> console.warn).mock.calls[0][0]).toContain('TestName: Warn message');
 
         logger.debug('Debug message');
-        expect((<jest.Mock> console.debug).mock.calls[0][0]).toContain('TestName: Debug message');
+        expect((<Mock> console.debug).mock.calls[0][0]).toContain('TestName: Debug message');
 
         logger.error('Error message');
-        expect((<jest.Mock> console.error).mock.calls[0][0]).toContain('TestName: Error message');
+        expect((<Mock> console.error).mock.calls[0][0]).toContain('TestName: Error message');
 
         CoreBrowser.clearDevelopmentSetting('LoggingEnabled');
     });

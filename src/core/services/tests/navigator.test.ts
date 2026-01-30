@@ -22,6 +22,7 @@ import { ActivatedRoute, RouterState } from '@angular/router';
 import { CoreSites } from '@services/sites';
 import { CoreMainMenu } from '@features/mainmenu/services/mainmenu';
 import { CoreMainMenuDelegate } from '@features/mainmenu/services/mainmenu-delegate';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('CoreNavigator', () => {
 

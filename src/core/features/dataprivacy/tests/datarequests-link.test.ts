@@ -22,6 +22,7 @@ import { CoreNavigator } from '@services/navigator';
 import { CORE_DATAPRIVACY_PAGE_NAME } from '@features/dataprivacy/constants';
 import { CoreDataPrivacyCreateDataRequestLinkHandler } from '../services/handlers/createdatarequest-link';
 import { CoreDataPrivacy } from '../services/dataprivacy';
+import { describe, beforeAll, it, expect } from 'vitest';
 
 describe('CoreDataPrivacyDataRequestsLinkHandlerService', () => {
 

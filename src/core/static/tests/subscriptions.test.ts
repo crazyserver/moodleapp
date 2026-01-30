@@ -14,19 +14,20 @@
 
 import { CoreSubscriptions } from '@static/subscriptions';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { describe, beforeEach, vi, it, expect, Mock } from 'vitest';
 
 describe('CoreSubscriptions singleton', () => {
 
     let subject: Subject<unknown>;
-    let success: jest.Mock;
-    let error: jest.Mock;
-    let complete: jest.Mock;
+    let success: Mock;
+    let error: Mock;
+    let complete: Mock;
 
     beforeEach(() => {
         subject = new Subject();
-        success = jest.fn();
-        error = jest.fn();
-        complete = jest.fn();
+        success = vi.fn();
+        error = vi.fn();
+        complete = vi.fn();
     });
 
     it('calls success callback only once', async () => {
@@ -86,8 +87,8 @@ describe('CoreSubscriptions singleton', () => {
 
     it('allows unsubscribing from outside the once function', async () => {
         const subject = new Subject();
-        const success = jest.fn();
-        const error = jest.fn();
+        const success = vi.fn();
+        const error = vi.fn();
 
         const unsubscribe = CoreSubscriptions.once(subject, success, error);
         unsubscribe();

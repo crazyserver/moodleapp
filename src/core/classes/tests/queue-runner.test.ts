@@ -14,6 +14,7 @@
 
 import { CoreQueueRunner } from '@classes/queue-runner';
 import { CoreWait } from '@static/wait';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreQueueRunner', () => {
 

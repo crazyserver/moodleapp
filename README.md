@@ -1,3 +1,18 @@
+## Unit Testing
+
+This project uses [Vitest](https://vitest.dev/) for unit testing. To run tests:
+
+```
+npm test
+```
+
+For coverage:
+
+```
+npm run test:coverage
+```
+
+See vitest.config.ts for configuration details.
 Moodle App
 =================
 

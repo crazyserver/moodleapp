@@ -14,6 +14,7 @@
 
 import { wait } from '@/testing/utils';
 import { CoreDirectivesRegistry } from '@static/directives-registry';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 const cssClassName = 'core-directives-registry-test';
 const createAndRegisterInstance = (element?: HTMLElement) => {

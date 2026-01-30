@@ -24,7 +24,6 @@
       "cordova-plugin-moodleapp",
       "cordova",
       "dom-mediacapture-record",
-      "jest",
       "node",
       "resize-observer-browser",
       "webpack-env"

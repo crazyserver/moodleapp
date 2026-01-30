@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreObject } from '@static/object';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreObject', () => {
 

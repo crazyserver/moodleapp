@@ -15,6 +15,7 @@
 import { mock } from '@/testing/utils';
 import { CoreH5PFramework } from '../classes/framework';
 import { CoreH5PLibraryCachedAssetsDBRecord } from '../services/database/h5p';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('CoreH5PFramework', () => {
 

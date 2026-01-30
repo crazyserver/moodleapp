@@ -17,6 +17,7 @@ import { faker } from '@faker-js/faker';
 import { CoreError } from '@classes/errors/error';
 
 import { agnosticPath } from '@/testing/utils';
+import { describe, expect, it } from 'vitest';
 
 describe('CoreError', () => {
 

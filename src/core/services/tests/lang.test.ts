@@ -14,6 +14,7 @@
 
 import { mockSingleton } from '@/testing/utils';
 import { CoreLang, CoreLangProvider } from '@services/lang';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Lang', () => {
 

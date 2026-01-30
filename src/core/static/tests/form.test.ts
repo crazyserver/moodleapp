@@ -15,6 +15,7 @@
 import { ElementRef } from '@angular/core';
 import { CoreEventFormAction, CoreEvents } from '@static/events';
 import { CoreForms } from '@static/form';
+import { describe, it, expect, vi } from 'vitest';
 
 const createInputElement = (type: string, name: string, value = ''): HTMLInputElement => {
     const input = document.createElement('input');
@@ -85,8 +86,8 @@ describe('CoreForms', () => {
         const form = document.createElement('form');
         const formElRef = new ElementRef(form);
         const siteId = 'site-id';
-        const callback = jest.fn();
-        const secondCallback = jest.fn();
+        const callback = vi.fn();
+        const secondCallback = vi.fn();
 
         CoreEvents.on(CoreEvents.FORM_ACTION, callback, siteId);
         CoreEvents.on(CoreEvents.FORM_ACTION, secondCallback, 'another-site');

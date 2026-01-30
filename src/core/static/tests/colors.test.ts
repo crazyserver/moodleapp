@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreColors } from '@static/colors';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreColors', () => {
 

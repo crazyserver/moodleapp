@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreJsonPatch, JsonPatchOperation } from '@static/json-patch';
+import { describe, it, expect } from 'vitest';
 
 class NoErrorThrownError extends Error {}
 

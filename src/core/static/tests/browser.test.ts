@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreBrowser } from '@static/browser';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreBrowser', () => {
 

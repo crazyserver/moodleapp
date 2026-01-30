@@ -15,6 +15,7 @@
 import { CoreUserAvatarComponent } from '@components/user-avatar/user-avatar';
 
 import { renderComponent } from '@/testing/utils';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreUserAvatarComponent', () => {
 

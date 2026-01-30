@@ -21,6 +21,7 @@ import { Http } from '@singletons';
 import { of } from 'rxjs';
 import { CoreLoginHelper } from '../services/login-helper';
 import { CoreConstants } from '@/core/constants';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Credentials page', () => {
 

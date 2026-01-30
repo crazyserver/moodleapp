@@ -22,6 +22,7 @@ import { of } from 'rxjs';
 import { CoreSite } from '@classes/sites/site';
 import { CoreHTMLClasses } from '@static/html-classes';
 import { CoreWait } from '@static/wait';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('CoreSitesProvider', () => {
 

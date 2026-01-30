@@ -17,6 +17,7 @@ import { mock, mockSingleton, mockTranslate } from '@/testing/utils';
 import { CoreSiteError } from '@classes/errors/siteerror';
 import { CoreSites } from '@services/sites';
 import { CoreAlertsService } from '@services/overlays/alerts';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('CoreAlertsService', () => {
 

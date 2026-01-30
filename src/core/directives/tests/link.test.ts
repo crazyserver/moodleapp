@@ -16,6 +16,7 @@ import { CoreLinkDirective } from '@directives/link';
 import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
 
 import { mockSingleton, renderTemplate } from '@/testing/utils';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreLinkDirective', () => {
 

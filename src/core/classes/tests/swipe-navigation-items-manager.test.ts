@@ -18,6 +18,7 @@ import { CoreRoutedItemsManagerSource } from '@classes/items-management/routed-i
 import { CoreSwipeNavigationItemsManager } from '@classes/items-management/swipe-navigation-items-manager';
 import { CoreNavigator } from '@services/navigator';
 import { BehaviorSubject } from 'rxjs';
+import { describe, beforeEach, vi, it, expect } from 'vitest';
 
 interface Item {
     path: string;
@@ -60,7 +61,7 @@ describe('CoreSwipeNavigationItemsManager', () => {
 
     beforeEach(async () => {
         mockSingleton(CoreNavigator, {
-            navigate: jest.fn(),
+            navigate: vi.fn(),
             getCurrentRoute: () => mock<ActivatedRoute>({
                 url: new BehaviorSubject([mock<UrlSegment>({ path: currentPath })]),
             }),

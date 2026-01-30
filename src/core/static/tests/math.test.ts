@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { CoreMath } from '@static/math';
+import { describe, it, expect } from 'vitest';
 
 describe('CoreMath', () => {
 

@@ -11,14 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
+import { vi, beforeEach } from 'vitest';
 
 import { setCreateSingletonMethodProxy, setSingletonsInjector } from '@singletons';
 
 import { resetTestingEnvironment, getServiceInstance } from './utils';
 
-setupZoneTestEnv();
+// Zone.js test environment setup for Angular + Vitest.
+import '@angular/compiler';
+import 'zone.js';
+import 'zone.js/testing';
 
 // eslint-disable-next-line no-console
 console.debug = () => {
@@ -40,7 +42,7 @@ setCreateSingletonMethodProxy(
     (instance, method, property) =>
         instance[`mock_${String(property)}`] =
             instance[`mock_${String(property)}`] ??
-            jest.fn((...args) => method.call(instance, ...args)),
+            vi.fn((...args) => method.call(instance, ...args)),
 );
 
 setSingletonsInjector({ get: injectionToken => getServiceInstance(injectionToken) });

@@ -13,14 +13,15 @@
 // limitations under the License.
 
 import { CoreEvents } from '@static/events';
+import { describe, it, vi, expect } from 'vitest';
 
 const eventName = 'my-event';
 
 describe('CoreEvents', () => {
 
     it('can be used to trigger and receive events', () => {
-        const callback = jest.fn();
-        const secondCallback = jest.fn();
+        const callback = vi.fn();
+        const secondCallback = vi.fn();
         const data = { foo: 'bar' };
 
         const listener = CoreEvents.on(eventName, callback);
@@ -38,9 +39,9 @@ describe('CoreEvents', () => {
     });
 
     it('only calls the right listeners based on site ID', () => {
-        const callback = jest.fn();
-        const secondCallback = jest.fn();
-        const thirdCallback = jest.fn();
+        const callback = vi.fn();
+        const secondCallback = vi.fn();
+        const thirdCallback = vi.fn();
         const siteId = 'site-id';
         const data = { foo: 'bar' };
         const dataWithSiteId = {
@@ -60,7 +61,7 @@ describe('CoreEvents', () => {
     });
 
     it('can call a listener only once', async () => {
-        const callback = jest.fn();
+        const callback = vi.fn();
 
         CoreEvents.once(eventName, callback);
         CoreEvents.trigger(eventName);
@@ -72,8 +73,8 @@ describe('CoreEvents', () => {
     });
 
     it('can trigger a unique event', async () => {
-        const callback = jest.fn();
-        const secondCallback = jest.fn();
+        const callback = vi.fn();
+        const secondCallback = vi.fn();
 
         CoreEvents.on(eventName, callback);
 
@@ -89,7 +90,7 @@ describe('CoreEvents', () => {
     });
 
     it('allows listening to multiple events with a single call', async () => {
-        const callback = jest.fn();
+        const callback = vi.fn();
         const secondEventName = 'second-event';
 
         const listener = CoreEvents.onMultiple([eventName, secondEventName], callback);

@@ -17,6 +17,7 @@ import { CoreDatabaseConfiguration, CoreDatabaseSorting, CoreDatabaseTable } fro
 import { CoreDatabaseCachingStrategy, CoreDatabaseTableProxy } from '@classes/database/database-table-proxy';
 import { SQLiteDB } from '@classes/sqlitedb';
 import { CoreConfig } from '@services/config';
+import { expect, describe, beforeEach, it } from 'vitest';
 
 type User = {
     id: number;
