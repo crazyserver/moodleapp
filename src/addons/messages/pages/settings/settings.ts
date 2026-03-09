@@ -187,7 +187,7 @@ export default class AddonMessagesSettingsPage implements OnInit, OnDestroy {
             .map((processor) => processor.name)
             .join(',');
 
-        if (value == '') {
+        if (value === '') {
             value = 'none';
         }
 

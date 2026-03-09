@@ -31,7 +31,7 @@ export class AddonCompetencyHelperProvider {
      * @returns User profile Image URL or true if default icon.
      */
     async getProfile(userId?: number): Promise<CoreUserProfile | undefined> {
-        if (!userId || userId == CoreSites.getCurrentSiteUserId()) {
+        if (!userId || userId === CoreSites.getCurrentSiteUserId()) {
             return;
         }
 

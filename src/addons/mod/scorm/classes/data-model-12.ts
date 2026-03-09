@@ -565,11 +565,11 @@ export class AddonModScormDataModel12 {
                         counterElement = 'cmi.objectives._count';
                         currentCounterIndex = elementDotFormat.match(/.(\d+)./)?.[1] || '0';
                     } else if (elementDotFormat.startsWith('cmi.interactions')) {
-                        if (elementDotFormat.indexOf('.objectives.') > 0) {
+                        if (elementDotFormat.includes('.objectives.')) {
                             const currentN = elementDotFormat.match(/cmi.interactions.(\d+)./)?.[1];
                             currentCounterIndex = elementDotFormat.match(/objectives.(\d+)./)?.[1] || '0';
                             counterElement = 'cmi.interactions.' + currentN + '.objectives._count';
-                        } else if (elementDotFormat.indexOf('.correct_responses.') > 0) {
+                        } else if (elementDotFormat.includes('.correct_responses.')) {
                             const currentN = elementDotFormat.match(/cmi.interactions.(\d+)./)?.[1];
                             currentCounterIndex = elementDotFormat.match(/correct_responses.(\d+)./)?.[1] || '0';
                             counterElement = 'cmi.interactions.' + currentN + '.correct_responses._count';
@@ -693,11 +693,7 @@ export class AddonModScormDataModel12 {
      * @returns Result.
      */
     LMSGetDiagnostic(param: string): string {
-        if (param == '') {
-            param = this.errorCode;
-        }
-
-        return param;
+        return param || this.errorCode;
     }
 
     /**
@@ -707,11 +703,7 @@ export class AddonModScormDataModel12 {
      * @returns Error message.
      */
     LMSGetErrorString(param: string): string {
-        if (param != '') {
-            return ERROR_STRINGS[param];
-        } else {
-            return '';
-        }
+        return param ? ERROR_STRINGS[param] : '';
     }
 
     /**
@@ -749,7 +741,7 @@ export class AddonModScormDataModel12 {
                     const childrenStr = '._children';
                     const countStr = '._count';
 
-                    if (elementModel.substring(elementModel.length - childrenStr.length) == childrenStr) {
+                    if (elementModel.substring(elementModel.length - childrenStr.length) === childrenStr) {
                         const parentModel = elementModel.substring(0, elementModel.length - childrenStr.length);
 
                         if (this.dataModel[this.scoId][parentModel] !== undefined) {
@@ -757,7 +749,7 @@ export class AddonModScormDataModel12 {
                         } else {
                             this.errorCode = '201';
                         }
-                    } else if (elementModel.substring(elementModel.length - countStr.length) == countStr) {
+                    } else if (elementModel.substring(elementModel.length - countStr.length) === countStr) {
                         const parentModel = elementModel.substring(0, elementModel.length - countStr.length);
 
                         if (this.dataModel[this.scoId][parentModel] !== undefined) {
@@ -828,7 +820,7 @@ export class AddonModScormDataModel12 {
 
                         if (matches != null) {
                             // Create dynamic data model element.
-                            if (element != elementModel) {
+                            if (element !== elementModel) {
 
                                 // Init default counters and values.
                                 if (element.startsWith('cmi.objectives')) {
@@ -872,7 +864,7 @@ export class AddonModScormDataModel12 {
                                             this.setEl(counterElement, 0);
                                         }
 
-                                        if (elementIndexes[i + 1] == this.getEl(counterElement)) {
+                                        if (elementIndexes[i + 1] === this.getEl(counterElement)) {
                                             const count = this.getEl(counterElement);
                                             this.setEl(counterElement, Number(count) + 1);
                                         }

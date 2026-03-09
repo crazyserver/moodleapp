@@ -436,7 +436,7 @@ export class AddonModScormIndexComponent extends CoreCourseModuleMainActivityCom
      * @returns True if refresh is needed, false otherwise.
      */
     protected isRefreshSyncNeeded(syncEventData: AddonModScormAutoSyncEventData): boolean {
-        if (syncEventData.updated && this.scorm && syncEventData.scormId == this.scorm.id) {
+        if (syncEventData.updated && this.scorm && syncEventData.scormId === this.scorm.id) {
             // Check completion status.
             this.checkCompletion();
 

@@ -226,8 +226,8 @@ export default class AddonModForumDiscussionPage implements OnInit, AfterViewIni
 
         // Refresh data if this discussion is synchronized automatically.
         this.syncObserver = CoreEvents.on(ADDON_MOD_FORUM_AUTO_SYNCED, data => {
-            if (data.forumId == this.forumId && this.discussionId == data.discussionId
-                && data.userId == CoreSites.getCurrentSiteUserId()) {
+            if (data.forumId === this.forumId && this.discussionId === data.discussionId
+                && data.userId === CoreSites.getCurrentSiteUserId()) {
                 // Refresh the data.
                 this.discussionLoaded = false;
                 this.refreshPosts();
@@ -236,8 +236,8 @@ export default class AddonModForumDiscussionPage implements OnInit, AfterViewIni
 
         // Refresh data if this forum discussion is synchronized from discussions list.
         this.syncManualObserver = CoreEvents.on(ADDON_MOD_FORUM_MANUAL_SYNCED, data => {
-            if (data.source !== 'discussion' && data.forumId == this.forumId &&
-                    data.userId == CoreSites.getCurrentSiteUserId()) {
+            if (data.source !== 'discussion' && data.forumId === this.forumId &&
+                data.userId === CoreSites.getCurrentSiteUserId()) {
                 // Refresh the data.
                 this.discussionLoaded = false;
                 this.refreshPosts();
@@ -251,15 +251,15 @@ export default class AddonModForumDiscussionPage implements OnInit, AfterViewIni
 
         // Listen for offline ratings saved and synced.
         this.ratingOfflineObserver = CoreEvents.on(CoreRatingProvider.RATING_SAVED_EVENT, (data) => {
-            if (data.component === 'mod_forum' && data.ratingArea === 'post' && data.contextLevel == ContextLevel.MODULE &&
-                data.instanceId == this.cmId && data.itemSetId == this.discussionId) {
+            if (data.component === 'mod_forum' && data.ratingArea === 'post' && data.contextLevel === ContextLevel.MODULE &&
+                data.instanceId === this.cmId && data.itemSetId === this.discussionId) {
                 this.hasOfflineRatings = true;
             }
         });
 
         this.ratingSyncObserver = CoreEvents.on(CoreRatingSyncProvider.SYNCED_EVENT, async (data) => {
-            if (data.component === 'mod_forum' && data.ratingArea === 'post' && data.contextLevel == ContextLevel.MODULE &&
-                data.instanceId == this.cmId && data.itemSetId == this.discussionId) {
+            if (data.component === 'mod_forum' && data.ratingArea === 'post' && data.contextLevel === ContextLevel.MODULE &&
+                data.instanceId === this.cmId && data.itemSetId === this.discussionId) {
                 this.hasOfflineRatings = false;
             }
         });

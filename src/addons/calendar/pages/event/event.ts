@@ -271,7 +271,7 @@ export default class AddonCalendarEventPage implements OnInit, OnDestroy {
             const event = this.event;
 
             const courseId = this.event.courseid;
-            if (courseId != this.siteHomeId) {
+            if (courseId !== this.siteHomeId) {
                 // If the event belongs to a course, get the course name and the URL to view it.
                 if (this.event.course) {
                     this.courseId = this.event.course.id;

@@ -238,7 +238,7 @@ export default class AddonModScormPlayerPage implements OnInit, OnDestroy {
             ({
                 item: item,
                 title: item.title,
-                current: item.id == scoId,
+                current: item.id === scoId,
                 enabled: !!(item.prereq && item.launch),
             }));
     }
@@ -260,7 +260,7 @@ export default class AddonModScormPlayerPage implements OnInit, OnDestroy {
         this.attempt = data.num;
         this.offline = data.offline;
 
-        if (this.attempt != attemptsData.lastAttempt.num) {
+        if (this.attempt !== attemptsData.lastAttempt.num) {
             this.attemptToContinue = this.attempt;
         }
 

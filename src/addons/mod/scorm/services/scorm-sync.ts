@@ -75,7 +75,7 @@ export class AddonModScormSyncProvider extends CoreCourseActivitySyncBaseProvide
         warnings: string[],
         siteId: string,
     ): Promise<void> {
-        if (attempt == lastOffline) {
+        if (attempt === lastOffline) {
             newAttemptsSameOrder.push(attempt);
 
             return;
@@ -123,7 +123,7 @@ export class AddonModScormSyncProvider extends CoreCourseActivitySyncBaseProvide
         siteId: string,
     ): Promise<boolean> {
         // If it's the last attempt we don't need to ignore cache because we already did it.
-        const refresh = lastOnline != attempt;
+        const refresh = lastOnline !== attempt;
 
         const siteData = await AddonModScorm.getScormUserData(scormId, attempt, {
             cmId,
@@ -797,7 +797,7 @@ export class AddonModScormSyncProvider extends CoreCourseActivitySyncBaseProvide
 
                 // It has a snapshot, it means it continued an online attempt. We need to check if they've diverged.
                 // If it's the last attempt we don't need to ignore cache because we already did it.
-                const refresh = lastOnline != attempt;
+                const refresh = lastOnline !== attempt;
 
                 const userData = await AddonModScorm.getScormUserData(scormId, attempt, {
                     cmId,

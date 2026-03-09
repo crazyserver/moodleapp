@@ -424,7 +424,7 @@ export class CoreEditorClassicEditorComponent extends CoreEditorBaseComponent im
         const selection = window.getSelection()?.toString();
 
         // When RTE is focused with a whole paragraph in desktop the stopBubble will not fire click.
-        if (CorePlatform.isMobile() || !this.rteEnabled || document.activeElement != this.editorElement || selection === '') {
+        if (CorePlatform.isMobile() || !this.rteEnabled || document.activeElement !== this.editorElement || selection === '') {
             this.stopBubble(event);
         }
     }

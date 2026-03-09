@@ -351,7 +351,7 @@ export class AddonModWorkshopPrefetchHandlerLazyService extends AddonModWorkshop
                     let files: CoreWSExternalFile[] = []; // Files in each submission.
 
                     revAssessments.forEach((assessment) => {
-                        if (assessment.submission?.authorid == currentUserId) {
+                        if (assessment.submission?.authorid === currentUserId) {
                             promises.push(AddonModWorkshop.getAssessment(
                                 workshop.id,
                                 assessment.id,

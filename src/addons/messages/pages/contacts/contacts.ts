@@ -119,7 +119,7 @@ export default class AddonMessagesContactsPage implements OnInit, OnDestroy {
                         AddonMessages.invalidateContactRequestsCache();
                     }
                 }
-        });
+            });
     }
 
     /**
@@ -303,7 +303,7 @@ export default class AddonMessagesContactsPage implements OnInit, OnDestroy {
      * @param onInit Whether the contact was selected on initial load.
      */
     selectUser(userId: number, onInit = false): void {
-        if (userId == this.selectedUserId && CoreScreen.isTablet) {
+        if (userId === this.selectedUserId && CoreScreen.isTablet) {
             // No user conversation to open or it is already opened.
             return;
         }

@@ -603,7 +603,7 @@ export class CoreFilepoolProvider {
             const treatedUrl = url.replace(hash, ''); // Remove the hash from the URL.
 
             // Check that the hash is valid.
-            if (`_${Md5.hashAsciiStr(`url:${treatedUrl}`)}` == hash) {
+            if (`_${Md5.hashAsciiStr(`url:${treatedUrl}`)}` === hash) {
                 // The data found is a hash of the URL, don't need to add it again.
                 return filename;
             }
@@ -746,7 +746,7 @@ export class CoreFilepoolProvider {
             // We need to add the new link if it does not exist yet.
             if (entry.linksUnserialized && entry.linksUnserialized.length) {
                 foundLink = entry.linksUnserialized.some((fileLink) =>
-                    fileLink.component == link.component && fileLink.componentId == link.componentId);
+                    fileLink.component === link.component && fileLink.componentId === link.componentId);
             }
 
             if (!foundLink) {
@@ -2561,7 +2561,7 @@ export class CoreFilepoolProvider {
      * @returns Whether downloaded or deleted.
      */
     isFileEventDownloadedOrDeleted(data: CoreFilepoolFileEventData): boolean {
-        return (data.action === CoreFilepoolFileActions.DOWNLOAD && data.success == true) ||
+        return (data.action === CoreFilepoolFileActions.DOWNLOAD && data.success) ||
             data.action === CoreFilepoolFileActions.DELETED;
     }
 

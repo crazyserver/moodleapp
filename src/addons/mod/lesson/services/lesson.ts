@@ -498,7 +498,7 @@ export class AddonModLessonProvider {
 
         result.userresponse = userResponse.join(',');
 
-        if (hits == Object.keys(answers).length) {
+        if (hits === Object.keys(answers).length) {
             result.correctanswer = true;
             result.response = correct!.answer || '';
             result.answerid = correct!.id;
@@ -567,7 +567,7 @@ export class AddonModLessonProvider {
                 for (const i in studentAnswers) {
                     const answerId = studentAnswers[i];
 
-                    if (answerId == answer.id) {
+                    if (answerId === answer.id) {
                         studentAswersArray.push(answer.answer!);
                         responses.push(answer.response || '');
                         break;
@@ -582,7 +582,7 @@ export class AddonModLessonProvider {
 
                 // Iterate over all the student answers to check if he selected the current possible answer.
                 studentAnswers.forEach((answerId) => {
-                    if (answerId == answer.id) {
+                    if (answerId === answer.id) {
                         if (correctAnswer) {
                             nHits++;
                         } else {
@@ -612,7 +612,7 @@ export class AddonModLessonProvider {
                 }
             });
 
-            if (studentAnswers.length == nCorrect && nHits == nCorrect) {
+            if (studentAnswers.length === nCorrect && nHits === nCorrect) {
                 result.correctanswer = true;
                 result.response = responses.join(AddonModLessonProvider.MULTIANSWER_DELIMITER);
                 result.newpageid = correctPageId || 0;
@@ -636,7 +636,7 @@ export class AddonModLessonProvider {
             // Search the answer.
             for (const i in pageData.answers) {
                 const answer = pageData.answers[i];
-                if (answer.id == data.answerid) {
+                if (answer.id === data.answerid) {
                     result.correctanswer = this.isAnswerCorrect(lesson, pageData.page!.id, answer, pageIndex);
                     result.newpageid = answer.jumpto || 0;
                     result.response = answer.response || '';
@@ -862,7 +862,7 @@ export class AddonModLessonProvider {
         // Get the answer.
         for (const i in pageData.answers) {
             const answer = pageData.answers[i];
-            if (answer.id == data.answerid) {
+            if (answer.id === data.answerid) {
                 // Answer found.
                 result.correctanswer = this.isAnswerCorrect(lesson, pageData.page!.id, answer, pageIndex);
                 result.newpageid = answer.jumpto || 0;
@@ -892,7 +892,7 @@ export class AddonModLessonProvider {
 
             // Double check that this is the OTHER_ANSWERS answer.
             if (typeof lastAnswer.answer === 'string' &&
-                    lastAnswer.answer.includes(ADDON_MOD_LESSON_OTHER_ANSWERS)) {
+                lastAnswer.answer.indexOf(ADDON_MOD_LESSON_OTHER_ANSWERS) !== -1) {
                 result.newpageid = lastAnswer.jumpto || 0;
                 result.response = lastAnswer.response || '';
 
@@ -2026,7 +2026,7 @@ export class AddonModLessonProvider {
                 return false;
             }
 
-            if (options.pageId && attempt.pageid != options.pageId) {
+            if (options.pageId && attempt.pageid !== options.pageId) {
                 return false;
             }
 
@@ -2379,7 +2379,7 @@ export class AddonModLessonProvider {
 
         let aPageId = pageIndex[pageId].nextpageid;
         while (aPageId) {
-            if (jumpTo == aPageId) {
+            if (jumpTo === aPageId) {
                 return true;
             }
 

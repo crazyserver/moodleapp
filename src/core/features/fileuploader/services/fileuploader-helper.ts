@@ -217,7 +217,7 @@ export class CoreFileUploaderHelperProvider {
         const fileName = options?.fileName || CoreFileUtils.getFileAndDirectoryFromPath(path).name;
 
         // Check that size isn't too large.
-        if (maxSize !== undefined && maxSize != -1) {
+        if (maxSize !== undefined && maxSize !== -1) {
             const fileEntry = await CoreFile.getExternalFile(path);
 
             const fileData = await CoreFile.getFileObjectFromFileEntry(fileEntry);
@@ -504,7 +504,7 @@ export class CoreFileUploaderHelperProvider {
      * @returns Whether it's because there is no app.
      */
     protected isNoAppError(error: CoreCaptureError): boolean {
-        return error && error.code == 20;
+        return error && error.code === 20;
     }
 
     /**

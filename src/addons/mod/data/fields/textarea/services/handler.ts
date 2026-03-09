@@ -102,7 +102,7 @@ export class AddonModDataFieldTextareaHandlerService extends AddonModDataFieldTe
             return Translate.instant('addon.mod_data.errormustsupplyvalue');
         }
 
-        const value = inputData.find((value) => value.subfield == '');
+        const value = inputData.find((value) => value.subfield === '');
 
         if (!value || CoreDom.htmlIsBlank(<string>value.value || '')) {
             return Translate.instant('addon.mod_data.errormustsupplyvalue');

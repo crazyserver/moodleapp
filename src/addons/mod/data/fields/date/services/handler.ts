@@ -124,7 +124,7 @@ export class AddonModDataFieldDateHandlerService implements AddonModDataFieldHan
         const content = (originalFieldData && originalFieldData?.content &&
                 CoreTime.toDatetimeFormat(parseInt(originalFieldData.content, 10) * 1000).substring(0, 10)) || '';
 
-        return input != content;
+        return input !== content;
     }
 
     /**

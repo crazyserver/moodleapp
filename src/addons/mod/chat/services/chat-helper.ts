@@ -96,8 +96,8 @@ export class AddonModChatHelperProvider {
         message: AddonModChatAnyFormattedMessage,
         prevMessage?: AddonModChatAnyFormattedMessage,
     ): boolean {
-        return message.userid != currentUserId &&
-            (!prevMessage || prevMessage.userid != message.userid || !!message.showDate || !!prevMessage.special);
+        return message.userid !== currentUserId &&
+            (!prevMessage || prevMessage.userid !== message.userid || !!message.showDate || !!prevMessage.special);
     }
 
     /**
@@ -108,7 +108,7 @@ export class AddonModChatHelperProvider {
      * @returns Whether user data should be shown.
      */
     protected showTail(message: AddonModChatAnyFormattedMessage, nextMessage?: AddonModChatAnyFormattedMessage): boolean {
-        return !nextMessage || nextMessage.userid != message.userid || !!nextMessage.showDate || !!nextMessage.special;
+        return !nextMessage || nextMessage.userid !== message.userid || !!nextMessage.showDate || !!nextMessage.special;
     }
 
     /**

@@ -190,7 +190,7 @@ export class CoreCoursesCourseListItemComponent implements OnInit, OnDestroy, On
 
         // Listen for status change in course.
         this.courseStatusObserver = CoreEvents.on(COURSE_STATUS_CHANGED_EVENT, (data: CoreEventCourseStatusChanged) => {
-            if (data.courseId == this.course.id || data.courseId === CORE_COURSE_ALL_COURSES_CLEARED) {
+            if (data.courseId === this.course.id || data.courseId === CORE_COURSE_ALL_COURSES_CLEARED) {
                 this.updateCourseStatus(data.status);
             }
         }, CoreSites.getCurrentSiteId());

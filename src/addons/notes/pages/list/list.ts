@@ -81,7 +81,7 @@ export default class AddonNotesListPage implements OnInit, OnDestroy {
 
         // Refresh data if notes are synchronized automatically.
         this.syncObserver = CoreEvents.on(ADDON_NOTES_AUTO_SYNCED, (data) => {
-            if (data.courseId == this.courseId) {
+            if (data.courseId === this.courseId) {
                 // Show the sync warnings.
                 this.showSyncWarnings(data.warnings);
 

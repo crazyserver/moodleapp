@@ -417,7 +417,7 @@ export class AddonCalendarHelperProvider {
         const startWeekDay = parseInt(startWeekDayStr, 10);
 
         const today = dayjs();
-        const isCurrentMonth = today.year() == year && today.month() == month - 1;
+        const isCurrentMonth = today.year() === year && today.month() === month - 1;
         const weeks: AddonCalendarWeek[] = [];
 
         let date = dayjs({ year, month: month - 1, date: 1 });
@@ -425,7 +425,7 @@ export class AddonCalendarHelperProvider {
             date = dayjs({ year, month: month - 1, date: mday });
 
             // Add new week and calculate prepadding.
-            if (!weeks.length || date.day() == startWeekDay) {
+            if (!weeks.length || date.day() === startWeekDay) {
                 const prepaddingLength = (date.day() - startWeekDay + 7) % 7;
                 const prepadding: number[] = [];
                 for (let i = 0; i < prepaddingLength; i++) {
@@ -435,7 +435,7 @@ export class AddonCalendarHelperProvider {
             }
 
             // Calculate postpadding of last week.
-            if (mday == date.daysInMonth()) {
+            if (mday === date.daysInMonth()) {
                 const postpaddingLength = (startWeekDay - date.day() + 6) % 7;
                 const postpadding: number[] = [];
                 for (let i = 0; i < postpaddingLength; i++) {
@@ -487,27 +487,27 @@ export class AddonCalendarHelperProvider {
         }
 
         // Check the fields that don't depend on any other.
-        if (data.name != original.name || data.timestart != original.timestart || data.eventtype != original.eventtype ||
-                data.description != original.description || data.location != original.location ||
-                data.duration != original.duration || data.repeat != original.repeat) {
+        if (data.name !== original.name || data.timestart !== original.timestart || data.eventtype !== original.eventtype ||
+                data.description !== original.description || data.location !== original.location ||
+                data.duration !== original.duration || data.repeat !== original.repeat) {
             return true;
         }
 
         // Check data that depends on eventtype.
-        if ((data.eventtype == AddonCalendarEventType.CATEGORY && data.categoryid != original.categoryid) ||
-                (data.eventtype == AddonCalendarEventType.COURSE && data.courseid != original.courseid) ||
-                (data.eventtype == AddonCalendarEventType.GROUP && data.groupcourseid != original.groupcourseid &&
-                    data.groupid != original.groupid)) {
+        if ((data.eventtype === AddonCalendarEventType.CATEGORY && data.categoryid !== original.categoryid) ||
+                (data.eventtype === AddonCalendarEventType.COURSE && data.courseid !== original.courseid) ||
+                (data.eventtype === AddonCalendarEventType.GROUP && data.groupcourseid !== original.groupcourseid &&
+                    data.groupid !== original.groupid)) {
             return true;
         }
 
         // Check data that depends on duration.
-        if ((data.duration === 1 && data.timedurationuntil != original.timedurationuntil) ||
-                (data.duration === 2 && data.timedurationminutes != original.timedurationminutes)) {
+        if ((data.duration === 1 && data.timedurationuntil !== original.timedurationuntil) ||
+                (data.duration === 2 && data.timedurationminutes !== original.timedurationminutes)) {
             return true;
         }
 
-        if (data.repeat && data.repeats != original.repeats) {
+        if (data.repeat && data.repeats !== original.repeats) {
             return true;
         }
 

@@ -120,7 +120,7 @@ export class CoreTabsOutletComponent extends CoreTabsBaseComponent<CoreTabsOutle
             const tab = tabIndex >= 0 ? this.tabs[tabIndex] : undefined;
 
             // Add tabid to the tab content element.
-            if (stackEvent.enteringView.element.id == '') {
+            if (stackEvent.enteringView.element.id === '') {
                 stackEvent.enteringView.element.id = tab?.id || '';
             }
 

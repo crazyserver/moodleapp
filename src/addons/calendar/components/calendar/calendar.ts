@@ -569,7 +569,7 @@ class AddonCalendarMonthSlidesItemsManagerSource extends CoreSwipeSlidesDynamicI
                 day.eventsFormated = day.eventsFormated.concat(onlineEventsFormatted);
 
                 if (preloadedMonth.isCurrentMonth) {
-                    day.istoday = day.mday == currentDay;
+                    day.istoday = day.mday === currentDay;
                     day.ispast = preloadedMonth.isPastMonth || day.mday < currentDay;
 
                     if (day.istoday) {

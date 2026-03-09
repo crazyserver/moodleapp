@@ -170,7 +170,7 @@ export class CorePolicyService {
      */
     goToAcceptSitePolicies(siteId?: string): void {
         siteId = siteId || CoreSites.getCurrentSiteId();
-        if (!siteId || siteId != CoreSites.getCurrentSiteId()) {
+        if (!siteId || siteId !== CoreSites.getCurrentSiteId()) {
             // Only current site allowed.
             return;
         }

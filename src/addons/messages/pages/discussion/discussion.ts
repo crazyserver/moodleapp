@@ -134,8 +134,8 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
 
         // Refresh data if this discussion is synchronized automatically.
         this.syncObserver = CoreEvents.on(ADDON_MESSAGES_AUTO_SYNCED, (data) => {
-            if ((data.userId && data.userId == this.userId) ||
-                    (data.conversationId && data.conversationId == this.conversationId)) {
+            if ((data.userId && data.userId === this.userId) ||
+                    (data.conversationId && data.conversationId === this.conversationId)) {
                 // Fetch messages.
                 this.fetchMessages();
 
@@ -150,7 +150,7 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
         this.memberInfoObserver = CoreEvents.on(
             ADDON_MESSAGES_MEMBER_INFO_CHANGED_EVENT,
             (data) => {
-                if (data.userId && (this.members[data.userId] || this.otherMember && data.userId == this.otherMember.id)) {
+                if (data.userId && (this.members[data.userId] || this.otherMember && data.userId === this.otherMember.id)) {
                     this.fetchData();
                 }
             },
@@ -201,7 +201,7 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
         if (this.keepMessageMap[message.hash] === undefined) {
             // Message not added to the list. Add it now.
             this.messages.push(message);
-            added = message.useridfrom != this.currentUserId;
+            added = message.useridfrom !== this.currentUserId;
         }
         // Message needs to be kept in the list.
         this.keepMessageMap[message.hash] = keep;
@@ -657,7 +657,7 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
 
             // Update navBar links and buttons.
             const newCanDelete = (last && 'id' in last && last.id && this.messages.length === 1) || this.messages.length > 1;
-            if (this.canDelete != newCanDelete) {
+            if (this.canDelete !== newCanDelete) {
                 this.checkCanDelete();
             }
         }
@@ -667,7 +667,7 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
      * Set the place where the unread label position has to be.
      */
     protected setUnreadLabelPosition(): void {
-        if (this.unreadMessageFrom != 0) {
+        if (this.unreadMessageFrom !== 0) {
             return;
         }
 
@@ -678,9 +678,9 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
 
             for (let i = this.messages.length - 1; i >= 0; i--) {
                 const message = this.messages[i];
-                if (!message.pending && message.useridfrom != this.currentUserId && 'id' in message) {
+                if (!message.pending && message.useridfrom !== this.currentUserId && 'id' in message) {
                     found++;
-                    if (found == this.conversation.unreadcount) {
+                    if (found === this.conversation.unreadcount) {
                         this.unreadMessageFrom = Number(message.id);
                         break;
                     }
@@ -874,7 +874,7 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
         setTimeout(() => {
             const newScrollHeight = (this.scrollElement?.scrollHeight || 0);
 
-            if (newScrollHeight == oldScrollHeight) {
+            if (newScrollHeight === oldScrollHeight) {
                 // Height hasn't changed yet. Retry if max retries haven't been reached.
                 if (retries <= 10) {
                     this.keepScroll(oldScrollHeight, oldScrollBottom, infiniteHeight, retries + 1);
@@ -1058,8 +1058,8 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
         prevMessage?: AddonMessagesConversationMessageFormatted,
     ): boolean {
 
-        return this.isGroup && message.useridfrom != this.currentUserId && this.members[(message.useridfrom || 0)] &&
-            (!prevMessage || prevMessage.useridfrom != message.useridfrom || !!message.showDate);
+        return this.isGroup && message.useridfrom !== this.currentUserId && this.members[(message.useridfrom || 0)] &&
+            (!prevMessage || prevMessage.useridfrom !== message.useridfrom || !!message.showDate);
     }
 
     /**
@@ -1073,7 +1073,7 @@ export default class AddonMessagesDiscussionPage implements OnInit, OnDestroy, A
         message: AddonMessagesConversationMessageFormatted,
         nextMessage?: AddonMessagesConversationMessageFormatted,
     ): boolean {
-        return !nextMessage || nextMessage.useridfrom != message.useridfrom || !!nextMessage.showDate;
+        return !nextMessage || nextMessage.useridfrom !== message.useridfrom || !!nextMessage.showDate;
     }
 
     /**

@@ -316,7 +316,7 @@ export class CoreFileProvider {
             // The delete can fail if the path has encoded characters. Try again if that's the case.
             const decodedPath = decodeURI(path);
 
-            if (decodedPath != path) {
+            if (decodedPath !== path) {
                 await File.removeFile(this.basePath, decodedPath);
             } else {
                 throw error;
@@ -912,7 +912,7 @@ export class CoreFileProvider {
             const decodedFrom = decodeURI(from);
             const decodedTo = decodeURI(to);
 
-            if (from != decodedFrom || to != decodedTo) {
+            if (from !== decodedFrom || to !== decodedTo) {
                 const entry = await moveCopyFn(this.basePath, decodedFrom, this.basePath, decodedTo);
 
                 return <FileEntry | DirectoryEntry>entry;
@@ -1022,7 +1022,7 @@ export class CoreFileProvider {
 
         const result = await Zip.unzip(this.getFileEntryURL(fileEntry), destFolder, onProgress);
 
-        if (result == -1) {
+        if (result === -1) {
             throw new CoreError('Unzip failed.');
         }
     }

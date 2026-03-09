@@ -186,7 +186,7 @@ export class AddonBlockRecentlyAccessedCoursesComponent extends CoreBlockBaseCom
 
         const courseIndex = this.courses.findIndex((course) => course.id === data.courseId);
         const course = this.courses[courseIndex];
-        if (data.action === CoreCoursesMyCoursesUpdatedEventAction.VIEW && data.courseId != CoreSites.getCurrentSiteHomeId()) {
+        if (data.action === CoreCoursesMyCoursesUpdatedEventAction.VIEW && data.courseId !== CoreSites.getCurrentSiteHomeId()) {
             if (!course) {
                 // Not found, use WS update.
                 return this.refreshContent();

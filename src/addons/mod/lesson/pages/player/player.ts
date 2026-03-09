@@ -247,7 +247,7 @@ export default class AddonModLessonPlayerPage implements OnInit, OnDestroy, CanL
      * @param ignoreCurrent If true, allow loading current page.
      */
     async changePage(pageId: number, ignoreCurrent?: boolean): Promise<void> {
-        if (!ignoreCurrent && !this.eolData && this.currentPage == pageId) {
+        if (!ignoreCurrent && !this.eolData && this.currentPage === pageId) {
             // Page already loaded, stop.
             return;
         }

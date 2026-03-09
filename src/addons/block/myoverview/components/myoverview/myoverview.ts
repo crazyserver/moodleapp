@@ -335,7 +335,7 @@ export class AddonBlockMyOverviewComponent extends CoreBlockBaseComponent implem
 
         // Check to show sort by short name only if the text is visible.
         this.sort.shortnameEnabled = !!sampleCourse?.displayname && !!sampleCourse?.shortname &&
-            sampleCourse?.fullname != sampleCourse?.displayname;
+            sampleCourse?.fullname !== sampleCourse?.displayname;
 
         // Rollback to sort by full name if user is sorting by short name then Moodle web change the config.
         if (!this.sort.shortnameEnabled && this.sort.selected === 'shortname') {
@@ -411,7 +411,7 @@ export class AddonBlockMyOverviewComponent extends CoreBlockBaseComponent implem
         }
 
         layouts.forEach((layout) => {
-            if (layout == '') {
+            if (layout === '') {
                 return;
             }
 
@@ -464,7 +464,7 @@ export class AddonBlockMyOverviewComponent extends CoreBlockBaseComponent implem
             await this.filterCourses();
         }
 
-        if (data.action === CoreCoursesMyCoursesUpdatedEventAction.VIEW && data.courseId != CoreSites.getCurrentSiteHomeId()) {
+        if (data.action === CoreCoursesMyCoursesUpdatedEventAction.VIEW && data.courseId !== CoreSites.getCurrentSiteHomeId()) {
             if (!course) {
                 // Not found, use WS update.
                 return this.refreshContent(true);
@@ -614,7 +614,7 @@ export class AddonBlockMyOverviewComponent extends CoreBlockBaseComponent implem
 
         // Text filter.
         const value = this.textFilter.trim().toLowerCase();
-        if (value != '' && this.filteredCourses.length > 0) {
+        if (value !== '' && this.filteredCourses.length > 0) {
             // Use displayname if available, or fullname if not.
             if (this.filteredCourses[0].displayname !== undefined) {
                 this.filteredCourses = this.filteredCourses.filter((course) =>

@@ -111,7 +111,7 @@ export default class AddonModH5PActivityUserAttemptsPage implements OnInit {
             return;
         }
 
-        this.isCurrentUser = this.userId == CoreSites.getCurrentSiteUserId();
+        this.isCurrentUser = this.userId === CoreSites.getCurrentSiteUserId();
 
         await this.fetchData();
     }

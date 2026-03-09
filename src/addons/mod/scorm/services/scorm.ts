@@ -386,7 +386,7 @@ export class AddonModScormProvider {
      * @returns Grade to display.
      */
     formatGrade(scorm: AddonModScormScorm, grade: number): string {
-        if (grade === undefined || grade == -1) {
+        if (grade === undefined || grade === -1) {
             return Translate.instant('core.none');
         }
 
@@ -661,7 +661,7 @@ export class AddonModScormProvider {
 
         scos.forEach((sco) => {
             // Is an organization entry?
-            if (sco.organization == '' && sco.parent === '/' && sco.scormtype == '') {
+            if (sco.organization === '' && sco.parent === '/' && sco.scormtype === '') {
                 organizations.push({
                     identifier: sco.identifier,
                     title: sco.title,
@@ -697,7 +697,7 @@ export class AddonModScormProvider {
             map[sco.identifier] = index;
 
             if (sco.parent !== '/') {
-                if (sco.parent == options.organization) {
+                if (sco.parent === options.organization) {
                     // It's a root SCO, add it to the root array.
                     rootScos.push(sco);
                 } else {
@@ -917,7 +917,7 @@ export class AddonModScormProvider {
             sco.prereq = scoData.prerequisites === undefined ||
                 this.evalPrerequisites(<string>scoData.prerequisites, trackDataBySCO);
             // Add status.
-            sco.status = (scoData.status === undefined || scoData.status === '') ? 'notattempted' : <string> scoData.status;
+            sco.status = (scoData.status === undefined || scoData.status === '') ? 'notattempted' : <string>scoData.status;
             // Exit var.
             sco.exitvar = scoData.exitvar === undefined ? 'cmi.core.exit' : <string>scoData.exitvar;
             sco.exitvalue = <string>scoData[sco.exitvar];
@@ -1071,7 +1071,7 @@ export class AddonModScormProvider {
             }
         }
 
-        if (imageName == '') {
+        if (imageName === '') {
             imageName = 'notattempted';
             descName = 'notattempted';
             suspendedStr = '';
@@ -1648,7 +1648,7 @@ export class AddonModScormProvider {
                 (data.status === DownloadStatus.DOWNLOADING && data.previous === DownloadStatus.OUTDATED);
 
             // Package needs to be downloaded if it's not outdated (not downloaded) or if the hash has changed.
-            return !isOutdated || data.extra != scorm.sha1hash;
+            return !isOutdated || data.extra !== scorm.sha1hash;
 
         } else if (isOutdated) {
             // The package is outdated, but maybe the file hasn't changed.
@@ -1659,7 +1659,7 @@ export class AddonModScormProvider {
                 return true;
             }
 
-            return scorm.sha1hash != extra;
+            return scorm.sha1hash !== extra;
         } else {
             // Package is not outdated and not downloaded, download the main file.
             return true;
