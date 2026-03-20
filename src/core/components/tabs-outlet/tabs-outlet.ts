@@ -23,7 +23,15 @@ import {
     CUSTOM_ELEMENTS_SCHEMA,
     ComponentRef,
 } from '@angular/core';
-import { IonRouterOutlet, IonTabs, ViewDidEnter, ViewDidLeave, AnimationBuilder } from '@ionic/angular';
+import {
+    IonRouterOutlet,
+    IonTabs,
+    ViewDidEnter,
+    ViewDidLeave,
+    ViewWillEnter,
+    ViewWillLeave,
+    AnimationBuilder,
+} from '@ionic/angular';
 
 import { CoreUtils } from '@static/utils';
 import { NavigationExtras, Params } from '@angular/router';
@@ -79,7 +87,7 @@ export class CoreTabsOutletComponent extends CoreTabsBaseComponent<CoreTabsOutle
 
     readonly ionTabs = viewChild.required(IonTabs);
 
-    protected lastActiveComponent?: Partial<ViewDidLeave>;
+    protected lastActiveComponent?: Partial<ViewDidLeave & ViewWillLeave & ViewDidEnter & ViewWillEnter>;
     protected existsInNavigationStack = false;
 
     /**
@@ -172,6 +180,19 @@ export class CoreTabsOutletComponent extends CoreTabsBaseComponent<CoreTabsOutle
     }
 
     /**
+     * Propagate ionViewWillEnter to nested outlet when necessary.
+     */
+    ionViewWillEnter(): void {
+        super.ionViewWillEnter();
+
+        // If the page already existed in the navigation stack and the nested outlet is activated,
+        // propagate the will-enter lifecycle to the child component.
+        if (this.existsInNavigationStack && this.ionTabs().outlet.isActivated) {
+            (this.ionTabs().outlet.component as Partial<ViewWillEnter>).ionViewWillEnter?.();
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     ionViewDidLeave(): void {
@@ -180,6 +201,17 @@ export class CoreTabsOutletComponent extends CoreTabsBaseComponent<CoreTabsOutle
         // The `ionViewDidLeave` method is not called on nested outlets unless the active view changes, that's why
         // we need to call it manually if the page is leaving and the last active component was not notified.
         this.lastActiveComponent?.ionViewDidLeave?.();
+    }
+
+    /**
+     * Propagate ionViewWillLeave to the last active child component when necessary.
+     */
+    ionViewWillLeave(): void {
+        super.ionViewWillLeave();
+
+        // The `ionViewWillLeave` method is not called on nested outlets unless the active view changes, that's why
+        // we need to call it manually if the page is leaving and the last active component was not notified.
+        this.lastActiveComponent?.ionViewWillLeave?.();
     }
 
     /**

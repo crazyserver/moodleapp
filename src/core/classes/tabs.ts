@@ -157,6 +157,13 @@ export class CoreTabsBaseComponent<T extends CoreTabBase> implements AfterViewIn
     }
 
     /**
+     * Propagate ionViewWillEnter lifecycle. No-op by default; subclasses may override.
+     */
+    ionViewWillEnter(): void {
+        // Intentionally empty. Implementations can override if needed.
+    }
+
+    /**
      * Back button clicked.
      *
      * @param event Event.
@@ -196,6 +203,13 @@ export class CoreTabsBaseComponent<T extends CoreTabBase> implements AfterViewIn
         document.removeEventListener('ionBackButton', this.backButtonFunction);
 
         this.isCurrentView = false;
+    }
+
+    /**
+     * Propagate ionViewWillLeave lifecycle. No-op by default; subclasses may override.
+     */
+    ionViewWillLeave(): void {
+        // Intentionally empty. Implementations can override if needed.
     }
 
     /**
