@@ -52,7 +52,7 @@ export class CoreInfiniteLoadingComponent {
         effect(() => {
             if (this.position() === 'bottom') {
                 // If the list doesn't fill the full height, infinite scroll isn't triggered automatically.
-                this.checkScrollDistance();
+                void this.checkScrollDistance();
             }
         });
     }
@@ -114,7 +114,7 @@ export class CoreInfiniteLoadingComponent {
      * Fire the infinite scroll load more action if needed.
      */
     async fireInfiniteScrollIfNeeded(): Promise<void> {
-        this.checkScrollDistance();
+        void this.checkScrollDistance();
     }
 
     /**
@@ -137,7 +137,7 @@ export class CoreInfiniteLoadingComponent {
         await this.infiniteScroll()?.complete();
 
         // More items loaded. If the list doesn't fill the full height, infinite scroll isn't triggered automatically.
-        this.checkScrollDistance();
+        void this.checkScrollDistance();
     }
 
     /**

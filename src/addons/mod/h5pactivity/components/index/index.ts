@@ -278,7 +278,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
 
         if (!this.observer) {
             this.observer = CoreEvents.on(eventName, () => {
-                this.calculateFileState();
+                void this.calculateFileState();
             });
         }
 

@@ -120,11 +120,11 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
                 // In iOS, the resize event is triggered before the keyboard is opened/closed and not triggered again once done.
                 // Init handlers again once keyboard is closed since the resize event doesn't have the updated height.
                 if (!shown) {
-                    this.updateHandlers();
+                    void this.updateHandlers();
 
                     // If the device is slow it can take a bit more to update the window height. Retry in a few ms.
                     setTimeout(() => {
-                        this.updateHandlers();
+                        void this.updateHandlers();
                     }, 250);
                 }
             });
@@ -151,7 +151,7 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
             const previousHandlers = this.allHandlers;
             this.allHandlers = handlers;
 
-            this.updateHandlers(previousHandlers);
+            void this.updateHandlers(previousHandlers);
         });
 
         this.badgeUpdateObserver = CoreEvents.on(MAIN_MENU_HANDLER_BADGE_UPDATED_EVENT, (data) => {
@@ -161,7 +161,7 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
         });
 
         this.resizeListener = CoreDom.onWindowResize(() => {
-            this.updateHandlers();
+            void this.updateHandlers();
         });
         document.addEventListener('ionBackButton', this.backButtonFunction);
 

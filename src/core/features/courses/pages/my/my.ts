@@ -89,7 +89,7 @@ export default class CoreCoursesMyPage implements OnInit, OnDestroy, AsyncDirect
 
         this.loadsManagerSubscription = this.loadsManager.onRefreshPage.subscribe(() => {
             this.loaded = false;
-            this.loadContent();
+            void this.loadContent();
         });
 
         effect(async () => {
@@ -132,7 +132,7 @@ export default class CoreCoursesMyPage implements OnInit, OnDestroy, AsyncDirect
 
         CoreSites.loginNavigationFinished();
 
-        this.loadContent(true);
+        void this.loadContent(true);
     }
 
     /**

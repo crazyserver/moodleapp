@@ -66,7 +66,7 @@ export class CoreCourseOverviewItemCompletionComponent {
     onCompletionChanged(): void {
         // Only invalidate the data, don't re-fetch it to decrease data usage.
         // This means that if a user then accesses the overview in offline he can see outdated info.
-        CorePromiseUtils.ignoreErrors(CoreCourseOverview.invalidateInformation(this.courseId(), this.activity().modname));
+        void CorePromiseUtils.ignoreErrors(CoreCourseOverview.invalidateInformation(this.courseId(), this.activity().modname));
     }
 
 }

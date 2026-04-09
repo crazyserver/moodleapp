@@ -294,7 +294,7 @@ export default class AddonBlogIndexPage implements OnInit, OnDestroy {
             this.entries = CoreArray.unique(this.entries, 'id');
 
             this.pageLoaded++;
-            this.logView();
+            void this.logView();
         } catch (error) {
             CoreAlerts.showError(error, { default: Translate.instant('addon.blog.errorloadentries') });
             this.loadMoreError = true; // Set to prevent infinite calls with infinite-loading.
