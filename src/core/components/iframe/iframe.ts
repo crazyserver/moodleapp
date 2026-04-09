@@ -153,7 +153,7 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
             // Leave fullscreen when navigating.
             this.navSubscription = Router.events
                 .pipe(filter(event => event instanceof NavigationStart))
-                .subscribe(async () => {
+                .subscribe(() => {
                     if (this.fullscreen) {
                         this.toggleFullscreen(false);
                     }

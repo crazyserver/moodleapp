@@ -153,7 +153,7 @@ export default class AddonCalendarIndexPage implements OnInit, OnDestroy {
 
         // Update the "hasOffline" property if an event deleted in offline is restored.
         this.undeleteEventObserver = CoreEvents.on(ADDON_CALENDAR_UNDELETED_EVENT_EVENT, async () => {
-            this.hasOffline = await AddonCalendarOffline.hasOfflineData();
+            this.hasOffline = await CorePromiseUtils.ignoreErrors(AddonCalendarOffline.hasOfflineData(), this.hasOffline);
         }, this.currentSiteId);
 
         this.filterChangedObserver = CoreEvents.on(

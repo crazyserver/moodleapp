@@ -84,6 +84,7 @@ export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
     protected username = '';
     protected alwaysShowLoginFormObserver?: CoreEventObserver;
     protected loginObserver?: CoreEventObserver;
+    protected loginMethodsEffectRef?: ReturnType<typeof effect>;
     protected fb = inject(FormBuilder);
 
     constructor() {
@@ -99,7 +100,7 @@ export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
             this.loginSuccessful = true;
         });
 
-        const effectRef = effect(async () => {
+        this.loginMethodsEffectRef = effect(async () => {
             const loginMethods = this.loginMethods();
             if (!loginMethods) {
                 return;
@@ -108,7 +109,8 @@ export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
             this.currentLogin = await CorePromiseUtils.ignoreErrors(loginMethods.getCurrentLogin());
 
             if (this.currentLogin) {
-                effectRef.destroy();
+                this.loginMethodsEffectRef?.destroy();
+                this.loginMethodsEffectRef = undefined;
             }
         });
     }
@@ -160,12 +162,15 @@ export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
             await this.checkSiteConfig();
 
             this.alwaysShowLoginFormObserver = CoreEvents.on(ALWAYS_SHOW_LOGIN_FORM_CHANGED, async () => {
-                this.showLoginForm = await CoreLoginHelper.shouldShowLoginForm(this.siteConfig);
+                this.showLoginForm = await CorePromiseUtils.ignoreErrors(
+                    CoreLoginHelper.shouldShowLoginForm(this.siteConfig),
+                    this.showLoginForm,
+                );
             });
 
             this.showLoading = false;
         } catch (error) {
-            CoreAlerts.showError(error);
+            CoreAlerts.showError(error as Error);
 
             return this.cancel();
         }
@@ -187,6 +192,8 @@ export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
         );
         this.alwaysShowLoginFormObserver?.off();
         this.loginObserver?.off();
+        this.loginMethodsEffectRef?.destroy();
+        this.loginMethodsEffectRef = undefined;
     }
 
     /**
@@ -301,14 +308,16 @@ export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
                 params: this.redirectData,
             });
         } catch (error) {
-            CoreLoginHelper.treatUserTokenError(url, error, this.username, password);
+            const loginError = error as CoreError & { errorcode?: string; loggedout?: boolean };
 
-            if (error.loggedout) {
+            CoreLoginHelper.treatUserTokenError(url, loginError, this.username, password);
+
+            if (loginError.loggedout) {
                 this.cancel();
-            } else if (error.errorcode === 'forcepasswordchangenotice') {
+            } else if (loginError.errorcode === 'forcepasswordchangenotice') {
                 // Reset password field.
                 this.credForm.controls.password.reset();
-            } else if (error.errorcode === 'invalidlogin') {
+            } else if (loginError.errorcode === 'invalidlogin') {
                 this.reconnectAttempts++;
             }
         } finally {

@@ -48,13 +48,13 @@ export class CoreCourseOverviewItemCompletionComponent {
             const item = this.item();
 
             // @todo: This data could be calculated in the completion components to make them more reusable.
-            const completion = await CoreCourseHelper.loadOfflineCompletionData(activity.cmid, {
+            const completion = await CorePromiseUtils.ignoreErrors(CoreCourseHelper.loadOfflineCompletionData(activity.cmid, {
                 ...item.parsedData,
                 tracking: item.parsedData.isautomatic ?
                     CoreCourseModuleCompletionTracking.AUTOMATIC : CoreCourseModuleCompletionTracking.MANUAL,
                 cmid: activity.cmid,
                 courseId: this.courseId(),
-            });
+            }));
 
             this.completion.set(completion);
         });

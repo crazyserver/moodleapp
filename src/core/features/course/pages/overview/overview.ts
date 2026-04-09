@@ -93,7 +93,7 @@ export default class CoreCourseOverviewPage implements OnInit, OnDestroy {
             if (accordionGroup && autoExpand) {
                 accordionGroup.value = autoExpand;
 
-                await this.modTypeAccordionChanged(autoExpand);
+                await CorePromiseUtils.ignoreErrors(this.modTypeAccordionChanged(autoExpand));
 
                 // Scroll to the first expanded mod type. when the accordion animation is done.
                 setTimeout(() => {

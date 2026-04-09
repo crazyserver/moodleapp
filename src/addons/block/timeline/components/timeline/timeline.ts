@@ -112,7 +112,7 @@ export class AddonBlockTimelineComponent extends CoreBlockBaseComponent implemen
                 return;
             }
 
-            untracked(async () => {
+            await untracked(async () => {
                 await this.loadSections(filter, sort, search ?? '');
             });
         });

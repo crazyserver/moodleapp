@@ -139,7 +139,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
                 if (this.triedToPlay) {
                     // User couldn't play the package because he was offline, but he reconnected. Try again.
                     this.triedToPlay = false;
-                    this.play();
+                    void this.play();
                 }
 
             } else if (this.playing && !this.fileUrl && this.trackComponent) {
@@ -159,7 +159,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
     async ngOnInit(): Promise<void> {
         super.ngOnInit();
 
-        this.loadContent(false, true);
+        void this.loadContent(false, true);
     }
 
     /**
@@ -207,7 +207,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
 
         if (!this.siteCanDownload || this.state === DownloadStatus.DOWNLOADED || this.hasMissingDependencies) {
             // Cannot download the file or already downloaded, play the package directly.
-            this.play();
+            void this.play();
 
         } else if (
             (this.state == DownloadStatus.DOWNLOADABLE_NOT_DOWNLOADED || this.state == DownloadStatus.OUTDATED) &&
@@ -216,7 +216,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
             CoreFilepool.shouldDownload(this.deployedFile.filesize)
         ) {
             // Package is small, download and play it automatically. Don't block this function for this.
-            this.downloadAndPlay();
+            void this.downloadAndPlay();
         }
     }
 
@@ -365,7 +365,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
                 // It's being downloaded right now but the view isn't tracking it. "Restore" the download.
                 await this.downloadDeployedFile();
 
-                this.play();
+                void this.play();
             }
         } else {
             this.stateMessage = '';
@@ -410,7 +410,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
             await this.downloadDeployedFile();
 
             if (!this.isDestroyed) {
-                this.play();
+                void this.play();
             }
         } catch (error) {
             if (CoreErrorHelper.isCanceledError(error) || this.isDestroyed) {
@@ -427,7 +427,7 @@ export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActiv
             // Cannot download the file, use online player.
             this.hasMissingDependencies = error instanceof CoreH5PMissingDependenciesError;
             this.fileUrl = undefined;
-            this.play();
+            void this.play();
 
             CoreToasts.show({
                 message: Translate.instant('core.course.activityrequiresconnection'),

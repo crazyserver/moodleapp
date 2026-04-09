@@ -132,7 +132,7 @@ export class CoreEditorRichTextEditorComponent implements AfterViewInit, OnDestr
      * Clear the text.
      */
     clearText(): void {
-        this.setContent('');
+        void this.setContent('');
 
         // Don't emit event so our valueChanges doesn't get notified by this change.
         this.control?.setValue(null, { emitEvent: false });
@@ -234,7 +234,7 @@ export class CoreEditorRichTextEditorComponent implements AfterViewInit, OnDestr
         }
 
         // Apply the new content.
-        this.setContent(newValue ?? '');
+        void this.setContent(newValue ?? '');
         this.originalContent = newValue ?? undefined;
 
         // Save a draft so the original content is saved.
@@ -297,7 +297,7 @@ export class CoreEditorRichTextEditorComponent implements AfterViewInit, OnDestr
 
         if (draftText !== '' && this.control && draftText != this.control.value) {
             // Restore the draft.
-            this.setContent(draftText);
+            void this.setContent(draftText);
             this.control.setValue(draftText, { emitEvent: false });
             this.contentChanged.emit(draftText);
             this.lastDraft = draftText;

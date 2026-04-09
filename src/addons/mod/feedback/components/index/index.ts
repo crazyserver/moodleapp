@@ -124,7 +124,7 @@ export class AddonModFeedbackIndexComponent extends CoreCourseModuleMainActivity
             if (data.tab !== this.selectedTab) {
                 this.tabChanged(data.tab);
             } else {
-                this.loadContent(true);
+                await CorePromiseUtils.ignoreErrors(this.loadContent(true));
             }
         }, this.siteId);
     }

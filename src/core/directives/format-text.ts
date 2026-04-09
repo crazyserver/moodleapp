@@ -230,9 +230,13 @@ export class CoreFormatTextDirective implements OnDestroy, AsyncDirective {
             this.contextLevel();
             this.contextInstanceId();
 
-            await untracked(async () => {
-                await this.formatAndRenderContents();
-            });
+            try {
+                await untracked(async () => {
+                    await this.formatAndRenderContents();
+                });
+            } catch (error) {
+                CoreErrorHelper.logUnhandledError('Error rendering format-text contents', error);
+            }
         });
 
         effect(() => {

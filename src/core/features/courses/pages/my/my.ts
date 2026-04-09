@@ -96,7 +96,7 @@ export default class CoreCoursesMyPage implements OnInit, OnDestroy, AsyncDirect
             const dynamicComponent = this.block()?.dynamicComponent();
 
             if (dynamicComponent) {
-                await dynamicComponent.ready();
+                await CorePromiseUtils.ignoreErrors(dynamicComponent.ready());
                 this.myOverviewBlock = dynamicComponent.instance;
             }
         });
@@ -114,7 +114,7 @@ export default class CoreCoursesMyPage implements OnInit, OnDestroy, AsyncDirect
         });
 
         // Re-evaluate if blocks are supported if the list of handlers changed (e.g. site plugins added).
-        this.blockSubscription = CoreBlockDelegate.blocksUpdateObservable.subscribe(async (): Promise<void> => {
+        this.blockSubscription = CoreBlockDelegate.blocksUpdateObservable.subscribe((): void => {
             if (!this.sideBlocks) {
                 return;
             }
@@ -168,7 +168,7 @@ export default class CoreCoursesMyPage implements OnInit, OnDestroy, AsyncDirect
                     this.loadFallbackBlock();
                 }
             } catch (error) {
-                CoreAlerts.showError(error);
+                CoreAlerts.showError(error as Error);
 
                 // Cannot get the blocks, just show the block if needed.
                 this.loadFallbackBlock();

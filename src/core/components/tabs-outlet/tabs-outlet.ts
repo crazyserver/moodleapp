@@ -108,7 +108,7 @@ export class CoreTabsOutletComponent extends CoreTabsBaseComponent<CoreTabsOutle
             return;
         }
 
-        this.subscriptions.push(this.ionTabs().outlet.stackDidChange.subscribe(async (stackEvent: StackDidChangeEvent) => {
+        this.subscriptions.push(this.ionTabs().outlet.stackDidChange.subscribe((stackEvent: StackDidChangeEvent) => {
             if (!this.isCurrentView) {
                 return;
             }
