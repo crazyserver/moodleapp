@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, input, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed, signal } from '@angular/core';
 import { CoreBaseModule } from '@/core/base.module';
 import { CoreTimeConstants } from '@/core/constants';
 import { dayjs } from '@/core/utils/dayjs';
@@ -29,6 +29,7 @@ import { CoreUserPreferences } from '@features/user/services/user-preferences';
     imports: [
         CoreBaseModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreHumanDateComponent {
 

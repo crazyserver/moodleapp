@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {
+    ChangeDetectionStrategy,
     Component,
     OnDestroy,
     OnInit,
@@ -65,6 +66,7 @@ import { CoreUserPreferences } from '@features/user/services/user-preferences';
     host: {
         '[attr.hidden]': 'hidden() ? "hidden" : null',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonCalendarCalendarComponent implements OnInit, OnDestroy {
 

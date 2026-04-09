@@ -14,7 +14,7 @@
 
 import { AddonModGlossaryHelper } from '@addons/mod/glossary/services/glossary-helper';
 import { AddonModGlossaryOffline, AddonModGlossaryOfflineEntry } from '@addons/mod/glossary/services/glossary-offline';
-import { Component, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { CoreRoutedItemsManagerSourcesTracker } from '@classes/items-management/routed-items-manager-sources-tracker';
 import { CoreSwipeNavigationItemsManager } from '@classes/items-management/swipe-navigation-items-manager';
@@ -64,6 +64,7 @@ import { CoreRatingAggregateComponent } from '@features/rating/components/aggreg
         CoreRatingRateComponent,
         CoreRatingAggregateComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModGlossaryEntryPage implements OnInit, OnDestroy {
 

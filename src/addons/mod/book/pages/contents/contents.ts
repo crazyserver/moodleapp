@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { CoreError } from '@classes/errors/error';
 import { CoreSwipeSlidesItemsManager } from '@classes/items-management/swipe-slides-items-manager';
 import { CoreSwipeSlidesItemsManagerSource } from '@classes/items-management/swipe-slides-items-manager-source';
@@ -52,6 +52,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreSharedModule,
         CoreTagListComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModBookContentsPage implements OnInit, OnDestroy {
 

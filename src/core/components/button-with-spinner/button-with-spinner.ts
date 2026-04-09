@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CoreBaseModule } from '@/core/base.module';
 
 /**
@@ -29,6 +29,7 @@ import { CoreBaseModule } from '@/core/base.module';
     templateUrl: 'core-button-with-spinner.html',
     styleUrl: 'button-with-spinner.scss',
     imports: [CoreBaseModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreButtonWithSpinnerComponent {
 

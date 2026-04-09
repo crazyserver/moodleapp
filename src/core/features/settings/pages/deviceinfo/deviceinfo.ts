@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, computed, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, Signal } from '@angular/core';
 import { CoreConstants } from '@/core/constants';
 import { CoreLocalNotifications } from '@services/local-notifications';
 import { Device, Translate } from '@singletons';
@@ -75,6 +75,7 @@ interface CoreSettingsDeviceInfo {
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreSettingsDeviceInfoPage {
 

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {
+    ChangeDetectionStrategy,
     Component,
     OnInit,
     OnDestroy,
@@ -84,6 +85,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         AddonModQuizQuestionCardComponent,
         CoreQuestionComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModQuizPlayerPage implements OnInit, OnDestroy, CanLeave {
 

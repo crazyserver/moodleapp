@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, HostBinding, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { CoreTabsOutletTab, CoreTabsOutletComponent } from '@components/tabs-outlet/tabs-outlet';
@@ -47,6 +47,7 @@ import { CorePlatform } from '@services/platform';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreCourseIndexPage implements OnInit, OnDestroy {
 

@@ -16,7 +16,7 @@ import {
     AddonCourseCompletion,
     AddonCourseCompletionCourseCompletionStatus,
 } from '@addons/coursecompletion/services/coursecompletion';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
 import { CoreUser, CoreUserProfile } from '@features/user/services/user';
 import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
 import { CoreLoadings } from '@services/overlays/loadings';
@@ -37,6 +37,7 @@ import { AddonCourseCompletionAggregation } from '@addons/coursecompletion/const
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonCourseCompletionReportPage implements OnInit {
 

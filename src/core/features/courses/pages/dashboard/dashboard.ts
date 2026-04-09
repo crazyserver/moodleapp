@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit, signal, viewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal, viewChildren } from '@angular/core';
 
 import { CoreCourses } from '../../services/courses';
 import { CoreEventObserver, CoreEvents } from '@static/events';
@@ -43,6 +43,7 @@ import { Subscription } from 'rxjs';
         CoreBlockComponent,
         CoreBlockSideBlocksButtonComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreCoursesDashboardPage implements OnInit, OnDestroy {
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, effect, OnInit, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, OnInit, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccordionGroupCustomEvent } from '@ionic/angular';
 import { CoreUser, CoreUserProfile } from '@features/user/services/user';
@@ -49,6 +49,7 @@ import { AddonModH5PActivityAttemptSummaryComponent } from '../../components/att
         AddonModH5PActivityAttemptSuccessComponent,
         AddonModH5PActivityAttemptSummaryComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModH5PActivityUserAttemptsPage implements OnInit {
 

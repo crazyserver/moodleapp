@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, Type, viewChild, effect, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, Type, viewChild, effect, input, signal } from '@angular/core';
 import { CoreBlockDelegate } from '../../services/block-delegate';
 import { CoreDynamicComponent } from '@components/dynamic-component/dynamic-component';
 import { Subscription } from 'rxjs';
@@ -31,6 +31,7 @@ import { CoreSharedModule } from '@/core/shared.module';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreBlockComponent implements OnDestroy {
 

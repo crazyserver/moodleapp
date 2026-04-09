@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, Input, viewChild, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, viewChild, OnInit, OnDestroy } from '@angular/core';
 import { CoreError } from '@classes/errors/error';
 import { CoreTabsComponent } from '@components/tabs/tabs';
 import { CoreCourseModuleMainActivityComponent } from '@features/course/classes/main-activity-component';
@@ -61,6 +61,7 @@ import { CoreChartType } from '@components/chart/chart';
         CoreCourseModuleInfoComponent,
         CoreCourseModuleNavigationComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonModFeedbackIndexComponent extends CoreCourseModuleMainActivityComponent implements OnInit, OnDestroy {
 

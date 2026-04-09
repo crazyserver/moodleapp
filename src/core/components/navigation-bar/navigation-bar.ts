@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { ContextLevel } from '@/core/constants';
-import { Component, computed, input, linkedSignal, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, output } from '@angular/core';
 import { Translate } from '@singletons';
 import { CoreBaseModule } from '@/core/base.module';
 import { CoreProgressBarComponent } from '@components/progress-bar/progress-bar';
@@ -39,6 +39,7 @@ import { CoreUpdateNonReactiveAttributesDirective } from '@directives/update-non
         CoreFaIconDirective,
         CoreProgressBarComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreNavigationBarComponent {
 

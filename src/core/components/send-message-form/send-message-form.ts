@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ElementRef, input, output, model, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, input, output, model, viewChild } from '@angular/core';
 import { CoreConfig } from '@services/config';
 import { CoreEvents } from '@static/events';
 import { CoreSites } from '@services/sites';
@@ -52,6 +52,7 @@ import { CoreUpdateNonReactiveAttributesDirective } from '@directives/update-non
         CoreSuppressEventsDirective,
         CoreFaIconDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSendMessageFormComponent {
 

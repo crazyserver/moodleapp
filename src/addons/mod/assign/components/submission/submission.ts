@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, Input, OnInit, OnDestroy, inject, viewChildren, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, OnDestroy, inject, viewChildren, signal } from '@angular/core';
 import { CoreEventObserver, CoreEvents } from '@static/events';
 import { CoreSites } from '@services/sites';
 import {
@@ -79,6 +79,7 @@ import { CoreUtils } from '@static/utils';
         CoreCourseModuleNavigationComponent,
         AddonModAssignFeedbackPluginComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonModAssignSubmissionComponent implements OnInit, OnDestroy {
 

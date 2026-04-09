@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import {
+    ChangeDetectionStrategy,
     Component,
     Input,
     OnInit,
@@ -87,6 +88,7 @@ import { CoreCourseFormatDynamicComponent } from '@features/course/classes/base-
         CoreCourseSectionComponent,
         CoreBlockSideBlocksButtonComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreCourseFormatComponent implements OnInit, OnChanges, OnDestroy {
 

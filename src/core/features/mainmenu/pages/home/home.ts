@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, viewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { CoreSites } from '@services/sites';
@@ -36,6 +36,7 @@ import { MAIN_MENU_HOME_PAGE_NAME } from '@features/mainmenu/constants';
         CoreSiteLogoComponent,
         CoreMainMenuUserButtonComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreMainMenuHomePage implements OnInit {
 

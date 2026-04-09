@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, effect, viewChild, signal, ElementRef, inject, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, effect, viewChild, signal, ElementRef, inject, computed } from '@angular/core';
 import { IonTabs } from '@ionic/angular';
 import { BackButtonEvent } from '@ionic/core';
 import { Subscription } from 'rxjs';
@@ -60,6 +60,7 @@ import { CoreKeyboard } from '@static/keyboard';
         CoreSharedModule,
         CoreMainMenuUserButtonComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreMainMenuPage implements OnInit, OnDestroy {
 

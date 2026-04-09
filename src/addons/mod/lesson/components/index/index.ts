@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { DownloadStatus } from '@/core/constants';
-import { Component, Input, viewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, viewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 
 import { CoreTabsComponent } from '@components/tabs/tabs';
 import { CoreCourseModuleMainActivityComponent } from '@features/course/classes/main-activity-component';
@@ -67,6 +67,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreCourseModuleInfoComponent,
         CoreCourseModuleNavigationComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonModLessonIndexComponent extends CoreCourseModuleMainActivityComponent implements OnInit, OnDestroy {
 

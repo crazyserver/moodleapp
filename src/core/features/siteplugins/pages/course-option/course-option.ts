@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, viewChild } from '@angular/core';
 
 import { CoreSitePluginsPluginContentComponent } from '@features/siteplugins/components/plugin-content/plugin-content';
 import { CoreSitePlugins, CoreSitePluginsContent } from '@features/siteplugins/services/siteplugins';
@@ -30,6 +30,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreSharedModule,
         CoreSitePluginsPluginContentComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreSitePluginsCourseOptionPage implements OnInit {
 

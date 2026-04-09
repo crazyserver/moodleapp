@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, OnInit, OnDestroy, input, output, signal, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, input, output, signal, effect } from '@angular/core';
 import { CoreBaseModule } from '@/core/base.module';
 import { CoreSecondsToHMSPipe } from '@pipes/seconds-to-hms';
 
@@ -36,6 +36,7 @@ import { CoreSecondsToHMSPipe } from '@pipes/seconds-to-hms';
         CoreBaseModule,
         CoreSecondsToHMSPipe,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreChronoComponent implements OnInit, OnDestroy {
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, ElementRef, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, ElementRef, inject, viewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Params } from '@angular/router';
 import { CoreCourse } from '@features/course/services/course';
@@ -76,6 +76,7 @@ import { CoreErrorHelper } from '@services/error-helper';
         AddonModWorkshopAssessmentStrategyComponent,
         AddonModWorkshopSubmissionComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModWorkshopSubmissionPage implements OnInit, OnDestroy, CanLeave {
 

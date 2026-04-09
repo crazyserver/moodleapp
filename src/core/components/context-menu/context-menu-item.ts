@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, effect, input, model, computed, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, effect, input, model, computed, inject, output } from '@angular/core';
 import { CoreContextMenuComponent } from '../context-menu/context-menu';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreUtils } from '@static/utils';
@@ -35,6 +35,7 @@ import { outputFromObservable } from '@angular/core/rxjs-interop';
 @Component({
     selector: 'core-context-menu-item',
     template: '',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreContextMenuItemComponent implements OnInit, OnDestroy {
 

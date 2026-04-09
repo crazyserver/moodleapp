@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, viewChild } from '@angular/core';
 import { CoreCourseModuleData } from '@features/course/services/course-helper';
 import { CanLeave } from '@guards/can-leave';
 import { CoreNavigator } from '@services/navigator';
@@ -29,6 +29,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreSharedModule,
         CoreSitePluginsModuleIndexComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreSitePluginsModuleIndexPage implements OnInit, CanLeave {
 

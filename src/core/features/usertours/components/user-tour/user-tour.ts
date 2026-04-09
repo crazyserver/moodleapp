@@ -15,6 +15,7 @@
 import { BackButtonEvent } from '@ionic/core';
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     Component,
     ElementRef,
     EventEmitter,
@@ -56,6 +57,7 @@ import { BackButtonPriority } from '@/core/constants';
         '[class.is-popover]': 'popover()',
         '[class.backdrop]': 'true',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreUserToursUserTourComponent implements AfterViewInit, OnDestroy {
 

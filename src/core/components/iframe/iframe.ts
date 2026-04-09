@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {
+    ChangeDetectionStrategy,
     Component,
     Input,
     Output,
@@ -60,6 +61,7 @@ import { BackButtonPriority } from '@/core/constants';
         CoreUpdateNonReactiveAttributesDirective,
         CoreFaIconDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreIframeComponent implements OnChanges, OnDestroy {
 

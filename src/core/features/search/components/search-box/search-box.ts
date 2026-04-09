@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {
+    ChangeDetectionStrategy,
     Component,
     Output,
     EventEmitter,
@@ -51,6 +52,7 @@ import { CoreSharedModule } from '@/core/shared.module';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSearchBoxComponent implements OnInit {
 

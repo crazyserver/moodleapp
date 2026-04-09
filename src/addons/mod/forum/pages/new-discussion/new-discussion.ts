@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, ElementRef, OnInit, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ElementRef, OnInit, inject, viewChild } from '@angular/core';
 import { FileEntry } from '@awesome-cordova-plugins/file/ngx';
 import { FormControl } from '@angular/forms';
 import { CoreEvents, CoreEventObserver } from '@static/events';
@@ -78,6 +78,7 @@ type NewDiscussionData = {
         CoreSharedModule,
         CoreEditorRichTextEditorComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModForumNewDiscussionPage implements OnInit, OnDestroy, CanLeave {
 

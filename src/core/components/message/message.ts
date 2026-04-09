@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { ContextLevel } from '@/core/constants';
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CoreSites } from '@services/sites';
 import { CoreText } from '@static/text';
 import { CoreUserAvatarComponent, CoreUserWithAvatar } from '@components/user-avatar/user-avatar';
@@ -47,6 +47,7 @@ import { CoreFormatDatePipe } from '@pipes/format-date';
         '[class.is-mine]': 'isMine()',
         '[class.no-user]': '!message()?.showUserData',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreMessageComponent {
 

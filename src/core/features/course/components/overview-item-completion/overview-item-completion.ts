@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, effect, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
 import { CoreSharedModule } from '@/core/shared.module';
 import { CoreCourseModuleWSCompletionData } from '@features/course/services/course';
 import { CoreCourseModuleCompletionComponent } from '../module-completion/module-completion';
@@ -33,6 +33,7 @@ import { CoreCourseOverview, CoreCourseOverviewActivity, CoreCourseOverviewItem 
         CoreSharedModule,
         CoreCourseModuleCompletionComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreCourseOverviewItemCompletionComponent {
 

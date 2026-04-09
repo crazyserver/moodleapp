@@ -27,7 +27,7 @@ import {
 } from '@addons/blog/services/blog';
 import { AddonBlogOffline, AddonBlogOfflineEntry } from '@addons/blog/services/blog-offline';
 import { AddonBlogSync } from '@addons/blog/services/blog-sync';
-import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 import { CoreComments } from '@features/comments/services/comments';
 import { CoreTag } from '@features/tag/services/tag';
 import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
@@ -61,6 +61,7 @@ import { CoreMainMenuUserButtonComponent } from '@features/mainmenu/components/u
         CoreMainMenuUserButtonComponent,
         CoreTagListComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonBlogIndexPage implements OnInit, OnDestroy {
 

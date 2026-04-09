@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, AfterViewInit, ElementRef, input, effect, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, input, effect, inject } from '@angular/core';
 
 import { CoreText } from '@static/text';
 import { Translate } from '@singletons';
@@ -38,6 +38,7 @@ import { CoreFaIconDirective } from '@directives/fa-icon';
         CoreBaseModule,
         CoreFaIconDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreMarkRequiredComponent implements AfterViewInit {
 

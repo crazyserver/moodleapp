@@ -14,7 +14,7 @@
 
 import { CoreBaseModule } from '@/core/base.module';
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CoreFormatTextDirective } from '../../directives/format-text';
 import { ContextLevel } from '@/core/constants';
 
@@ -29,6 +29,7 @@ import { ContextLevel } from '@/core/constants';
         CoreBaseModule,
         CoreFormatTextDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreBSTooltipComponent {
 

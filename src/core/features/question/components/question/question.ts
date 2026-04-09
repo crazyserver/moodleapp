@@ -15,6 +15,7 @@
 import { ContextLevel } from '@/core/constants';
 import { toBoolean } from '@/core/transforms/boolean';
 import {
+    ChangeDetectionStrategy,
     Component,
     Input,
     Output,
@@ -53,6 +54,7 @@ import { CoreSharedModule } from '@/core/shared.module';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreQuestionComponent implements OnInit, AsyncDirective {
 

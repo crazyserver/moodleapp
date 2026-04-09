@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnChanges, SimpleChange, Type, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChange, Type, viewChild } from '@angular/core';
 
 import { CoreCourseModuleDelegate } from '@features/course/services/module-delegate';
 import { CoreCourseUnsupportedModuleComponent } from '@features/course/components/unsupported-module/unsupported-module';
@@ -37,6 +37,7 @@ import { CoreLang } from '@services/lang';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreCourseFormatSingleActivityComponent extends CoreCourseFormatDynamicComponent implements OnChanges {
 

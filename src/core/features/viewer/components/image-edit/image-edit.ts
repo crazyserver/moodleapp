@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, input, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal, viewChild } from '@angular/core';
 import { ModalController } from '@singletons';
 import { CoreSharedModule } from '@/core/shared.module';
 import { ImageCropperComponent, ImageTransform } from 'ngx-image-cropper';
@@ -30,6 +30,7 @@ import { CoreAlerts } from '@services/overlays/alerts';
         CoreSharedModule,
         ImageCropperComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreViewerImageEditComponent {
 

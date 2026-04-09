@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild, input, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, inject, viewChild, input, signal } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { IonRouterOutlet } from '@ionic/angular';
 import { CoreScreen } from '@services/screen';
@@ -39,6 +39,7 @@ const disabledScrollClass = 'disable-scroll-y';
         CoreEmptyBoxComponent,
         CoreContentDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSplitViewComponent implements AfterViewInit, OnDestroy {
 

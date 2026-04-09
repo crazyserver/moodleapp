@@ -14,7 +14,7 @@
 
 import { ContextLevel } from '@/core/constants';
 import { AddonModAssignSubmissionPluginBaseComponent } from '@addons/mod/assign/classes/base-submission-plugin-component';
-import { Component, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { CoreCommentsCommentsComponent } from '@features/comments/components/comments/comments';
 import { CoreComments } from '@features/comments/services/comments';
 import { CoreSharedModule } from '@/core/shared.module';
@@ -30,6 +30,7 @@ import { ADDON_MOD_ASSIGN_COMMENTS_AREA, ADDON_MOD_ASSIGN_COMMENTS_COMPONENT_NAM
         CoreSharedModule,
         CoreCommentsCommentsComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonModAssignSubmissionCommentsComponent extends AddonModAssignSubmissionPluginBaseComponent {
 

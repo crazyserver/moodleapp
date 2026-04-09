@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Md5 } from 'ts-md5';
 
 import { CoreNetwork } from '@services/network';
@@ -51,6 +51,7 @@ import { CoreSharedModule } from '@/core/shared.module';
         CoreSharedModule,
         AddonPrivateFilesFileComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonPrivateFilesIndexPage implements OnInit, OnDestroy {
 

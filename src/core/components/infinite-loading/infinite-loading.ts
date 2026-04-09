@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, ElementRef, input, viewChild, output, effect, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, input, viewChild, output, effect, signal, inject } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { CoreWait } from '@static/wait';
 import { CoreBaseModule } from '@/core/base.module';
@@ -34,6 +34,7 @@ const THRESHOLD = .15; // % of the scroll element height that must be close to t
         CoreBaseModule,
         CoreUpdateNonReactiveAttributesDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreInfiniteLoadingComponent {
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
 import { CoreSites } from '@services/sites';
 import { CorePromiseUtils } from '@static/promise-utils';
@@ -53,6 +53,7 @@ import { CoreFileUtils } from '@static/file-utils';
         CoreSharedModule,
         CoreUserProfileFieldComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreUserAboutPage implements OnInit, OnDestroy {
 

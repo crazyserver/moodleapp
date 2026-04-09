@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, inject, input, linkedSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, linkedSignal, signal } from '@angular/core';
 import { CoreSiteInfo } from '@classes/sites/unauthenticated-site';
 import { IonRouterOutlet } from '@ionic/angular';
 import { CoreSites } from '@services/sites';
@@ -34,6 +34,7 @@ import { CoreMainMenuPlacement } from '@features/mainmenu/constants';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreMainMenuUserButtonComponent implements OnInit {
 

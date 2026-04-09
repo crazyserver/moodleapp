@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, effect, OnInit, signal, Type, viewChild, WritableSignal, OnDestroy, inject, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, OnInit, signal, Type, viewChild, WritableSignal, OnDestroy, inject, ElementRef } from '@angular/core';
 
 import {
     CoreCourseOverview,
@@ -58,6 +58,7 @@ import { CoreDom } from '@static/dom';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreCourseOverviewPage implements OnInit, OnDestroy {
 

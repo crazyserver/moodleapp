@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, Output, EventEmitter, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, Output, EventEmitter, effect } from '@angular/core';
 import { DownloadStatus } from '@/core/constants';
 import { CoreSite } from '@classes/sites/site';
 import { CoreCourseModuleMainActivityComponent } from '@features/course/classes/main-activity-component';
@@ -72,6 +72,7 @@ import { CoreH5PIframeComponent } from '@features/h5p/components/h5p-iframe/h5p-
         CoreCourseModuleNavigationComponent,
         CoreH5PIframeComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonModH5PActivityIndexComponent extends CoreCourseModuleMainActivityComponent implements OnInit, OnDestroy {
 

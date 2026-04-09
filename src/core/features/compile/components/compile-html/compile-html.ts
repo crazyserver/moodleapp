@@ -15,6 +15,7 @@
 import { toBoolean } from '@/core/transforms/boolean';
 import { effectWithInjectionContext } from '@/core/utils/signals';
 import {
+    ChangeDetectionStrategy,
     Component,
     Input,
     OnInit,
@@ -70,6 +71,7 @@ import { CoreSharedModule } from '@/core/shared.module';
     template: '<core-loading [hideUntil]="loaded"><ng-container #dynamicComponent /></core-loading>',
     styles: [':host { display: contents; }'],
     imports: [CoreSharedModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreCompileHtmlComponent implements OnChanges, OnDestroy, DoCheck {
 

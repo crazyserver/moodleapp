@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ContentChild, TemplateRef, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, TemplateRef, input, output } from '@angular/core';
 
 import { CoreSiteBasicInfo } from '@services/sites';
 import { CoreAccountsList } from '@features/login/services/login-helper';
@@ -50,6 +50,7 @@ import { CoreLinkDirective } from '@directives/link';
         CoreLinkDirective,
         CoreUserAvatarComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSitesListComponent<T extends CoreSiteBasicInfo> {
 

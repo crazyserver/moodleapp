@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ViewEncapsulation, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, input } from '@angular/core';
 import { CoreBaseModule } from '@/core/base.module';
 
 /**
@@ -27,6 +27,7 @@ import { CoreBaseModule } from '@/core/base.module';
     styles: 'core-show-password { display: contents; }',
     encapsulation: ViewEncapsulation.None,
     imports: [CoreBaseModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreShowPasswordComponent {
 

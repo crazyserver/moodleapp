@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {
+    ChangeDetectionStrategy,
     AfterViewInit,
     Component,
     CUSTOM_ELEMENTS_SCHEMA,
@@ -73,6 +74,7 @@ import { CoreKeyboard } from '@static/keyboard';
     host: {
         '[style.height]': 'height() + "px"',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreEditorRichTextEditorComponent implements AfterViewInit, OnDestroy, OnInit {
 

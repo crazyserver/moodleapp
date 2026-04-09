@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {
+    ChangeDetectionStrategy,
     Component,
     ElementRef,
     OnDestroy,
@@ -66,6 +67,7 @@ import { CoreTimesPipe } from '@pipes/times';
         '[attr.id]': 'uniqueId',
         '[style.--loading-inline-min-height]': 'placeholderHeight()',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreLoadingComponent implements AsyncDirective, OnDestroy {
 

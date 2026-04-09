@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output, signal } from '@angular/core';
 import { CoreSites } from '@services/sites';
 import { CoreLoadings } from '@services/overlays/loadings';
 import { CoreText } from '@static/text';
@@ -36,6 +36,7 @@ import { CoreContentLinksHelper } from '@features/contentlinks/services/contentl
         '[attr.data-course-id]': 'course()?.id ?? null',
         '[attr.data-category-id]': 'course()?.categoryid ?? null',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonBlockTimelineEventsComponent implements OnInit {
 

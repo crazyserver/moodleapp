@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, ElementRef, inject, viewChild, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, ElementRef, inject, viewChild, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { CoreNetwork } from '@services/network';
@@ -54,6 +54,7 @@ import { CoreLoginIdentityProviderComponent } from '../../components/identity-pr
         CoreLoginIdentityProviderComponent,
         CoreLoginMethodsComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreLoginReconnectPage implements OnInit, OnDestroy {
 

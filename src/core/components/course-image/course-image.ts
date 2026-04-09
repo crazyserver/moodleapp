@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { toBoolean } from '@/core/transforms/boolean';
-import { Component, ElementRef, input, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, input, effect, inject } from '@angular/core';
 import { CoreCourseListItem } from '@features/courses/services/courses';
 import { CoreCoursesHelper } from '@features/courses/services/courses-helper';
 import { CoreColors } from '@static/colors';
@@ -30,6 +30,7 @@ import { CoreFaIconDirective } from '@directives/fa-icon';
         CoreFaIconDirective,
         CoreExternalContentDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreCourseImageComponent {
 

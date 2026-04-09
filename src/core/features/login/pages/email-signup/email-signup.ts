@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ElementRef, OnInit, ChangeDetectorRef, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ChangeDetectorRef, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { CoreText } from '@static/text';
 import { CoreCountries, CoreCountry } from '@static/countries';
@@ -52,6 +52,7 @@ import { CoreLoginHelper } from '@features/login/services/login-helper';
         CoreSharedModule,
         CoreUserProfileFieldComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoreLoginEmailSignupPage implements OnInit {
 

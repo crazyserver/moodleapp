@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, input, output, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
 import { DownloadStatus } from '@/core/constants';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreBaseModule } from '@/core/base.module';
@@ -35,6 +35,7 @@ import { CoreUpdateNonReactiveAttributesDirective } from '@directives/update-non
         CoreUpdateNonReactiveAttributesDirective,
         CoreFaIconDirective,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreDownloadRefreshComponent {
 

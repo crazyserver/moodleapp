@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, viewChild, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, viewChild, effect } from '@angular/core';
 import { CoreNavigator } from '@services/navigator';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreEvents } from '@static/events';
@@ -42,6 +42,7 @@ import { CoreAlerts } from '@services/overlays/alerts';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonModScormOnlinePlayerPage implements OnInit, OnDestroy {
 

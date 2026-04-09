@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { CoreSharedModule } from '@/core/shared.module';
-import { Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { CoreRemindersUnits } from '@features/reminders/constants';
 import { PopoverController } from '@singletons';
 
@@ -25,6 +25,7 @@ import { PopoverController } from '@singletons';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreRemindersSetReminderCustomComponent {
 

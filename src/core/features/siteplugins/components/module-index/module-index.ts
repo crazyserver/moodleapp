@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, Input, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, Input, inject, viewChild } from '@angular/core';
 
 import { CoreSiteWSPreSets } from '@classes/sites/authenticated-site';
 import { CoreCourseModuleSummaryResult } from '@features/course/components/module-summary/module-summary';
@@ -51,6 +51,7 @@ import { CoreCourseModuleNavigationComponent } from '@features/course/components
     host: {
         '[class]': 'component',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSitePluginsModuleIndexComponent implements OnInit, OnDestroy, CoreCourseModuleMainComponent {
 

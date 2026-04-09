@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { CoreSharedModule } from '@/core/shared.module';
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { CoreCompileHtmlComponent } from '@features/compile/components/compile-html/compile-html';
 import { CoreCourseOverviewActivity, CoreCourseOverviewItem } from '@features/course/services/course-overview';
 
@@ -27,6 +27,7 @@ import { CoreCourseOverviewActivity, CoreCourseOverviewItem } from '@features/co
         CoreSharedModule,
         CoreCompileHtmlComponent,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSitePluginsOverviewItemComponent {
 

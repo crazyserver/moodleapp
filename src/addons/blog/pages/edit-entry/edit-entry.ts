@@ -23,7 +23,7 @@ import {
     AddonBlogPublishState,
 } from '@addons/blog/services/blog';
 import { AddonBlogOffline } from '@addons/blog/services/blog-offline';
-import { Component, computed, ElementRef, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { AddonBlogSync } from '@addons/blog/services/blog-sync';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CoreError } from '@classes/errors/error';
@@ -54,6 +54,7 @@ import { DEFAULT_TEXT_FORMAT } from '@static/text';
         CoreEditorRichTextEditorComponent,
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddonBlogEditEntryPage implements CanLeave, OnInit, OnDestroy {
 
