@@ -93,7 +93,7 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
     protected style?: HTMLStyleElement;
     protected navSubscription?: Subscription;
     protected messageListenerFunction: (event: MessageEvent) => Promise<void>;
-    protected backButtonListener?: (event: BackButtonEvent) => void;
+    protected backButtonListener?: EventListener;
     protected element: HTMLElement = inject(ElementRef).nativeElement;
 
     constructor() {
@@ -164,16 +164,21 @@ export class CoreIframeComponent implements OnChanges, OnDestroy {
 
         if (!this.backButtonListener) {
             // Exit fullscreen when back button is clicked.
-            document.addEventListener('ionBackButton', this.backButtonListener = ({ detail }) => detail.register(
-                BackButtonPriority.IFRAME_FULLSCREEN,
-                (processNextHandler) => {
-                    if (this.fullscreen) {
-                        this.toggleFullscreen(false);
-                    } else {
-                        processNextHandler();
-                    }
-                },
-            ));
+            this.backButtonListener = (event) => {
+                const { detail } = event as BackButtonEvent;
+
+                detail.register(
+                    BackButtonPriority.IFRAME_FULLSCREEN,
+                    (processNextHandler) => {
+                        if (this.fullscreen) {
+                            this.toggleFullscreen(false);
+                        } else {
+                            processNextHandler();
+                        }
+                    },
+                );
+            };
+            document.addEventListener('ionBackButton', this.backButtonListener);
         }
 
         if (!this.style) {

@@ -43,6 +43,7 @@ import { CoreAlerts } from '@services/overlays/alerts';
 import { CoreSharedModule } from '@/core/shared.module';
 import { CoreMainMenuUserButtonComponent } from '@features/mainmenu/components/user-menu-button/user-menu-button';
 import { Subscription } from 'rxjs';
+import { CorePromiseUtils } from '@static/promise-utils';
 
 /**
  * Page that displays the calendar events.
