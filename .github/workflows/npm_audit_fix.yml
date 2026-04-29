@@ -26,6 +26,7 @@ jobs:
                   auditBefore=$(npm audit --json | jq .metadata.vulnerabilities.total)
                   audit=$(npm audit fix --ignore-scripts --json) || echo "npm audit fix encountered more vulnerabilities."
                   auditAfter=$(echo "$audit" | jq .audit.metadata.vulnerabilities.total)
+                  echo "ADDED $(echo "$audit" | jq .add)"
                   if [ "$auditBefore" -gt "$auditAfter" ]; then
                       echo "ADDED $(echo "$audit" | jq .add)" >> $GITHUB_STEP_SUMMARY
                       echo "ADDED=$(echo "$audit" | jq .add)" >> $GITHUB_OUTPUT
