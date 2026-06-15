@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, computed, effect, input, linkedSignal, signal, untracked } from '@angular/core';
+import { Component, computed, effect, input, linkedSignal, signal, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { CoreSitesReadingStrategy } from '@services/sites';
 import { CoreNetwork } from '@services/network';
 import { AddonModForum, AddonModForumPost } from '@addons/mod/forum/services/forum';
@@ -28,6 +28,7 @@ import { AddonModForumHelper } from '../../services/forum-helper';
     selector: 'addon-forum-post-options-menu',
     templateUrl: 'post-options-menu.html',
     styleUrl: 'post-options-menu.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CoreSharedModule,
     ],

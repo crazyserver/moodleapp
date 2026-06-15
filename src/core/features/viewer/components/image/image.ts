@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, input, computed } from '@angular/core';
+import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, input, computed, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, ModalController, Translate } from '@singletons';
 import { CoreMath } from '@static/math';
 import { Swiper } from 'swiper';
@@ -30,6 +30,7 @@ import { CoreSharedModule } from '@/core/shared.module';
     imports: [
         CoreSharedModule,
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CoreViewerImageComponent {

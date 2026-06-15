@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, OnDestroy, ElementRef, inject, viewChild, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, inject, viewChild, effect, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { CoreNetwork } from '@services/network';
@@ -48,6 +48,7 @@ import { CoreUserWithAvatar } from '@components/user-avatar/user-avatar';
     selector: 'page-core-login-reconnect',
     templateUrl: 'reconnect.html',
     styleUrl: '../../login.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CoreSharedModule,
         CoreSiteLogoComponent,

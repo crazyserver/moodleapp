@@ -25,6 +25,7 @@ import {
     effect,
     inject,
     viewChild,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CoreEvents } from '@static/events';
@@ -79,6 +80,7 @@ import { CoreNetwork } from '@services/network';
     selector: 'addon-mod-forum-post',
     templateUrl: 'post.html',
     styleUrl: 'post.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CoreSharedModule,
         CoreTagListComponent,

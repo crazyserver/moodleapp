@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, signal, computed, input, linkedSignal } from '@angular/core';
+import { Component, OnDestroy, signal, computed, input, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 
 import { CoreSiteBasicInfo, CoreSites } from '@services/sites';
 import { CoreUtils } from '@static/utils';
@@ -47,6 +47,7 @@ import { CORE_USER_PROFILE_PICTURE_UPDATED } from '@features/user/constants';
     selector: 'core-user-avatar',
     templateUrl: 'core-user-avatar.html',
     styleUrl: 'user-avatar.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CoreBaseModule,
         CoreExternalContentDirective,

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnInit, input, linkedSignal } from '@angular/core';
+import { Component, OnInit, input, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreNavigator } from '@services/navigator';
 import { CoreAlerts } from '@services/overlays/alerts';
@@ -26,6 +26,7 @@ import { CoreAnyError } from '@classes/errors/error';
 @Component({
     selector: 'core-viewer-iframe',
     templateUrl: 'iframe.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CoreSharedModule,
     ],
