@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { CoreSharedModule } from '@/core/shared.module';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { CoreReportBuilderReportDetail } from '@features/reportbuilder/services/reportbuilder';
 import { CoreSites } from '@services/sites';
 import { ModalController } from '@singletons';
@@ -22,7 +22,6 @@ import { ModalController } from '@singletons';
     selector: 'core-report-builder-report-summary',
     templateUrl: './report-summary.html',
     styleUrl: './report-summary.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CoreSharedModule,
     ],

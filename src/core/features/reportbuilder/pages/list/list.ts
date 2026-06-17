@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ChangeDetectionStrategy, Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CoreReportBuilder, CoreReportBuilderReport, REPORTS_LIST_LIMIT } from '@features/reportbuilder/services/reportbuilder';
 import { CoreAnalytics, CoreAnalyticsEventType } from '@services/analytics';
 import { CorePromiseUtils } from '@static/promise-utils';
@@ -25,7 +25,6 @@ import { CoreNavigator } from '@services/navigator';
 @Component({
     selector: 'core-report-builder-list',
     templateUrl: './list.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CoreSharedModule,
     ],
