@@ -352,7 +352,7 @@ export class AddonModLessonIndexComponent extends CoreCourseModuleMainActivityCo
      * @returns True if refresh is needed, false otherwise.
      */
     protected isRefreshSyncNeeded(syncEventData: AddonModLessonAutoSyncData): boolean {
-        return !!(this.lesson && syncEventData.lessonId == this.lesson.id);
+        return !!(this.lesson && syncEventData.lessonId === this.lesson.id);
     }
 
     /**
@@ -516,7 +516,7 @@ export class AddonModLessonIndexComponent extends CoreCourseModuleMainActivityCo
 
         // Search the name of the group if it isn't all participants.
         if (groupId && this.groupInfo && this.groupInfo.groups) {
-            const group = this.groupInfo.groups.find(group => groupId == group.id);
+            const group = this.groupInfo.groups.find(group => groupId === group.id);
 
             this.selectedGroupEmptyMessage = group
                 ? Translate.instant('addon.mod_lesson.nolessonattemptsgroup', { $a: group.name })
@@ -596,9 +596,9 @@ export class AddonModLessonIndexComponent extends CoreCourseModuleMainActivityCo
             return;
         }
 
-        if (!AddonModLesson.isLessonOffline(this.lesson) || this.currentStatus == DownloadStatus.DOWNLOADED) {
+        if (!AddonModLesson.isLessonOffline(this.lesson) || this.currentStatus === DownloadStatus.DOWNLOADED) {
             // Not downloadable or already downloaded, open it.
-            this.playLesson(continueLast);
+            await this.playLesson(continueLast);
 
             return;
         }
@@ -610,11 +610,11 @@ export class AddonModLessonIndexComponent extends CoreCourseModuleMainActivityCo
             await AddonModLessonPrefetchHandler.prefetch(this.module, this.courseId, true);
 
             // Success downloading, open lesson.
-            this.playLesson(continueLast);
+            await this.playLesson(continueLast);
         } catch (error) {
             if (this.hasOffline) {
                 // Error downloading but there is something offline, allow continuing it.
-                this.playLesson(continueLast);
+                await this.playLesson(continueLast);
             } else {
                 CoreAlerts.showError(error, { default: Translate.instant('core.errordownloading') });
             }
