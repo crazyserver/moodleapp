@@ -47,7 +47,8 @@ export class AddonModLessonIndexLinkHandlerService extends CoreContentLinksModul
         courseId?: number,
     ): CoreContentLinksAction[] | Promise<CoreContentLinksAction[]> {
 
-        const cId = Number(courseId || params.courseid || params.cid);
+        const parsedCourseId = Number(courseId || params.courseid || params.cid);
+        const cId = !isNaN(parsedCourseId) && parsedCourseId > 0 ? parsedCourseId : undefined;
 
         return [{
             action: async (siteId): Promise<void> => {
@@ -57,7 +58,7 @@ export class AddonModLessonIndexLinkHandlerService extends CoreContentLinksModul
                     await this.navigateToModuleWithPassword(parseInt(params.id, 10), cId, params.userpassword, siteId);
                 } else {
                     await CoreCourseHelper.navigateToModule(parseInt(params.id, 10), {
-                        courseId,
+                        courseId: cId,
                         siteId,
                     });
                 }
@@ -76,7 +77,7 @@ export class AddonModLessonIndexLinkHandlerService extends CoreContentLinksModul
      */
     protected async navigateToModuleWithPassword(
         moduleId: number,
-        courseId: number,
+        courseId: number | undefined,
         password: string,
         siteId: string,
     ): Promise<void> {
