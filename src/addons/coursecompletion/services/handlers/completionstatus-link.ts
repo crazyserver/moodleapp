@@ -38,11 +38,14 @@ export class AddonCourseCompletionStatusLinkHandlerService extends CoreContentLi
         url: string,
         params: Record<string, string>,
     ): CoreContentLinksAction[] | Promise<CoreContentLinksAction[]> {
+        const courseId = parseInt(params.course, 10);
+        if (isNaN(courseId) || courseId <= 0) {
+            return [];
+        }
 
         return [{
             action: async (siteId): Promise<void> => {
                 let userId = params.user ? parseInt(params.user, 10) : undefined;
-                const courseId = parseInt(params.course, 10);
                 if (!userId) {
                     const site = await CoreSites.getSite(siteId);
                     userId = site.getUserId();
