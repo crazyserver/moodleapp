@@ -1,9 +1,15 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.moodlemobile',
-  appName: 'moodlemobile',
+  appId: 'com.moodle.moodlemobile',
+  appName: 'Moodle',
   webDir: 'www',
+  appendUserAgent: 'MoodleMobile 5.3.0 (53000)',
+  server: {
+    hostname: 'localhost',
+    androidScheme: 'http',
+    iosScheme: 'moodleappfs'
+  },
   cordova: {
     preferences: {
       permissions: 'none',
