@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import { Injectable } from '@angular/core';
+import { Device } from '@capacitor/device';
 import { Platform } from '@ionic/angular';
-import { Device, makeSingleton } from '@singletons';
+import { makeSingleton } from '@singletons';
 
 /**
  * Extend Ionic's Platform service.
@@ -23,6 +24,19 @@ import { Device, makeSingleton } from '@singletons';
 export class CorePlatformService extends Platform {
 
     private static cssNesting?: boolean;
+
+    osMajorVersion?: number;
+
+    /**
+     * Initialize the service.
+     */
+    async initialize(): Promise<void> {
+        if (this.isMobile()) {
+            const deviceInfo = await Device.getInfo();
+
+            this.osMajorVersion = Number(deviceInfo.osVersion?.split('.')[0]);
+        }
+    }
 
     /**
      * Get platform major version number.
@@ -34,7 +48,7 @@ export class CorePlatformService extends Platform {
             return 0;
         }
 
-        return Number(Device.version?.split('.')[0]);
+        return this.osMajorVersion ?? 0;
     }
 
     /**

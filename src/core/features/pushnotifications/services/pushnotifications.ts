@@ -25,7 +25,7 @@ import { CoreText } from '@static/text';
 import { CoreConfig } from '@services/config';
 import { CoreConstants, CoreConfigSettingKey } from '@/core/constants';
 import { CoreSite } from '@classes/sites/site';
-import { makeSingleton, Badge, Device, Translate, ApplicationInit, NgZone } from '@singletons';
+import { makeSingleton, Badge, Translate, ApplicationInit, NgZone } from '@singletons';
 import { CoreLogger } from '@static/logger';
 import { CoreEvents } from '@static/events';
 import {
@@ -60,6 +60,7 @@ import { CorePromiseUtils } from '@static/promise-utils';
 import { CoreWSError } from '@classes/errors/wserror';
 import { CoreNative } from '@features/native/services/native';
 import { AndroidNotificationPriority } from '@features/native/constants';
+import { Device, DeviceInfo } from '@capacitor/device';
 
 /**
  * Service to handle push notifications.
@@ -87,6 +88,9 @@ export class CorePushNotificationsProvider {
                 >
             >
         >;
+
+    protected deviceInfo?: DeviceInfo;
+    protected deviceId = '';
 
     constructor() {
         this.logger = CoreLogger.getInstance('CorePushNotificationsProvider');
@@ -117,6 +121,7 @@ export class CorePushNotificationsProvider {
      */
     async initialize(): Promise<void> {
         await Promise.all([
+            this.initialitzeDeviceInfo(),
             this.initializeDatabase(),
             this.initializeDefaultChannel(),
         ]);
@@ -185,6 +190,14 @@ export class CorePushNotificationsProvider {
                 });
             },
         );
+    }
+
+    /**
+     * Initialize device info.
+     */
+    protected async initialitzeDeviceInfo(): Promise<void> {
+        this.deviceInfo = await Device.getInfo();
+        this.deviceId = (await Device.getId()).identifier;
     }
 
     /**
@@ -335,12 +348,12 @@ export class CorePushNotificationsProvider {
 
         return {
             appid:      CoreConstants.CONFIG.app_id,
-            name:       Device.manufacturer || '',
-            model:      Device.model,
-            platform:   `${Device.platform}-fcm`,
-            version:    Device.version,
+            name:       this.deviceInfo?.manufacturer ?? '',
+            model:      this.deviceInfo?.model ?? '',
+            platform:   `${this.deviceInfo?.platform}-fcm`,
+            version:    this.deviceInfo?.osVersion ?? '',
             pushid:     this.pushID,
-            uuid:       Device.uuid,
+            uuid:       this.deviceId,
         };
     }
 
@@ -493,7 +506,7 @@ export class CorePushNotificationsProvider {
 
         const data: CoreUserRemoveUserDeviceWSParams = {
             appid: CoreConstants.CONFIG.app_id,
-            uuid:  Device.uuid,
+            uuid:  this.deviceId,
         };
         let response: CoreUserRemoveUserDeviceWSResponse;
 

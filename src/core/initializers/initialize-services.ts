@@ -22,12 +22,14 @@ import { CoreSites } from '@services/sites';
 import { CoreUpdateManager } from '@services/update-manager';
 import { CoreTime } from '@static/time';
 import { CoreKeyboard } from '@static/keyboard';
+import { CorePlatform } from '@services/platform';
 
 /**
  * Initializes various core components asynchronously.
  */
 export default async function(): Promise<void> {
     await Promise.all([
+        CorePlatform.initialize(),
         CoreConfig.initialize(),
         CoreFilepool.initialize(),
         CoreSites.initialize(),

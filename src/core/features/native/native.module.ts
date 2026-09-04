@@ -18,7 +18,6 @@ import { Badge } from '@awesome-cordova-plugins/badge/ngx';
 import { Camera } from '@awesome-cordova-plugins/camera/ngx';
 import { Chooser } from '@features/native/plugins/chooser';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
@@ -35,6 +34,7 @@ import { WebIntent } from '@awesome-cordova-plugins/web-intent/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { Zip } from '@features/native/plugins/zip';
 import { Geolocation } from '@features/emulator/services/geolocation';
+import { Device } from '@services/device';
 
 /**
  * Get native services.
@@ -47,7 +47,7 @@ export async function getNativeServices(): Promise<Type<unknown>[]> {
         Camera,
         Chooser,
         Clipboard,
-        Device,
+        Device, // eslint-disable-line @typescript-eslint/no-deprecated
         File,
         FileOpener,
         Geolocation, // eslint-disable-line @typescript-eslint/no-deprecated
@@ -73,7 +73,7 @@ export async function getNativeServices(): Promise<Type<unknown>[]> {
         Camera,
         Chooser,
         Clipboard,
-        Device,
+        Device, // eslint-disable-line @typescript-eslint/no-deprecated
         File,
         FileOpener,
         Geolocation, // eslint-disable-line @typescript-eslint/no-deprecated

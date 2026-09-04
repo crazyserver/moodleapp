@@ -16,7 +16,8 @@ import { Injectable, Type } from '@angular/core';
 
 import { CoreConstants, CoreLinkOpenMethod } from '@/core/constants';
 import { CoreLang, CoreLangFormat, CoreLangLanguage } from '@services/lang';
-import { Device, makeSingleton } from '@singletons';
+import { makeSingleton } from '@singletons';
+import { Device } from '@capacitor/device';
 import { CorePlatform } from '@services/platform';
 import { CoreSites } from '@services/sites';
 import { CoreText } from '@static/text';
@@ -182,10 +183,12 @@ export class CoreCustomMenuService {
 
         const currentLang = await CoreLang.getCurrentLanguage();
 
+        const deviceInfo = await Device.getInfo();
+
         const fallbackLang = CoreConstants.CONFIG.default_lang || 'en';
         const replacements = {
             devicetype: '',
-            osversion: Device.version,
+            osversion: deviceInfo.osVersion,
         };
 
         if (CorePlatform.isAndroid()) {
