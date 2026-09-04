@@ -39,7 +39,6 @@ import {
 import { Badge as BadgeService } from '@awesome-cordova-plugins/badge/ngx';
 import { Camera as CameraService } from '@awesome-cordova-plugins/camera/ngx';
 import { Clipboard as ClipboardService } from '@awesome-cordova-plugins/clipboard/ngx';
-import { Device as DeviceService } from '@awesome-cordova-plugins/device/ngx';
 import { File as FileService } from '@awesome-cordova-plugins/file/ngx';
 import { FileOpener as FileOpenerService } from '@awesome-cordova-plugins/file-opener/ngx';
 import { HTTP } from '@awesome-cordova-plugins/http/ngx';
@@ -186,8 +185,6 @@ export const WebView = makeSingleton(WebViewService);
 export const SplashScreen = makeSingleton(SplashScreenService);
 
 export const Camera = makeSingleton(CameraService);
-
-export const Device = makeSingleton(DeviceService);
 
 // Convert some Angular and Ionic injectables to singletons.
 export const NgZone = makeSingleton(NgZoneService);
