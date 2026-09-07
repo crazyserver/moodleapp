@@ -1,6 +1,6 @@
 <ion-card class="ion-activatable" [class.core-course-list-item]="layout === 'list' || layout === 'listwithenrol'"
     [class.core-course-list-card]="layout === 'card' || layout === 'summarycard'" [class.item-dimmed]="course.hidden" (click)="openCourse()"
-    tappable [attr.aria-label]="course.displayname || course.fullname">
+    tappable>
 
     @if (layout === 'card' || layout === 'summarycard') {
         <core-course-image [course]="course" class="card-top" />
