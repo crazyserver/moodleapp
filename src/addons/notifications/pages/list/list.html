@@ -94,8 +94,8 @@
 
         <div class="mark-all-as-read" slot="fixed" collapsible-footer appearOnBottom>
             @if (notifications.loaded && canMarkAllNotificationsAsRead) {
-                <ion-chip [disabled]="loadingMarkAllNotificationsAsRead" color="info" class="clickable fab-chip"
-                    (click)="markAllNotificationsAsRead()">
+                <ion-chip [disabled]="loadingMarkAllNotificationsAsRead" role="button" color="info" class="clickable fab-chip"
+                    (ariaButtonClick)="markAllNotificationsAsRead()">
                     @if (!loadingMarkAllNotificationsAsRead) {
                         <ion-icon name="fas-eye" aria-hidden="true" />
                     } @else {
