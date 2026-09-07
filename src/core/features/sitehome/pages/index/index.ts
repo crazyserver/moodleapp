@@ -38,6 +38,7 @@ import { CoreCourseModuleComponent } from '../../../course/components/module/mod
 import { CoreBlockSideBlocksButtonComponent } from '../../../block/components/side-blocks-button/side-blocks-button';
 import { Subscription } from 'rxjs';
 import { CoreBlockDelegate } from '@features/block/services/block-delegate';
+import { CorePageTitle } from '@services/page-title';
 
 /**
  * Page that displays site home index.
@@ -96,6 +97,8 @@ export default class CoreSiteHomeIndexPage implements OnInit, OnDestroy {
         this.blockSubscription = CoreBlockDelegate.blocksUpdateObservable.subscribe(async (): Promise<void> => {
             this.hasBlocks = await CoreBlockHelper.hasCourseBlocks(this.siteHomeId);
         });
+
+        CorePageTitle.setTitle(this.route, Translate.instant('core.sitehome.sitehome'));
     }
 
     /**

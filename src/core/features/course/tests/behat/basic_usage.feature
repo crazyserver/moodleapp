@@ -89,6 +89,7 @@ Feature: Test basic usage of one course in app
   Scenario: View course contents
     When I entered the course "Course 1" as "student1" in the app
     Then the header should be "Course 1" in the app
+    And the page title should be "Course 1 | Acceptance test site" in the app
     And I should find "Test forum name" in the app
     And I should find "Test wiki name" in the app
     And I should find "Choice course 1" in the app

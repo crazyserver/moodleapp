@@ -24,11 +24,17 @@ Feature: Test basic usage of messages in app
   Scenario: View recent conversations and contacts
     Given I entered the app as "teacher1"
     When I press "Messages" in the app
-    And I press "Contacts" in the app
+    Then I should find "Messages" in the app
+    And the page title should be "Messages | Acceptance test site" in the app
+
+    When I press "Contacts" in the app
     Then I should find "No contacts" in the app
+    And the page title should be "Contacts | Acceptance test site" in the app
 
     When I press "Search people and messages" in the app
-    And I set the field "Search" to "student" in the app
+    Then the page title should be "Search people and messages | Acceptance test site" in the app
+
+    When I set the field "Search" to "student" in the app
     And I press "Search" "button" in the app
     And I press "Student1 student1" in the app
     And I set the field "New message" to "heeey student" in the app
