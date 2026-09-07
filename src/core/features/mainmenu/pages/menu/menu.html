@@ -35,7 +35,12 @@
             <ion-label aria-hidden="true">{{ 'core.more' | translate }}</ion-label>
             <span class="sr-only">{{ 'core.more' | translate }}</span>
             @if (moreBadge) {
-                <ion-icon class="core-tab-badge" name="fas-circle" aria-hidden="true" />
+                <ion-badge class="core-tab-badge" aria-hidden="true">{{ moreBadge }}</ion-badge>
+                @if (moreBadgeA11yText) {
+                    <span class="sr-only">
+                        {{ moreBadgeA11yText }}
+                    </span>
+                }
             }
         </ion-tab-button>
     </ion-tab-bar>
