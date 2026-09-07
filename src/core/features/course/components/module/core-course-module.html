@@ -1,6 +1,6 @@
 @if (module.handlerData && module.visibleoncoursepage !== 0) {
     <ion-card class="activity-card core-course-module-handler {{module.handlerData.class}}"
-        [class.core-course-module-with-view]="moduleHasView" [class.item-dimmed]="module.visible === 0 || module.uservisible === false"
+        [class.core-course-module-with-view]="moduleHasView"
         (click)="moduleClicked($event)" [attr.tappable]="module.handlerData.action && module.uservisible ? '' : null"
         [class.ion-activatable]="module.handlerData.action && module.uservisible"
         [attr.aria-label]="module.handlerData.a11yTitle ? module.handlerData.a11yTitle : null" id="core-course-module-{{module.id}}">
@@ -13,7 +13,7 @@
                                 [fallbackTranslation]="module.modplural" [purpose]="module.purpose" [isBranded]="module.branded" />
                         }
                         <div class="activity-title">
-                            <p class="item-heading">
+                            <p class="item-heading" [class.item-dimmed]="module.visible === 0 || module.uservisible === false">
                                 @if (module.handlerData.action && module.uservisible) {
                                     <span (ariaButtonClick)="moduleClicked($event)">
                                         <ng-container *ngTemplateOutlet="title" />
