@@ -35,6 +35,7 @@ import { CoreContentDirective } from './content';
 import { CoreUpdateNonReactiveAttributesDirective } from './update-non-reactive-attributes';
 import { CoreIonDatetimeDirective } from './datetime';
 import { CoreReadingModeDirective } from './reading-mode';
+import { CorePageTitleDirective } from './page-title';
 
 @NgModule({
     imports: [
@@ -59,6 +60,7 @@ import { CoreReadingModeDirective } from './reading-mode';
         CoreUpdateNonReactiveAttributesDirective,
         CoreIonDatetimeDirective,
         CoreReadingModeDirective,
+        CorePageTitleDirective,
     ],
     exports: [
         CoreAutoFocusDirective,
@@ -82,6 +84,7 @@ import { CoreReadingModeDirective } from './reading-mode';
         CoreUpdateNonReactiveAttributesDirective,
         CoreIonDatetimeDirective,
         CoreReadingModeDirective,
+        CorePageTitleDirective,
     ],
 })
 export class CoreDirectivesModule {}
