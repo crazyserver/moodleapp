@@ -11,6 +11,9 @@ ion-item.addon-notification-item {
                 font-size: var(--text-size);
                 @include ellipsis(3);
             }
+            &.addon-notification-unread {
+                font-weight: bold;
+            }
         }
     }
 

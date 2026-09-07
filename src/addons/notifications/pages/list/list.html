@@ -61,7 +61,9 @@
                     }
 
                     <ion-label>
-                        <p class="item-heading" [attr.aria-label]="
+                        <p class="item-heading"
+                            [class.addon-notification-unread]="!notification.timeread"
+                            [attr.aria-label]="
                                 notification.timeread
                                 ? notification.subject
                                 : 'addon.notifications.unreadnotification' | translate: {$a: notification.subject}">
