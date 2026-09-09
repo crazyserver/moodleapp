@@ -14,6 +14,7 @@ Feature: Test different cases of logout and switch account
     And I press "Log out" in the app
     And I wait the app to restart
     Then the header should be "Accounts" in the app
+    And the page title should be "Accounts | Moodle Mobile" in the app
 
     When I press "david student" in the app
     Then the header should be "Reconnect" in the app

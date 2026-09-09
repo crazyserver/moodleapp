@@ -4,7 +4,7 @@
             <ion-back-button [text]="'core.back' | translate" />
         </ion-buttons>
         <ion-title>
-            <h1>{{ 'addon.messages.messages' | translate }}</h1>
+            <h1 core-page-title>{{ 'addon.messages.messages' | translate }}</h1>
         </ion-title>
         <ion-buttons slot="end">
             <ion-button fill="clear" (click)="gotoSearch()" [ariaLabel]="'addon.messages.searchcombined' | translate">
@@ -92,8 +92,7 @@
             [attr.aria-current]="((conversation.id && conversation.id === selectedConversationId) ||
                 (conversation.userid && conversation.userid === selectedUserId)) ? 'page': 'false'"
             (click)="gotoConversation(conversation.id, conversation.userid)"
-            id="addon-message-conversation-{{ conversation.id ? conversation.id : 'user-' + conversation.userid }}"
-            [attr.aria-label]="conversation.name">
+            id="addon-message-conversation-{{ conversation.id ? conversation.id : 'user-' + conversation.userid }}">
             @if (conversation.type === typeGroup) {
                 <!-- Group conversation image. -->
                 <ion-avatar slot="start">
@@ -114,7 +113,7 @@
                             <ion-icon name="fas-user-slash" [attr.aria-label]="'addon.messages.contactblocked' | translate" />
                         }
                         @if (conversation.ismuted) {
-                            <ion-icon name="fas-volume-xmark" [title]="'addon.messages.mutedconversation' | translate" />
+                            <ion-icon name="fas-volume-xmark" [attr.aria-label]="'addon.messages.mutedconversation' | translate" />
                         }
                     </p>
                     @if (conversation.lastmessagedate > 0 || conversation.unreadcount) {
@@ -125,10 +124,9 @@
                                 </span>
                             }
                             @if (conversation.unreadcount > 0) {
-                                <ion-badge aria-label="true">{{ conversation.unreadcount }}</ion-badge>
-                                <span class="sr-only">
-                                    {{ 'addon.messages.unreadmessages' | translate:{$a: conversation.unreadcount} }}
-                                </span>
+                                <ion-badge [attr.aria-label]="'addon.messages.unreadmessages' | translate:{$a: conversation.unreadcount}">
+                                    {{ conversation.unreadcount }}
+                                </ion-badge>
                             }
                         </ion-note>
                     }

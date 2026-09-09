@@ -24,7 +24,7 @@ import {
     CoreMainMenuHandlerToDisplay,
     CoreMainMenuPageNavHandlerToDisplay,
 } from '../../services/mainmenu-delegate';
-import { Router } from '@singletons';
+import { Router, Translate } from '@singletons';
 import { CoreUtils } from '@static/utils';
 import { CoreAriaRoleTab, CoreAriaRoleTabFindable } from '@classes/aria-role-tab';
 import { CoreNavigator } from '@services/navigator';
@@ -84,7 +84,8 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
     showTabs = false;
     morePageName = MAIN_MENU_MORE_PAGE_NAME;
     selectedTab?: string;
-    moreBadge = false;
+    moreBadge = '';
+    moreBadgeA11yText = '';
     loadingTabsLength = this.getLoadingTabsLength();
 
     protected subscription?: Subscription;
@@ -303,9 +304,35 @@ export default class CoreMainMenuPage implements OnInit, OnDestroy {
         const mainHandlers = CoreMainMenuDelegate.skipOnlyMoreHandlers(this.allHandlers)
             .slice(0, CoreMainMenu.getNumItems());
 
-        // Use only the handlers that don't appear in the main view.
-        this.moreBadge = this.allHandlers.some((handler) =>
-            'badge' in handler && !!handler.badge && !mainHandlers.includes(handler));
+        let badgeCount = 0;
+        let badgePlus = false;
+        const badgleA11yTexts: string[] = [];
+        for (const handler of this.allHandlers) {
+            // Use only the handlers with a badge that don't appear in the main view.
+            if (!('badge' in handler) || !handler.badge || !handler.showBadge || mainHandlers.includes(handler)) {
+                continue;
+            }
+
+            // Notification and message badges contain numbers with an optional + at the end.
+            const match = /^(\d+)(\+)?$/.exec(handler.badge);
+            if (match) {
+                badgeCount += parseInt(match[1], 10) || 0;
+                if (match[2] === '+') {
+                    badgePlus = true;
+                }
+            } else {
+                badgeCount += 1;
+            }
+
+            if (handler.badgeA11yText) {
+                badgleA11yTexts.push(Translate.instant(handler.badgeA11yText, { $a: handler.badge }));
+            }
+        }
+
+        const separator = Translate.instant('core.listsep');
+
+        this.moreBadge = (badgeCount > 0 ? badgeCount : '') + (badgePlus ? '+' : '');
+        this.moreBadgeA11yText = badgleA11yTexts.join(separator);
     }
 
     /**

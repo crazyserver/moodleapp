@@ -19,6 +19,7 @@ Feature: Test basic usage of page activity in app
     Given I entered the course "Course 1" as "student1" in the app
     When I press "Test page title" in the app
     Then the header should be "Test page title" in the app
+    And the page title should be "Test page title | Acceptance test site" in the app
     And I should find "Test page content" in the app
     And the following events should have been logged for "student1" in the app:
       | name                                 | activity | activityname    | course   |

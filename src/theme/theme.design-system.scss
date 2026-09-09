@@ -151,8 +151,8 @@
     // ***** ACCESSIBILITY ***** //
     --a11y-sizing-minTargetSize: 44px;
     --a11y-shadow-focus-borderWidth: 2px;
-    --a11y-shadow-focus-boxShadow: inset 0 0 var(--a11y-shadow-focus-borderWidth) 1px var(--a11y-focus-color);
-    --a11y-shadow-focus-outline: var(--a11y-shadow-focus-borderWidth) solid var(--a11y-focus-color);
+    --a11y-shadow-focus-boxShadow: inset 0 0 var(--a11y-shadow-focus-borderWidth) 1px var(--a11y-shadow-focus-boxShadowColor);
+    --a11y-shadow-focus-outline: var(--a11y-shadow-focus-borderWidth) solid var(--a11y-shadow-focus-boxShadowColor);
     --a11y-background-focus-background: var(--ion-text-color);
     --a11y-background-focus-opacity: 0.08;
     --a11y-background-focus-background-rgb: rgba(var(--ion-text-color-rgb), var(--a11y-background-focus-opacity));

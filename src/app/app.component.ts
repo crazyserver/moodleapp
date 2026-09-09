@@ -19,6 +19,7 @@ import { BackButtonEvent } from '@ionic/core';
 import { CoreLoginHelper } from '@features/login/services/login-helper';
 import { CoreApp } from '@services/app';
 import { CoreNavigator } from '@services/navigator';
+import { CorePageTitle } from '@services/page-title';
 import { CoreSubscriptions } from '@static/subscriptions';
 import { CoreWindow } from '@static/window';
 import { CorePlatform } from '@services/platform';
@@ -46,6 +47,9 @@ export class AppComponent implements OnInit, AfterViewInit {
      * @inheritdoc
      */
     ngOnInit(): void {
+        // Keep document.title in sync with the current page for accessibility (WCAG 2.4.2).
+        CorePageTitle.initialize();
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const win = <any> window;
 

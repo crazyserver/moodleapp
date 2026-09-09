@@ -23,6 +23,7 @@ Feature: Test basic usage of assignment activity in app
     # Create, edit and submit as a student
     Given I entered the assign activity "assignment1" on course "Course 1" as "student1" in the app
     Then the header should be "assignment1" in the app
+    And the page title should be "assignment1 | Acceptance test site" in the app
     And I should find "Test assignment description1" in the app
     And I should find "Due:" in the app
     And I should find "20 August 2002, 12:00 PM" in the app

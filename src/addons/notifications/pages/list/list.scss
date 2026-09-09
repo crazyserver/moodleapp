@@ -11,6 +11,9 @@ ion-item.addon-notification-item {
                 font-size: var(--text-size);
                 @include ellipsis(3);
             }
+            &.addon-notification-unread {
+                font-weight: bold;
+            }
         }
     }
 
@@ -49,6 +52,11 @@ ion-item.addon-notification-item {
             height: 16px;
             @include margin-horizontal(0, 8px);
         }
+    }
+
+    ion-chip:focus-visible {
+        outline: 2px solid var(--light);
+        outline-offset: -4px;
     }
 }
 

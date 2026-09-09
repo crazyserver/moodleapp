@@ -4,7 +4,7 @@
             <ion-back-button [text]="'core.back' | translate" />
         </ion-buttons>
         <ion-title>
-            <h1>{{ 'addon.notifications.notifications' | translate }}</h1>
+            <h1 core-page-title>{{ 'addon.notifications.notifications' | translate }}</h1>
         </ion-title>
         <ion-buttons slot="end">
             <core-user-menu-button />
@@ -61,7 +61,9 @@
                     }
 
                     <ion-label>
-                        <p class="item-heading" [attr.aria-label]="
+                        <p class="item-heading"
+                            [class.addon-notification-unread]="!notification.timeread"
+                            [attr.aria-label]="
                                 notification.timeread
                                 ? notification.subject
                                 : 'addon.notifications.unreadnotification' | translate: {$a: notification.subject}">
@@ -92,8 +94,8 @@
 
         <div class="mark-all-as-read" slot="fixed" collapsible-footer appearOnBottom>
             @if (notifications.loaded && canMarkAllNotificationsAsRead) {
-                <ion-chip [disabled]="loadingMarkAllNotificationsAsRead" color="info" class="clickable fab-chip"
-                    (click)="markAllNotificationsAsRead()">
+                <ion-chip [disabled]="loadingMarkAllNotificationsAsRead" role="button" color="info" class="clickable fab-chip"
+                    (ariaButtonClick)="markAllNotificationsAsRead()">
                     @if (!loadingMarkAllNotificationsAsRead) {
                         <ion-icon name="fas-eye" aria-hidden="true" />
                     } @else {

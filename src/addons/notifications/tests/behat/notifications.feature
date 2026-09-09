@@ -44,7 +44,9 @@ Feature: Notifications
     Given I entered the app as "student1"
     Then I should find "8" within "Notifications" "ion-tab-button" in the app
     When I press "Notifications" in the app
-    Then I should find "Test 30" in the app
+    Then I should find "Notifications" in the app
+    And the page title should be "Notifications | Acceptance test site" in the app
+    And I should find "Test 30" in the app
     But I should not find "Test 10" in the app
     When I load more items in the app
     Then I should find "Test 10" in the app

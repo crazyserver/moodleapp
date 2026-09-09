@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Component, OnDestroy, OnInit, signal, viewChildren } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, viewChildren } from '@angular/core';
 
 import { CoreCourses } from '../../services/courses';
 import { CoreEventObserver, CoreEvents } from '@static/events';
@@ -31,6 +31,8 @@ import { CoreBlockSideBlocksButtonComponent } from '../../../block/components/si
 import { CoreSharedModule } from '@/core/shared.module';
 import { CORE_BLOCKS_DASHBOARD_FALLBACK_BLOCKS } from '@features/block/constants';
 import { Subscription } from 'rxjs';
+import { CorePageTitle } from '@services/page-title';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Page that displays the dashboard page.
@@ -61,6 +63,7 @@ export default class CoreCoursesDashboardPage implements OnInit, OnDestroy {
     protected logView: () => void;
     protected allBlocks: CoreCoursesDashboardBlocks | undefined;
     protected blockSubscription: Subscription;
+    protected route = inject(ActivatedRoute);
 
     constructor() {
         // Refresh the enabled flags if site is updated.
@@ -103,6 +106,8 @@ export default class CoreCoursesDashboardPage implements OnInit, OnDestroy {
         this.downloadCoursesEnabled = !CoreCourses.isDownloadCoursesDisabledInSite();
 
         this.loadContent();
+
+        CorePageTitle.setTitle(this.route, Translate.instant('core.courses.mymoodle'));
     }
 
     /**
