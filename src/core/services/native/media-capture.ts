@@ -13,15 +13,36 @@
 // limitations under the License.
 
 import { Injectable } from '@angular/core';
-import { MediaCapture, MediaFile } from '@awesome-cordova-plugins/media-capture/ngx';
-
-import { CoreEmulatorCaptureHelper } from './capture-helper';
+import { CoreCaptureMedia } from './capture-media';
 
 /**
- * Emulates the Cordova MediaCapture plugin in browser.
+ * Service wrapping the Native Media Capture plugin.
+ *
+ * @deprecated since 6.0. Use CoreCaptureMedia instead.
  */
-@Injectable()
-export class MediaCaptureMock extends MediaCapture {
+@Injectable({ providedIn: 'root' })
+export class MediaCapture {
+
+    /**
+     * Start the audio recorder application and return information about captured audio clip files.
+     *
+     * @returns Promise resolved with an array of captured media files.
+     * @deprecated since 6.0. Use CoreCaptureMedia.captureAudio instead.
+     */
+    async captureAudio(): Promise<MediaFile[]> {
+        const media = await CoreCaptureMedia.captureAudio();
+
+        return [{
+            name: media.fullPath.split('/').pop() || '',
+            fullPath: media.fullPath,
+            type: media.type,
+            lastModifiedDate: new Date(),
+            size: 0,
+            getFormatData: (): void => {
+                // Nothing to do.
+            },
+        }];
+    }
 
     /**
      * Start the camera application and return information about captured image files.
@@ -30,7 +51,7 @@ export class MediaCaptureMock extends MediaCapture {
      * @deprecated since 6.0. Use CoreCaptureMedia.capturePicture instead.
      */
     async captureImage(): Promise<MediaFile[]> {
-        const media = await CoreEmulatorCaptureHelper.captureMedia('image');
+        const media = await CoreCaptureMedia.capturePicture();
 
         return [{
             name: media.fullPath.split('/').pop() || '',
@@ -51,7 +72,7 @@ export class MediaCaptureMock extends MediaCapture {
      * @deprecated since 6.0. Use CoreCaptureMedia.captureVideo instead.
      */
     async captureVideo(): Promise<MediaFile[]> {
-        const media = await CoreEmulatorCaptureHelper.captureMedia('video');
+        const media = await CoreCaptureMedia.captureVideo();
 
         return [{
             name: media.fullPath.split('/').pop() || '',
@@ -66,3 +87,34 @@ export class MediaCaptureMock extends MediaCapture {
     }
 
 }
+
+/**
+ * Deprecated. Remove when capture functions are fully migrated.
+ * Represents a media file captured or selected from the device.
+ */
+export type MediaFile = {
+    /**
+     * The name of the file, without path information.
+     */
+    name: string;
+    /**
+     * The full path of the file, including the name.
+     */
+    fullPath: string;
+    /**
+     * The file's mime type
+     */
+    type: string;
+    /**
+     * The date and time when the file was last modified.
+     */
+    lastModifiedDate: Date;
+    /**
+     * The size of the file, in bytes.
+     */
+    size: number;
+    /**
+     * Retrieves the format information of the media file.
+     */
+    getFormatData(): void;
+};

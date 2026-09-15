@@ -25,7 +25,6 @@
               "mux.js/lib/utils/clock",
               "safe-json-parse/tuple",
               "videojs-vtt.js",
-              "mp3-mediarecorder/worker",
               "dayjs",
               "ts-md5/dist/md5"
             ],
@@ -51,8 +50,7 @@
                 "input": "src/theme/theme.scss"
               }
             ],
-            "scripts": [],
-            "webWorkerTsConfig": "tsconfig.worker.json"
+            "scripts": []
           },
           "configurations": {
             "production": {
