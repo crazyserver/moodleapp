@@ -56,6 +56,11 @@ export class CoreContentLinksHandlerBase implements CoreContentLinksHandler {
     patternMatchStart = true;
 
     /**
+     * Whether the handler requires the user to be authenticated.
+     */
+    unauthenticated = false;
+
+    /**
      * Get the list of actions for a link (url).
      *
      * @param siteIds List of sites the URL belongs to.

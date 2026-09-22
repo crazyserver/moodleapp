@@ -19,6 +19,8 @@ import { AppRoutingModule } from '@/app/app-routing.module';
 import { CoreLoginHelper } from './services/login-helper';
 import { redirectGuard } from '@guards/redirect';
 import { CoreLoginCronHandler } from './services/handlers/cron';
+import { CoreLoginSignupLinkHandler } from './services/handlers/signup-link';
+import { CoreContentLinksDelegate } from '@features/contentlinks/services/contentlinks-delegate';
 import { CoreCronDelegate } from '@services/cron';
 import { CoreEvents } from '@static/events';
 import { hasSitesGuard } from './guards/has-sites';
@@ -90,6 +92,7 @@ const appRoutes: Routes = [
     providers: [
         provideAppInitializer(async () => {
             CoreCronDelegate.register(CoreLoginCronHandler.instance);
+            CoreContentLinksDelegate.registerHandler(CoreLoginSignupLinkHandler.instance);
 
             CoreEvents.on(CoreEvents.SESSION_EXPIRED, (data) => {
                 CoreLoginHelper.sessionExpired(data);

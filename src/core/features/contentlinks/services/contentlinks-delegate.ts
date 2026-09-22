@@ -15,10 +15,12 @@
 import { Injectable } from '@angular/core';
 import { CoreLogger } from '@static/logger';
 import { CoreSites } from '@services/sites';
-import { CoreUrl } from '@static/url';
+import { CoreUrl, CoreUrlParams } from '@static/url';
 import { makeSingleton } from '@singletons';
 import { CorePromiseUtils } from '@static/promise-utils';
 import { CoreNavigator } from '@services/navigator';
+import { CoreUnauthenticatedSite } from '@classes/sites/unauthenticated-site';
+import { CoreSitesFactory } from '@services/sites-factory';
 
 /**
  * Interface that all handlers must implement.
@@ -33,6 +35,11 @@ export interface CoreContentLinksHandler {
      * Handler's priority. The highest priority is treated first.
      */
     priority?: number;
+
+    /**
+     * Whether the handler requires the user to be authenticated.
+     */
+    unauthenticated?: boolean;
 
     /**
      * Whether the isEnabled function should be called for all the users in a site. It should be true only if the isEnabled call
@@ -149,6 +156,23 @@ export class CoreContentLinksDelegateService {
     }
 
     /**
+     * Get unauthenticated site for a unauthenticated actions
+     *
+     * @param url Site URL.
+     * @returns Site response.
+     */
+    async getUnauthenticatedSite(url: string): Promise<CoreUnauthenticatedSite> {
+        console.error(url);
+
+        // If the site is configured with http:// protocol we force that one, otherwise we use default mode.
+        const protocol = url.startsWith('http://') ? 'http://' : undefined;
+
+        const siteCheck = await CoreSites.checkSite(url, protocol, 'Signup link');
+
+        return CoreSitesFactory.makeUnauthenticatedSite(siteCheck.siteUrl, siteCheck.config);
+    }
+
+    /**
      * Get the list of possible actions to do for a URL.
      *
      * @param url URL to handle.
@@ -164,22 +188,17 @@ export class CoreContentLinksDelegateService {
 
         // Get the list of sites the URL belongs to.
         const siteIds = await CoreSites.getSiteIdsFromUrl(url, { prioritize: true, username });
-        if (!siteIds.length) {
-            // No sites, no actions.
-            return [];
-        }
+        const unauthenticatedSite = await this.getUnauthenticatedSite(url);
 
         const site = await CoreSites.getSite(siteIds[0]);
 
-        const linkActions: CoreContentLinksHandlerActions[] = [];
-        const promises: Promise<void>[] = [];
+        let linkActions: CoreContentLinksHandlerActions[] = [];
+        const promises: Promise<CoreContentLinksHandlerActions | undefined>[] = [];
         const params = CoreUrl.extractUrlParams(url);
         const relativeUrl = await site.getRelativeUrl(url);
 
         for (const name in this.handlers) {
             const handler = this.handlers[name];
-            const checkAll = handler.checkAllUsers;
-            const isEnabledFn = (siteId: string) => this.isHandlerEnabled(handler, relativeUrl, params, courseId, siteId);
 
             if (!handler.handles(relativeUrl)) {
                 // Invalid handler or it doesn't handle the URL. Stop.
@@ -187,66 +206,157 @@ export class CoreContentLinksDelegateService {
             }
 
             // Filter the site IDs using the isEnabled function.
-            promises.push(CoreSites.filterEnabledSites(siteIds, isEnabledFn, checkAll).then(async (siteIds) => {
-                if (!siteIds.length) {
-                    // No sites supported, no actions.
-                    return;
-                }
-
-                const actions = await CorePromiseUtils.ignoreErrors(
-                    Promise.resolve(handler.getActions(siteIds, relativeUrl, params, courseId, data)),
-                    <CoreContentLinksAction[]> [],
-                );
-
-                if (actions && actions.length) {
-                    // Set default values if any value isn't supplied.
-                    actions.forEach((action) => {
-                        action.message = action.message || 'core.view';
-                        action.icon = action.icon || 'fas-eye';
-                        action.sites = action.sites || siteIds;
-
-                        // Wrap the action function in our own function to treat logged out sites.
-                        const actionFunction = action.action;
-                        action.action = async (siteId) => {
-                            if (!CoreSites.isLoggedIn()) {
-                                // Not logged in, load site first.
-                                const loggedIn = await CoreSites.loadSite(siteId, { urlToOpen: url });
-                                if (loggedIn) {
-                                    await CoreNavigator.navigateToSiteHome({ params: { urlToOpen: url } });
-                                }
-
-                                return;
-                            }
-
-                            if (siteId !== CoreSites.getCurrentSiteId()) {
-                                // Different site, logout and login first before treating the URL because token could be expired.
-                                await CoreSites.logout({ urlToOpen: url, siteId });
-
-                                return;
-                            }
-
-                            actionFunction(siteId);
-                        };
-                    });
-
-                    // Add them to the list.
-                    linkActions.push({
-                        priority: handler.priority || 0,
-                        actions: actions,
-                    });
-                }
-
-                return;
-            }));
+            if (handler.unauthenticated) {
+                promises.push(this.getUnauthenticatedActionsFor(handler, unauthenticatedSite, relativeUrl, url, params, data));
+            } else {
+                promises.push(this.getAuthenticatedActionsFor(handler, siteIds, relativeUrl, url, params, courseId, data));
+            }
         }
         try {
-            await CorePromiseUtils.allPromises(promises);
+            linkActions = (await Promise.all(promises)).filter((action) => !!action);
         } catch {
             // Ignore errors.
         }
 
         // Sort link actions by priority.
         return this.sortActionsByPriority(linkActions);
+    }
+
+    /**
+     * Get the list of authenticated actions for a handler and site IDs.
+     *
+     * @param handler Handler to get authenticated actions for.
+     * @param siteIds Site IDs to check for authenticated actions.
+     * @param relativeUrl Relative URL to check.
+     * @param url Full URL to check.
+     * @param params URL parameters extracted from the URL.
+     * @param courseId Course ID related to the URL. Optional but recommended.
+     * @param data Extra data to handle the URL.
+     * @returns Promise resolved with the authenticated actions.
+     */
+    protected async getAuthenticatedActionsFor(
+        handler: CoreContentLinksHandler,
+        siteIds: string[],
+        relativeUrl: string,
+        url: string,
+        params: CoreUrlParams,
+        courseId?: number,
+        data?: unknown,
+    ): Promise<CoreContentLinksHandlerActions | undefined> {
+        const checkAll = handler.checkAllUsers;
+        const isEnabledFn = (siteId: string) => this.isHandlerEnabled(handler, relativeUrl, params, courseId, siteId);
+
+        // Filter the site IDs using the isEnabled function.
+        return CoreSites.filterEnabledSites(siteIds, isEnabledFn, checkAll).then(async (siteIds) => {
+            if (!siteIds.length) {
+                // No sites supported, no actions.
+                return;
+            }
+
+            const actions = await CorePromiseUtils.ignoreErrors(
+                Promise.resolve(handler.getActions(siteIds, relativeUrl, params, courseId, data)),
+                <CoreContentLinksAction[]> [],
+            );
+
+            if (actions && actions.length) {
+                // Set default values if any value isn't supplied.
+                actions.forEach((action) => {
+                    action.message = action.message || 'core.view';
+                    action.icon = action.icon || 'fas-eye';
+                    action.sites = action.sites || siteIds;
+
+                    // Wrap the action function in our own function to treat logged out sites.
+                    const actionFunction = action.action;
+                    action.action = async (siteId) => {
+                        if (!CoreSites.isLoggedIn()) {
+                            // Not logged in, load site first.
+                            const loggedIn = await CoreSites.loadSite(siteId, { urlToOpen: url });
+                            if (loggedIn) {
+                                await CoreNavigator.navigateToSiteHome({ params: { urlToOpen: url } });
+                            }
+
+                            return;
+                        }
+
+                        if (siteId !== CoreSites.getCurrentSiteId()) {
+                            // Different site, logout and login first before treating the URL because token could be expired.
+                            await CoreSites.logout({ urlToOpen: url, siteId });
+
+                            return;
+                        }
+
+                        actionFunction(siteId);
+                    };
+                });
+
+                // Add them to the list.
+               return {
+                    priority: handler.priority || 0,
+                    actions: actions,
+                };
+            }
+
+            return;
+        });
+    }
+
+    /**
+     * Get the list of unauthenticated actions for a handler and site IDs.
+     *
+     * @param handler Handler to get authenticated actions for.
+     * @param unauthenticatedSite Site ID to check for unauthenticated actions.
+     * @param relativeUrl Relative URL to check.
+     * @param url Full URL to check.
+     * @param params URL parameters extracted from the URL.
+     * @param data Extra data to handle the URL.
+     * @returns Promise resolved with the authenticated actions.
+     */
+    protected async getUnauthenticatedActionsFor(
+        handler: CoreContentLinksHandler,
+        unauthenticatedSite: CoreUnauthenticatedSite,
+        relativeUrl: string,
+        url: string,
+        params: CoreUrlParams,
+        data?: unknown,
+    ): Promise<CoreContentLinksHandlerActions | undefined> {
+        console.error(handler);
+        const isEnabled = await this.isHandlerEnabled(handler, relativeUrl, params, undefined, unauthenticatedSite);
+        if (!isEnabled) {
+            return;
+        }
+
+        // Filter the site IDs using the isEnabled function.
+        const actions = await CorePromiseUtils.ignoreErrors(
+            Promise.resolve(handler.getActions([''], url, params, undefined, data)),
+            <CoreContentLinksAction[]> [],
+        );
+
+        if (actions && actions.length) {
+            // Set default values if any value isn't supplied.
+            actions.forEach((action) => {
+                action.message = action.message || 'core.view';
+                action.icon = action.icon || 'fas-eye';
+
+                // Wrap the action function in our own function to treat logged out sites.
+                const actionFunction = action.action;
+                action.action = async (siteId) => {
+                    if (CoreSites.isLoggedIn()) {
+                        // Logout first before treating the URL.
+                        await CoreSites.logout({ urlToOpen: url, siteId });
+
+                        return;
+                    }
+
+                    actionFunction(siteId);
+                };
+            });
+
+            // Add them to the list.
+            return {
+                priority: handler.priority || 0,
+                actions: actions,
+            };
+        }
     }
 
     /**
@@ -278,7 +388,7 @@ export class CoreContentLinksDelegateService {
      * @param url The URL to check.  It's a relative URL, it won't include the site URL.
      * @param params The params of the URL
      * @param courseId Course ID the URL belongs to (can be undefined).
-     * @param siteId The site ID to check.
+     * @param site The siteId if authenticated or site object if unauthenticated.
      * @returns Promise resolved with boolean: whether the handler is enabled.
      */
     protected async isHandlerEnabled(
@@ -286,13 +396,19 @@ export class CoreContentLinksDelegateService {
         url: string,
         params: Record<string, string>,
         courseId: number | undefined,
-        siteId: string,
+        site: string | CoreUnauthenticatedSite,
     ): Promise<boolean> {
 
         let disabled = false;
+        const siteId = typeof site === 'string' ? site : '';
         if (handler.featureName) {
-            // Check if the feature is disabled.
-            disabled = await CoreSites.isFeatureDisabled(handler.featureName, siteId);
+            if (typeof site === 'string') {
+                // Check if the feature is disabled.
+                disabled = await CoreSites.isFeatureDisabled(handler.featureName, siteId);
+            } else {
+                disabled = site.isFeatureDisabled(handler.featureName);
+                console.error(disabled);
+            }
         }
 
         if (disabled) {
